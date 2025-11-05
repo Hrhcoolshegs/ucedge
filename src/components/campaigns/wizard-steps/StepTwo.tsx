@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useData } from '@/contexts/DataContext';
 import { User, UserCheck, Star, AlertTriangle, UserX, RefreshCw, Lightbulb } from 'lucide-react';
 import { useMemo } from 'react';
+import { SentimentSelector } from '@/components/segments/SentimentSelector';
 
 interface StepTwoProps {
   formData: Partial<CampaignFormData>;
@@ -182,7 +183,7 @@ export const StepTwo = ({ formData, updateFormData }: StepTwoProps) => {
           type="button"
           variant={targetingMethod === 'sentiment' ? 'default' : 'ghost'}
           size="sm"
-          onClick={() => updateFormData({ targetingMethod: 'sentiment' })}
+          onClick={() => updateFormData({ targetingMethod: 'sentiment', selectedBuckets: [] })}
           className={targetingMethod === 'sentiment' ? 'bg-primary text-white' : ''}
         >
           Sentiment-Based
@@ -191,7 +192,7 @@ export const StepTwo = ({ formData, updateFormData }: StepTwoProps) => {
           type="button"
           variant={targetingMethod === 'lifecycle' ? 'default' : 'ghost'}
           size="sm"
-          onClick={() => updateFormData({ targetingMethod: 'lifecycle' })}
+          onClick={() => updateFormData({ targetingMethod: 'lifecycle', selectedLifecycleStages: [] })}
           className={targetingMethod === 'lifecycle' ? 'bg-primary text-white' : ''}
         >
           Lifecycle-Based
@@ -299,8 +300,27 @@ export const StepTwo = ({ formData, updateFormData }: StepTwoProps) => {
       )}
 
       {targetingMethod === 'sentiment' && (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">Sentiment-based targeting - Coming soon</p>
+        <div className="space-y-6">
+          <p className="text-sm text-muted-foreground">
+            Target customers by engagement level and product fit - AI-powered sentiment segmentation
+          </p>
+
+          <SentimentSelector
+            selectedBuckets={formData.selectedBuckets || []}
+            onSelectionChange={(buckets) => updateFormData({ selectedBuckets: buckets })}
+          />
+
+          {(formData.selectedBuckets?.length || 0) > 0 && (
+            <div className="p-4 bg-muted rounded-lg border-l-4 border-primary">
+              <h4 className="font-semibold mb-2">Sentiment-Based Selection</h4>
+              <p className="text-sm">
+                <span className="font-bold text-primary">{formData.selectedBuckets?.length}</span> sentiment bucket(s) selected
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                AI-optimized targeting for maximum campaign ROI
+              </p>
+            </div>
+          )}
         </div>
       )}
 

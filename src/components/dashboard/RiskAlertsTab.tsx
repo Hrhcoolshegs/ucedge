@@ -6,8 +6,11 @@ import { ChurnRiskIndicator } from '@/components/common/ChurnRiskIndicator';
 import { useData } from '@/contexts/DataContext';
 import { formatCurrency } from '@/utils/formatters';
 import { AlertCircle, AlertTriangle, TrendingDown, UserMinus, UserCheck, AlertOctagon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from '@/hooks/use-toast';
 
 export const RiskAlertsTab = () => {
+  const navigate = useNavigate();
   const { customers } = useData();
 
   const highRisk = customers.filter(c => c.churnRisk === 'high').length;
@@ -158,7 +161,22 @@ export const RiskAlertsTab = () => {
               <h4 className="font-semibold text-destructive mb-1">Churn Risk Alert</h4>
               <p className="text-sm text-foreground mb-2">85 customers likely to churn in next 30 days</p>
               <p className="text-xs text-muted-foreground mb-2">Total LTV at risk: {formatCurrency(72250000)}</p>
-              <button className="text-xs bg-destructive text-white px-3 py-1 rounded">
+              <button 
+                onClick={() => {
+                  navigate('/campaigns', { 
+                    state: { 
+                      prefillGoal: 'retention',
+                      prefillLifecycle: ['at-risk'],
+                      prefillName: 'Churn Prevention Campaign'
+                    } 
+                  });
+                  toast({
+                    title: "Campaign wizard opened",
+                    description: "Pre-filled with at-risk customers for retention",
+                  });
+                }}
+                className="text-xs bg-destructive text-white px-3 py-1 rounded hover:bg-destructive/90 transition-colors"
+              >
                 Launch Retention Campaign
               </button>
             </div>
@@ -172,7 +190,22 @@ export const RiskAlertsTab = () => {
               <h4 className="font-semibold text-purple-900 mb-1">Reactivation Opportunities</h4>
               <p className="text-sm text-foreground mb-2">67 churned customers showing re-interest signals</p>
               <p className="text-xs text-muted-foreground mb-2">Potential recovered LTV: {formatCurrency(56950000)}</p>
-              <button className="text-xs bg-purple-600 text-white px-3 py-1 rounded">
+              <button 
+                onClick={() => {
+                  navigate('/campaigns', { 
+                    state: { 
+                      prefillGoal: 'win-back',
+                      prefillLifecycle: ['churned'],
+                      prefillName: 'Win-back Campaign'
+                    } 
+                  });
+                  toast({
+                    title: "Campaign wizard opened",
+                    description: "Pre-filled with churned customers for win-back",
+                  });
+                }}
+                className="text-xs bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-700 transition-colors"
+              >
                 Launch Winback Campaign
               </button>
             </div>

@@ -6,7 +6,10 @@ import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { DataProvider } from "@/contexts/DataContext";
 import { CampaignsProvider } from "@/contexts/CampaignsContext";
+import { SegmentsProvider } from "@/contexts/SegmentsContext";
 import { Login } from "@/pages/Login";
+import Segments from "@/pages/Segments";
+import SegmentBuilder from "@/pages/SegmentBuilder";
 import { Overview } from "@/pages/Overview";
 import { Dashboard } from "@/pages/Dashboard";
 import { Campaigns } from "@/pages/Campaigns";
@@ -37,8 +40,9 @@ const App = () => (
       <Sonner />
       <AuthProvider>
         <DataProvider>
-          <CampaignsProvider>
-            <HashRouter>
+          <SegmentsProvider>
+            <CampaignsProvider>
+              <HashRouter>
               <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/" element={<Navigate to="/overview" replace />} />
@@ -51,6 +55,8 @@ const App = () => (
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/sentiment-analysis" element={<SentimentAnalysis />} />
                   <Route path="/sentiment" element={<Navigate to="/sentiment-analysis" replace />} />
+                  <Route path="/segments" element={<Segments />} />
+                  <Route path="/segment-builder" element={<SegmentBuilder />} />
                   <Route path="/campaigns" element={<Campaigns />} />
                   <Route path="/reports" element={<Reports />} />
                   <Route path="/customers" element={<Customers />} />
@@ -64,8 +70,9 @@ const App = () => (
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>
-            </HashRouter>
-          </CampaignsProvider>
+              </HashRouter>
+            </CampaignsProvider>
+          </SegmentsProvider>
         </DataProvider>
       </AuthProvider>
     </TooltipProvider>

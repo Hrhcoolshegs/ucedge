@@ -1,15 +1,21 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Search, Filter, UserPlus, Mail, Phone, Calendar, TrendingUp } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useData } from '@/contexts/DataContext';
 import { LifecycleBadge } from '@/components/common/LifecycleBadge';
 import { ChurnRiskIndicator } from '@/components/common/ChurnRiskIndicator';
 import { formatCurrency, formatDate } from '@/utils/formatters';
+import { useBulkSelection } from '@/hooks/useBulkSelection';
+import { BulkActionBar } from '@/components/segments/BulkActionBar';
+import { useNavigate } from 'react-router-dom';
+import { toast } from '@/hooks/use-toast';
 
 export const Customers = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [lifecycleFilter, setLifecycleFilter] = useState('all');
   const { customers, getCustomerTransactions } = useData();
@@ -24,6 +30,37 @@ export const Customers = () => {
     
     return matchesSearch && matchesLifecycle;
   }).slice(0, 50);
+
+  const {
+    selectedItems,
+    selectedCount,
+    hasSelection,
+    isAllSelected,
+    toggleSelection,
+    selectAll,
+    clearSelection,
+    isSelected
+  } = useBulkSelection(filteredCustomers);
+
+  const totalLTV = useMemo(() => 
+    selectedItems.reduce((sum, c) => sum + c.lifetimeValue, 0),
+    [selectedItems]
+  );
+
+  const handleCreateCampaign = () => {
+    navigate('/campaigns', { state: { selectedCustomers: selectedItems } });
+    toast({
+      title: "Campaign wizard opened",
+      description: `Pre-filled with ${selectedCount} selected customers`,
+    });
+  };
+
+  const handleExport = () => {
+    toast({
+      title: "Export started",
+      description: `Exporting ${selectedCount} customers...`,
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -88,6 +125,12 @@ export const Customers = () => {
           <table className="w-full">
             <thead className="bg-muted">
               <tr>
+                <th className="text-left p-4 text-sm font-medium text-muted-foreground w-12">
+                  <Checkbox
+                    checked={isAllSelected}
+                    onCheckedChange={() => isAllSelected ? clearSelection() : selectAll()}
+                  />
+                </th>
                 <th className="text-left p-4 text-sm font-medium text-muted-foreground">Customer</th>
                 <th className="text-left p-4 text-sm font-medium text-muted-foreground">Contact</th>
                 <th className="text-left p-4 text-sm font-medium text-muted-foreground">Lifecycle</th>
@@ -104,6 +147,12 @@ export const Customers = () => {
                 
                 return (
                   <tr key={customer.id} className="border-t hover:bg-muted/50">
+                    <td className="p-4">
+                      <Checkbox
+                        checked={isSelected(customer.id)}
+                        onCheckedChange={() => toggleSelection(customer.id)}
+                      />
+                    </td>
                     <td className="p-4">
                       <div>
                         <div className="font-medium text-foreground">{customer.name}</div>
@@ -148,6 +197,16 @@ export const Customers = () => {
           </table>
         </div>
       </Card>
+
+      {/* Bulk Action Bar */}
+      <BulkActionBar
+        selectedCount={selectedCount}
+        totalCustomers={selectedItems.length}
+        totalLTV={totalLTV}
+        onClearSelection={clearSelection}
+        onCreateCampaign={handleCreateCampaign}
+        onExport={handleExport}
+      />
     </div>
   );
 };
