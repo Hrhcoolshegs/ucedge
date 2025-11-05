@@ -21,7 +21,7 @@ export const SegmentsProvider = ({ children }: { children: ReactNode }) => {
       name: 'High Value At-Risk',
       description: 'At-risk customers with LTV > ₦5M',
       type: 'auto',
-      customerCount: 0,
+      customerCount: 45200,
       criteria: {
         lifecycleStages: ['at-risk'],
         customFilters: { minLTV: 5000000 }
@@ -41,7 +41,7 @@ export const SegmentsProvider = ({ children }: { children: ReactNode }) => {
       name: 'Churned Last 30 Days',
       description: 'Recently churned customers for winback',
       type: 'auto',
-      customerCount: 0,
+      customerCount: 23800,
       criteria: {
         lifecycleStages: ['churned'],
         customFilters: { maxDaysSinceChurn: 30 }
@@ -61,7 +61,7 @@ export const SegmentsProvider = ({ children }: { children: ReactNode }) => {
       name: 'Reactivation Candidates',
       description: 'Churned customers with high reactivation probability',
       type: 'sentiment',
-      customerCount: 0,
+      customerCount: 18500,
       criteria: {
         lifecycleStages: ['churned'],
         customFilters: { minReactivationProbability: 0.7 }

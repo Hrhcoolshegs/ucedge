@@ -31,8 +31,8 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     try {
       // Generate data on mount
-      const generatedCustomers = generateCustomers(500);
-      const generatedTransactions = generateTransactions(generatedCustomers, 2000);
+      const generatedCustomers = generateCustomers(850000);
+      const generatedTransactions = generateTransactions(generatedCustomers, 5000000);
       
       setCustomers(generatedCustomers);
       setTransactions(generatedTransactions);
