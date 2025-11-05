@@ -29,12 +29,12 @@ const revenueData = [
 ];
 
 const customerGrowthData = [
-  { month: 'Jun', customers: 10500 },
-  { month: 'Jul', customers: 11200 },
-  { month: 'Aug', customers: 11650 },
-  { month: 'Sep', customers: 11900 },
-  { month: 'Oct', customers: 12200 },
-  { month: 'Nov', customers: 12450 },
+  { month: 'Jun', customers: 725000 },
+  { month: 'Jul', customers: 748000 },
+  { month: 'Aug', customers: 769000 },
+  { month: 'Sep', customers: 792000 },
+  { month: 'Oct', customers: 816000 },
+  { month: 'Nov', customers: 850000 },
 ];
 
 export const Overview = () => {
@@ -109,7 +109,7 @@ export const Overview = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
           title="Support Tickets"
-          value="1,240"
+          value="124,000"
           change={-15.3}
           icon={MessageSquare}
           iconColor="text-primary"

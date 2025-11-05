@@ -8,12 +8,12 @@ export const Analytics = () => {
   const { customers, transactions } = useData();
 
   const monthlyData = [
-    { month: 'Jul', revenue: 45000, customers: 120, transactions: 450 },
-    { month: 'Aug', revenue: 52000, customers: 135, transactions: 520 },
-    { month: 'Sep', revenue: 48000, customers: 128, transactions: 480 },
-    { month: 'Oct', revenue: 61000, customers: 145, transactions: 590 },
-    { month: 'Nov', revenue: 55000, customers: 142, transactions: 540 },
-    { month: 'Dec', revenue: 67000, customers: 158, transactions: 630 }
+    { month: 'Jul', revenue: 45000000, customers: 720000, transactions: 4500000 },
+    { month: 'Aug', revenue: 52000000, customers: 735000, transactions: 4520000 },
+    { month: 'Sep', revenue: 48000000, customers: 758000, transactions: 4800000 },
+    { month: 'Oct', revenue: 61000000, customers: 785000, transactions: 4900000 },
+    { month: 'Nov', revenue: 55000000, customers: 820000, transactions: 4950000 },
+    { month: 'Dec', revenue: 67000000, customers: 850000, transactions: 5000000 }
   ];
 
   const channelData = [
@@ -24,11 +24,11 @@ export const Analytics = () => {
   ];
 
   const productData = [
-    { product: 'Product A', sales: 65000 },
-    { product: 'Product B', sales: 45000 },
-    { product: 'Product C', sales: 38000 },
-    { product: 'Product D', sales: 28000 },
-    { product: 'Product E', sales: 22000 }
+    { product: 'Savings Account', sales: 6500000 },
+    { product: 'Investment Plan', sales: 4500000 },
+    { product: 'Fixed Deposit', sales: 3800000 },
+    { product: 'Loan Products', sales: 2800000 },
+    { product: 'Card Services', sales: 2200000 }
   ];
 
   const totalRevenue = transactions.reduce((sum, t) => sum + t.amount, 0);

@@ -9,11 +9,11 @@ export const KnowledgeBase = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const categories = [
-    { name: 'Getting Started', articles: 12, icon: '🚀' },
-    { name: 'Account Management', articles: 8, icon: '👤' },
-    { name: 'Billing & Payments', articles: 15, icon: '💳' },
-    { name: 'Technical Support', articles: 24, icon: '🔧' },
-    { name: 'Features & Updates', articles: 18, icon: '✨' }
+    { name: 'Getting Started', articles: 12450, icon: '🚀' },
+    { name: 'Account Management', articles: 8320, icon: '👤' },
+    { name: 'Billing & Payments', articles: 15780, icon: '💳' },
+    { name: 'Technical Support', articles: 24650, icon: '🔧' },
+    { name: 'Features & Updates', articles: 18940, icon: '✨' }
   ];
 
   const articles = [
@@ -21,7 +21,7 @@ export const KnowledgeBase = () => {
       id: '1',
       title: 'How to create your first campaign',
       category: 'Getting Started',
-      views: 1245,
+      views: 124500,
       lastUpdated: '2024-01-10',
       status: 'published'
     },
@@ -29,7 +29,7 @@ export const KnowledgeBase = () => {
       id: '2',
       title: 'Understanding customer lifecycle stages',
       category: 'Getting Started',
-      views: 892,
+      views: 89200,
       lastUpdated: '2024-01-12',
       status: 'published'
     },
@@ -37,7 +37,7 @@ export const KnowledgeBase = () => {
       id: '3',
       title: 'Setting up payment methods',
       category: 'Billing & Payments',
-      views: 654,
+      views: 65400,
       lastUpdated: '2024-01-08',
       status: 'published'
     },
@@ -45,7 +45,7 @@ export const KnowledgeBase = () => {
       id: '4',
       title: 'Troubleshooting login issues',
       category: 'Technical Support',
-      views: 432,
+      views: 43200,
       lastUpdated: '2024-01-14',
       status: 'published'
     },
@@ -53,7 +53,7 @@ export const KnowledgeBase = () => {
       id: '5',
       title: 'New AI features guide',
       category: 'Features & Updates',
-      views: 1876,
+      views: 187600,
       lastUpdated: '2024-01-15',
       status: 'draft'
     }

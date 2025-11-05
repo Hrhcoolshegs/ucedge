@@ -74,7 +74,7 @@ export const LiveSupport = () => {
             <p className="text-sm text-muted-foreground">Resolved Today</p>
             <CheckCircle className="h-5 w-5 text-success" />
           </div>
-          <h3 className="text-2xl font-bold text-foreground">127</h3>
+          <h3 className="text-2xl font-bold text-foreground">127,000</h3>
           <p className="text-sm text-success mt-1">+18% vs yesterday</p>
         </Card>
         <Card className="p-4">

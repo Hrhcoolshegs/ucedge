@@ -11,7 +11,7 @@ export const AIAgents = () => {
       name: 'Churn Prevention Agent',
       description: 'Automatically identifies at-risk customers and triggers win-back campaigns',
       status: 'active',
-      tasksCompleted: 245,
+      tasksCompleted: 245000,
       successRate: 87,
       type: 'retention'
     },
@@ -20,7 +20,7 @@ export const AIAgents = () => {
       name: 'Sentiment Analyzer',
       description: 'Analyzes customer feedback and assigns sentiment scores',
       status: 'active',
-      tasksCompleted: 1842,
+      tasksCompleted: 1842000,
       successRate: 92,
       type: 'analysis'
     },
@@ -29,7 +29,7 @@ export const AIAgents = () => {
       name: 'Campaign Optimizer',
       description: 'Optimizes campaign targeting based on customer behavior',
       status: 'paused',
-      tasksCompleted: 156,
+      tasksCompleted: 156000,
       successRate: 78,
       type: 'marketing'
     },
@@ -38,7 +38,7 @@ export const AIAgents = () => {
       name: 'Response Bot',
       description: 'Handles common customer inquiries automatically',
       status: 'active',
-      tasksCompleted: 3421,
+      tasksCompleted: 3421000,
       successRate: 95,
       type: 'support'
     }
@@ -82,7 +82,7 @@ export const AIAgents = () => {
             <p className="text-sm text-muted-foreground">Total Tasks</p>
             <Target className="h-5 w-5 text-primary" />
           </div>
-          <h3 className="text-2xl font-bold text-foreground">5,664</h3>
+          <h3 className="text-2xl font-bold text-foreground">5,664,000</h3>
         </Card>
         <Card className="p-4">
           <div className="flex items-center justify-between mb-2">
@@ -96,7 +96,7 @@ export const AIAgents = () => {
             <p className="text-sm text-muted-foreground">Interactions</p>
             <MessageSquare className="h-5 w-5 text-accent" />
           </div>
-          <h3 className="text-2xl font-bold text-foreground">12.4K</h3>
+          <h3 className="text-2xl font-bold text-foreground">12.4M</h3>
         </Card>
       </div>
 

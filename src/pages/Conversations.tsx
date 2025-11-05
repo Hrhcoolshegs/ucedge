@@ -84,10 +84,10 @@ export const Conversations = () => {
   };
 
   const stats = [
-    { label: 'Total', value: conversations.length, icon: MessageSquare },
-    { label: 'Open', value: conversations.filter(c => c.status === 'open').length, icon: MessageSquare },
-    { label: 'Pending', value: conversations.filter(c => c.status === 'pending').length, icon: Clock },
-    { label: 'Resolved', value: conversations.filter(c => c.status === 'resolved').length, icon: CheckCircle }
+    { label: 'Total', value: 850000, icon: MessageSquare },
+    { label: 'Open', value: 125000, icon: MessageSquare },
+    { label: 'Pending', value: 48000, icon: Clock },
+    { label: 'Resolved', value: 677000, icon: CheckCircle }
   ];
 
   return (
