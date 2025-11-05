@@ -8,6 +8,7 @@ import { DataProvider } from "@/contexts/DataContext";
 import { Login } from "@/pages/Login";
 import { Overview } from "@/pages/Overview";
 import { Dashboard } from "@/pages/Dashboard";
+import { SentimentAnalysis } from "@/pages/SentimentAnalysis";
 import { PlaceholderPage } from "@/pages/PlaceholderPage";
 import { MainLayout } from "@/components/layout/MainLayout";
 import NotFound from "./pages/NotFound";
@@ -36,7 +37,8 @@ const App = () => (
                 </ProtectedRoute>
               }>
                 <Route path="/overview" element={<Overview />} />
-                <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/sentiment-analysis" element={<SentimentAnalysis />} />
                 <Route path="/sentiment" element={<PlaceholderPage title="Sentiment Analysis" description="AI-powered customer sentiment tracking" />} />
                 <Route path="/campaigns" element={<PlaceholderPage title="Campaigns" description="Manage marketing campaigns" />} />
                 <Route path="/reports" element={<PlaceholderPage title="Reports" description="Generate and view reports" />} />
