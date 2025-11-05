@@ -11,7 +11,15 @@ import { Overview } from "@/pages/Overview";
 import { Dashboard } from "@/pages/Dashboard";
 import { Campaigns } from "@/pages/Campaigns";
 import { SentimentAnalysis } from "@/pages/SentimentAnalysis";
-import { PlaceholderPage } from "@/pages/PlaceholderPage";
+import { Reports } from "@/pages/Reports";
+import { Customers } from "@/pages/Customers";
+import { AIAgents } from "@/pages/AIAgents";
+import { Conversations } from "@/pages/Conversations";
+import { KnowledgeBase } from "@/pages/KnowledgeBase";
+import { LiveSupport } from "@/pages/LiveSupport";
+import { Analytics } from "@/pages/Analytics";
+import { Customer360 } from "@/pages/Customer360";
+import { Settings } from "@/pages/Settings";
 import { MainLayout } from "@/components/layout/MainLayout";
 import NotFound from "./pages/NotFound";
 
@@ -44,15 +52,15 @@ const App = () => (
                   <Route path="/sentiment-analysis" element={<SentimentAnalysis />} />
                   <Route path="/sentiment" element={<Navigate to="/sentiment-analysis" replace />} />
                   <Route path="/campaigns" element={<Campaigns />} />
-                  <Route path="/reports" element={<PlaceholderPage title="Reports" description="Generate and view reports" />} />
-                  <Route path="/customers" element={<PlaceholderPage title="Customers" description="Customer management" />} />
-                  <Route path="/ai-agents" element={<PlaceholderPage title="AI Agents" description="Configure AI agents" />} />
-                  <Route path="/conversations" element={<PlaceholderPage title="Conversations" description="Customer conversations" />} />
-                  <Route path="/knowledge" element={<PlaceholderPage title="Knowledge Base" description="Manage knowledge articles" />} />
-                  <Route path="/support" element={<PlaceholderPage title="Live Support" description="Live customer support" />} />
-                  <Route path="/analytics" element={<PlaceholderPage title="Analytics" description="Platform analytics" />} />
-                  <Route path="/customer-360" element={<PlaceholderPage title="360° Customer View" description="Complete customer insights" />} />
-                  <Route path="/settings" element={<PlaceholderPage title="Settings" description="Application settings" />} />
+                  <Route path="/reports" element={<Reports />} />
+                  <Route path="/customers" element={<Customers />} />
+                  <Route path="/ai-agents" element={<AIAgents />} />
+                  <Route path="/conversations" element={<Conversations />} />
+                  <Route path="/knowledge" element={<KnowledgeBase />} />
+                  <Route path="/support" element={<LiveSupport />} />
+                  <Route path="/analytics" element={<Analytics />} />
+                  <Route path="/customer-360" element={<Customer360 />} />
+                  <Route path="/settings" element={<Settings />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>
