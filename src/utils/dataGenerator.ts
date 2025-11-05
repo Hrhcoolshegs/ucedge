@@ -167,7 +167,7 @@ const generateLifecycleHistory = (
   return events;
 };
 
-export const generateCustomers = (count: number = 500): Customer[] => {
+export const generateCustomers = (count: number = 850000): Customer[] => {
   const customers: Customer[] = [];
   const startDate = new Date('2023-01-01');
   const endDate = new Date('2024-11-03');
@@ -214,7 +214,7 @@ export const generateCustomers = (count: number = 500): Customer[] => {
       lifecycleStage === 'new' ? 'medium' :
       'low';
 
-    const accountBalance = random(10000, 5000000);
+    const accountBalance = random(50000, 25000000);
     const productsOwned = ['Savings Account'];
     if (Math.random() > 0.6) productsOwned.push('Investment Plan');
     if (Math.random() > 0.75) productsOwned.push('Fixed Deposit');
@@ -248,8 +248,8 @@ export const generateCustomers = (count: number = 500): Customer[] => {
       occupation: randomChoice(OCCUPATIONS),
       incomeRange: randomChoice(INCOME_RANGES),
       accountBalance,
-      totalDeposits: random(100000, 10000000),
-      totalWithdrawals: random(50000, 8000000),
+      totalDeposits: random(500000, 50000000),
+      totalWithdrawals: random(250000, 40000000),
       productsOwned,
       lastTransactionDate: randomDate(new Date(dateJoined), endDate).toISOString(),
       transactionFrequency: status === 'active' ? random(5, 30) : random(0, 5),
@@ -257,7 +257,7 @@ export const generateCustomers = (count: number = 500): Customer[] => {
       sentimentBucket: randomChoice(['High Engagement + Good Fit', 'Medium Engagement', 'Low Engagement']),
       engagementLevel,
       churnRisk,
-      lifetimeValue: random(100000, 5000000),
+      lifetimeValue: random(500000, 25000000),
       supportTickets: random(0, 20),
       lastContactDate: randomDate(dateJoined, endDate).toISOString(),
       satisfactionScore: random(1, 5),
@@ -286,7 +286,7 @@ export const generateCustomers = (count: number = 500): Customer[] => {
   return customers;
 };
 
-export const generateTransactions = (customers: Customer[], count: number = 2000): Transaction[] => {
+export const generateTransactions = (customers: Customer[], count: number = 5000000): Transaction[] => {
   const transactions: Transaction[] = [];
   const startDate = new Date('2023-11-01');
   const endDate = new Date('2024-11-03');
@@ -295,8 +295,8 @@ export const generateTransactions = (customers: Customer[], count: number = 2000
     const customer = randomChoice(customers);
     const type = randomChoice(['deposit', 'withdrawal', 'transfer', 'investment'] as const);
     const amount = type === 'investment' 
-      ? random(100000, 1000000)
-      : random(1000, 500000);
+      ? random(500000, 5000000)
+      : random(5000, 2500000);
     const date = randomDate(startDate, endDate);
     const status = Math.random() > 0.05 ? 'completed' : (Math.random() > 0.5 ? 'pending' : 'failed');
     const channel = randomChoice(['mobile', 'web', 'branch', 'atm'] as const);

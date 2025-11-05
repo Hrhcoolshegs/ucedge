@@ -115,10 +115,10 @@ export const generateSentimentBuckets = (customerIds: string[]): SentimentBucket
       }
       
       // Calculate metrics based on priority
-      const avgLTV = priority === "ideal" ? 1200000 :
-                     priority === "low" ? 850000 :
-                     priority === "medium" ? 650000 :
-                     priority === "high" ? 450000 : 280000;
+      const avgLTV = priority === "ideal" ? 8500000 :
+                     priority === "low" ? 5200000 :
+                     priority === "medium" ? 3800000 :
+                     priority === "high" ? 2100000 : 950000;
       
       const churnRate = priority === "ideal" ? 0.02 :
                        priority === "low" ? 0.05 :

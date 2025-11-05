@@ -19,12 +19,12 @@ export const SegmentsProvider = ({ children }: { children: ReactNode }) => {
     {
       id: 'seg-1',
       name: 'High Value At-Risk',
-      description: 'At-risk customers with LTV > ₦500k',
+      description: 'At-risk customers with LTV > ₦5M',
       type: 'auto',
       customerCount: 0,
       criteria: {
         lifecycleStages: ['at-risk'],
-        customFilters: { minLTV: 500000 }
+        customFilters: { minLTV: 5000000 }
       },
       metrics: {
         totalLTV: 0,
