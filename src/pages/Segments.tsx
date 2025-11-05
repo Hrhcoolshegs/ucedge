@@ -13,7 +13,7 @@ import { toast } from '@/hooks/use-toast';
 export default function Segments() {
   const navigate = useNavigate();
   const { segments, deleteSegment } = useSegments();
-  const { customers } = useData();
+  const { customers, DISPLAY_MULTIPLIER } = useData();
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredSegments = segments.filter(segment =>

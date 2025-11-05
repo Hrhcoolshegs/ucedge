@@ -18,7 +18,7 @@ export const Customers = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [lifecycleFilter, setLifecycleFilter] = useState('all');
-  const { customers, getCustomerTransactions } = useData();
+  const { customers, getCustomerTransactions, DISPLAY_MULTIPLIER } = useData();
 
   const filteredCustomers = customers.filter(c => {
     const matchesSearch = searchQuery === '' || 
@@ -79,15 +79,15 @@ export const Customers = () => {
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         {[
-          { label: 'Total', value: customers.length, stage: 'all' },
-          { label: 'Active', value: customers.filter(c => c.lifecycleStage === 'active').length, stage: 'active' },
-          { label: 'At Risk', value: customers.filter(c => c.lifecycleStage === 'at-risk').length, stage: 'at-risk' },
-          { label: 'Churned', value: customers.filter(c => c.lifecycleStage === 'churned').length, stage: 'churned' },
-          { label: 'Reactivated', value: customers.filter(c => c.reactivationCount > 0).length, stage: 'reactivated' }
+          { label: 'Total', value: customers.length * DISPLAY_MULTIPLIER, stage: 'all' },
+          { label: 'Active', value: customers.filter(c => c.lifecycleStage === 'active').length * DISPLAY_MULTIPLIER, stage: 'active' },
+          { label: 'At Risk', value: customers.filter(c => c.lifecycleStage === 'at-risk').length * DISPLAY_MULTIPLIER, stage: 'at-risk' },
+          { label: 'Churned', value: customers.filter(c => c.lifecycleStage === 'churned').length * DISPLAY_MULTIPLIER, stage: 'churned' },
+          { label: 'Reactivated', value: customers.filter(c => c.reactivationCount > 0).length * DISPLAY_MULTIPLIER, stage: 'reactivated' }
         ].map((stat) => (
           <Card key={stat.label} className="p-4">
             <p className="text-sm text-muted-foreground">{stat.label}</p>
-            <h3 className="text-2xl font-bold text-foreground mt-1">{stat.value}</h3>
+            <h3 className="text-2xl font-bold text-foreground mt-1">{stat.value.toLocaleString()}</h3>
           </Card>
         ))}
       </div>

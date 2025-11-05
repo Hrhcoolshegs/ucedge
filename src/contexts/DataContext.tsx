@@ -18,6 +18,8 @@ interface DataContextType {
   calculateReactivationRate: (period: string) => number;
   loading: boolean;
   error: Error | null;
+  // Display multipliers for UI (to show large numbers without generating them)
+  DISPLAY_MULTIPLIER: number;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -30,9 +32,9 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     try {
-      // Generate data on mount
-      const generatedCustomers = generateCustomers(850000);
-      const generatedTransactions = generateTransactions(generatedCustomers, 5000000);
+      // Generate small dataset for demo (actual data)
+      const generatedCustomers = generateCustomers(2000);
+      const generatedTransactions = generateTransactions(generatedCustomers, 10000);
       
       setCustomers(generatedCustomers);
       setTransactions(generatedTransactions);
@@ -100,7 +102,8 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         calculateChurnRate,
         calculateReactivationRate,
         loading,
-        error
+        error,
+        DISPLAY_MULTIPLIER: 425 // 2000 * 425 = 850,000
       }}
     >
       {children}

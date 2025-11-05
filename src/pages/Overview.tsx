@@ -38,7 +38,7 @@ const customerGrowthData = [
 ];
 
 export const Overview = () => {
-  const { customers, transactions, loading } = useData();
+  const { customers, transactions, loading, DISPLAY_MULTIPLIER } = useData();
   const navigate = useNavigate();
   const [campaignWizardOpen, setCampaignWizardOpen] = useState(false);
 
@@ -75,14 +75,14 @@ export const Overview = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
           title="Total Customers"
-          value={formatNumber(totalCustomers)}
+          value={formatNumber(totalCustomers * DISPLAY_MULTIPLIER)}
           change={3.2}
           icon={Users}
           iconColor="text-primary"
         />
         <MetricCard
           title="Active Users"
-          value={formatNumber(activeCustomers)}
+          value={formatNumber(activeCustomers * DISPLAY_MULTIPLIER)}
           change={5.1}
           icon={UserCheck}
           iconColor="text-success"
