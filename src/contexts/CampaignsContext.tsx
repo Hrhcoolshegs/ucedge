@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import { Campaign } from '@/types/campaign';
+import { sampleCampaigns } from '@/utils/sampleCampaigns';
 
 interface CampaignsContextType {
   campaigns: Campaign[];
@@ -11,7 +12,7 @@ interface CampaignsContextType {
 const CampaignsContext = createContext<CampaignsContextType | undefined>(undefined);
 
 export const CampaignsProvider = ({ children }: { children: ReactNode }) => {
-  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [campaigns, setCampaigns] = useState<Campaign[]>(sampleCampaigns);
 
   const addCampaign = (campaign: Campaign) => {
     setCampaigns(prev => [campaign, ...prev]);

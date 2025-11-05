@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Search } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { StatusBadge } from '@/components/common/StatusBadge';
@@ -7,11 +7,15 @@ import { LifecycleBadge } from '@/components/common/LifecycleBadge';
 import { CampaignWizard } from '@/components/campaigns/CampaignWizard';
 import { useCampaigns } from '@/contexts/CampaignsContext';
 import { formatCurrency, formatPercentage } from '@/utils/formatters';
+import { useToast } from '@/hooks/use-toast';
+import { Campaign } from '@/types/campaign';
 
 export const Campaigns = () => {
   const [wizardOpen, setWizardOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const { campaigns } = useCampaigns();
+  const [editingCampaign, setEditingCampaign] = useState<Campaign | null>(null);
+  const { campaigns, updateCampaign, deleteCampaign } = useCampaigns();
+  const { toast } = useToast();
 
   const filteredCampaigns = campaigns.filter(campaign =>
     campaign.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -19,6 +23,38 @@ export const Campaigns = () => {
 
   const handleComplete = () => {
     setWizardOpen(false);
+    setEditingCampaign(null);
+  };
+
+  const handleEdit = (campaign: Campaign) => {
+    setEditingCampaign(campaign);
+    setWizardOpen(true);
+  };
+
+  const handleDelete = (id: string, name: string) => {
+    if (confirm(`Are you sure you want to delete "${name}"?`)) {
+      deleteCampaign(id);
+      toast({
+        title: 'Campaign deleted',
+        description: `"${name}" has been removed.`,
+      });
+    }
+  };
+
+  const handleTrigger = (campaign: Campaign) => {
+    if (campaign.status === 'active') {
+      toast({
+        title: 'Campaign already running',
+        description: `"${campaign.name}" is already active.`,
+      });
+      return;
+    }
+    
+    updateCampaign(campaign.id, { status: 'active' });
+    toast({
+      title: 'Campaign triggered',
+      description: `"${campaign.name}" has been activated.`,
+    });
   };
 
   return (
@@ -63,6 +99,7 @@ export const Campaigns = () => {
                 <th className="text-right p-4 font-semibold text-foreground">Clicked</th>
                 <th className="text-right p-4 font-semibold text-foreground">Converted</th>
                 <th className="text-right p-4 font-semibold text-foreground">ROI</th>
+                <th className="text-right p-4 font-semibold text-foreground">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y">
@@ -113,6 +150,35 @@ export const Campaigns = () => {
                     }`}>
                       {campaign.roi.toFixed(1)}x
                     </span>
+                  </td>
+                  <td className="p-4">
+                    <div className="flex items-center justify-end gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleEdit(campaign)}
+                        title="Edit campaign"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleTrigger(campaign)}
+                        title="Trigger campaign"
+                        disabled={campaign.status === 'active'}
+                      >
+                        <Send className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleDelete(campaign.id, campaign.name)}
+                        title="Delete campaign"
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               ))}
