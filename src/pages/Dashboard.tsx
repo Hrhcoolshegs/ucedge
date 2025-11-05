@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Overview } from './Overview';
+import { TransactionsTab } from '@/components/dashboard/TransactionsTab';
 
 export const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -64,9 +65,7 @@ export const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="transactions" className="m-0">
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">Transactions tab coming soon...</p>
-            </div>
+            <TransactionsTab />
           </TabsContent>
 
           <TabsContent value="risk" className="m-0">

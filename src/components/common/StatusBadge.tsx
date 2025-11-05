@@ -1,14 +1,44 @@
 import { CheckCircle, Clock, XCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 interface StatusBadgeProps {
-  status: "completed" | "pending" | "failed" | "active" | "inactive";
+  status: string | any;
+  variant?: 'status' | 'type';
   size?: "sm" | "md";
   className?: string;
 }
 
-export const StatusBadge = ({ status, size = "md", className }: StatusBadgeProps) => {
-  const configs = {
+export const StatusBadge = ({ status, variant = 'status', size = "md", className }: StatusBadgeProps) => {
+  // Type badges (campaigns, transactions)
+  if (variant === 'type') {
+    const typeConfig: Record<string, { color: string; label: string }> = {
+      Email: { color: 'bg-blue-100 text-blue-700', label: '📧 Email' },
+      SMS: { color: 'bg-green-100 text-green-700', label: '📱 SMS' },
+      WhatsApp: { color: 'bg-teal-100 text-teal-700', label: '💬 WhatsApp' },
+      Push: { color: 'bg-purple-100 text-purple-700', label: '🔔 Push' },
+      deposit: { color: 'bg-green-100 text-green-700', label: 'Deposit' },
+      withdrawal: { color: 'bg-orange-100 text-orange-700', label: 'Withdrawal' },
+      transfer: { color: 'bg-blue-100 text-blue-700', label: 'Transfer' },
+      investment: { color: 'bg-purple-100 text-purple-700', label: 'Investment' }
+    };
+    const config = typeConfig[status];
+    if (!config) return <Badge>{status}</Badge>;
+    return <Badge className={cn(config.color, className)}>{config.label}</Badge>;
+  }
+
+  // Campaign status badges
+  if (status === 'scheduled' || status === 'paused') {
+    const campaignConfig: Record<string, { color: string; label: string }> = {
+      scheduled: { color: 'bg-blue-100 text-blue-700', label: '⏰ Scheduled' },
+      paused: { color: 'bg-yellow-100 text-yellow-700', label: '⏸️ Paused' }
+    };
+    const config = campaignConfig[status];
+    return <Badge className={cn(config.color, className)}>{config.label}</Badge>;
+  }
+
+  // Transaction/default status badges
+  const configs: Record<string, { label: string; icon: any; bgColor: string; textColor: string; borderColor: string }> = {
     completed: {
       label: 'Completed',
       icon: CheckCircle,
@@ -46,7 +76,7 @@ export const StatusBadge = ({ status, size = "md", className }: StatusBadgeProps
     }
   };
 
-  const config = configs[status];
+  const config = configs[status] || configs.active;
   const Icon = config.icon;
 
   const sizeClasses = {

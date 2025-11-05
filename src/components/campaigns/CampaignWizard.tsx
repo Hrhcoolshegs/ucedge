@@ -2,9 +2,13 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { CampaignFormData } from '@/types/campaign';
+import { CampaignFormData, Campaign } from '@/types/campaign';
 import { StepOne } from './wizard-steps/StepOne';
 import { StepTwo } from './wizard-steps/StepTwo';
+import { StepThree } from './wizard-steps/StepThree';
+import { StepFour } from './wizard-steps/StepFour';
+import { useCampaigns } from '@/contexts/CampaignsContext';
+import { useToast } from '@/hooks/use-toast';
 import { X } from 'lucide-react';
 
 interface CampaignWizardProps {
@@ -21,6 +25,8 @@ export const CampaignWizard = ({ open, onClose, onComplete }: CampaignWizardProp
     selectedLifecycleStages: [],
     priority: 'medium'
   });
+  const { addCampaign } = useCampaigns();
+  const { toast } = useToast();
 
   const steps = [
     { number: 1, title: 'Campaign Details' },
@@ -48,7 +54,56 @@ export const CampaignWizard = ({ open, onClose, onComplete }: CampaignWizardProp
   };
 
   const handleComplete = () => {
+    const estimatedReach = formData.targetingMethod === 'lifecycle'
+      ? (formData.selectedLifecycleStages?.reduce((sum, stage) => {
+          const counts = { new: 1867, active: 5602, loyal: 3112, 'at-risk': 1245, churned: 623, reactivated: 45 };
+          return sum + (counts[stage] || 0);
+        }, 0) || 0)
+      : 456;
+
+    const newCampaign: Campaign = {
+      id: `CMP-${Date.now()}`,
+      name: formData.name!,
+      type: formData.type!,
+      status: 'scheduled',
+      targetAudience: formData.targetingMethod === 'lifecycle' 
+        ? formData.selectedLifecycleStages?.join(', ') || 'Custom'
+        : 'Sentiment-based',
+      lifecycleTarget: formData.selectedLifecycleStages?.[0] || null,
+      segmentSize: estimatedReach,
+      subject: formData.subject || '',
+      message: formData.message!,
+      ctaText: formData.ctaText || '',
+      ctaLink: formData.ctaLink || '',
+      launchDate: formData.launchDate!,
+      endDate: formData.endDate || '',
+      sent: 0,
+      delivered: 0,
+      opened: 0,
+      clicked: 0,
+      converted: 0,
+      revenue: 0,
+      roi: 0,
+      isWinBackCampaign: formData.goal === 'win-back',
+      reactivationCount: 0,
+      goal: formData.goal,
+      priority: formData.priority,
+      budget: formData.budget
+    };
+
+    addCampaign(newCampaign);
+    toast({
+      title: 'Campaign Created',
+      description: `${formData.name} has been scheduled successfully.`
+    });
     onComplete(formData as CampaignFormData);
+    setCurrentStep(1);
+    setFormData({
+      targetingMethod: 'lifecycle',
+      selectedBuckets: [],
+      selectedLifecycleStages: [],
+      priority: 'medium'
+    });
     onClose();
   };
 
@@ -103,14 +158,10 @@ export const CampaignWizard = ({ open, onClose, onComplete }: CampaignWizardProp
             <StepTwo formData={formData} updateFormData={updateFormData} />
           )}
           {currentStep === 3 && (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">Step 3: Content & Design - Coming soon</p>
-            </div>
+            <StepThree formData={formData} updateFormData={updateFormData} />
           )}
           {currentStep === 4 && (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">Step 4: Schedule & Review - Coming soon</p>
-            </div>
+            <StepFour formData={formData} updateFormData={updateFormData} />
           )}
         </div>
 

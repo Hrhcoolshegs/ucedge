@@ -76,42 +76,33 @@ export const Overview = () => {
         <MetricCard
           title="Total Customers"
           value={formatNumber(totalCustomers)}
-          change="+3.2%"
-          changeType="positive"
-          subtitle="Total registered customers"
+          change={3.2}
           icon={Users}
           iconColor="text-primary"
-          iconBgColor="bg-primary/10"
         />
         <MetricCard
           title="Active Users"
           value={formatNumber(activeCustomers)}
-          change="+5.1%"
-          changeType="positive"
-          subtitle="Currently active customers"
+          change={5.1}
           icon={UserCheck}
-          iconColor="text-primary"
-          iconBgColor="bg-primary/10"
+          iconColor="text-success"
+          borderColor="border-t-success"
         />
         <MetricCard
           title="Transaction Volume"
           value={formatCurrency(totalTransactionVolume)}
-          change="+12.8%"
-          changeType="positive"
-          subtitle="Total transaction value"
+          change={12.8}
           icon={TrendingUp}
           iconColor="text-secondary"
-          iconBgColor="bg-secondary/20"
+          borderColor="border-t-secondary"
         />
         <MetricCard
           title="Revenue"
           value={formatCurrency(revenue)}
-          change="+8.5%"
-          changeType="positive"
-          subtitle="Platform revenue"
+          change={8.5}
           icon={DollarSign}
           iconColor="text-secondary"
-          iconBgColor="bg-secondary/20"
+          borderColor="border-t-secondary"
         />
       </div>
 
@@ -119,42 +110,32 @@ export const Overview = () => {
         <MetricCard
           title="Support Tickets"
           value="1,240"
-          change="-15.3%"
-          changeType="positive"
-          subtitle="Active support requests"
+          change={-15.3}
           icon={MessageSquare}
           iconColor="text-primary"
-          iconBgColor="bg-primary/10"
         />
         <MetricCard
           title="Campaign ROI"
           value="3.8x"
-          change="+0.4x"
-          changeType="positive"
-          subtitle="Average return on campaigns"
           icon={Target}
           iconColor="text-secondary"
-          iconBgColor="bg-secondary/20"
+          borderColor="border-t-secondary"
         />
         <MetricCard
           title="Avg Customer LTV"
           value={formatCurrency(avgLTV)}
-          change="+6.2%"
-          changeType="positive"
-          subtitle="Lifetime value per customer"
+          change={6.2}
           icon={Wallet}
           iconColor="text-secondary"
-          iconBgColor="bg-secondary/20"
+          borderColor="border-t-secondary"
         />
         <MetricCard
           title="Churn Rate"
           value={`${churnRate.toFixed(1)}%`}
-          change="-1.1%"
-          changeType="positive"
-          subtitle="Customer churn rate"
+          change={-1.1}
           icon={AlertTriangle}
           iconColor="text-warning"
-          iconBgColor="bg-warning/10"
+          borderColor="border-t-warning"
         />
       </div>
 

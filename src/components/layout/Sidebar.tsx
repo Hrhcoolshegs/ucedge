@@ -10,7 +10,7 @@ import { useState } from 'react';
 const navItems = [
   { icon: Home, label: 'Overview', path: '/overview' },
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
-  { icon: TrendingUp, label: 'Sentiment Analysis', path: '/sentiment' },
+  { icon: TrendingUp, label: 'Sentiment Analysis', path: '/sentiment-analysis' },
   { icon: Target, label: 'Campaigns', path: '/campaigns' },
   { icon: FileText, label: 'Reports', path: '/reports' },
   { icon: Users, label: 'Customers', path: '/customers' },
