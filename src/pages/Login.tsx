@@ -144,8 +144,14 @@ export const Login = () => {
                     <div className="bg-primary/5 border border-primary/20 rounded-xl p-5 space-y-3">
                       <p className="text-xs font-semibold text-foreground uppercase tracking-wide">Demo Credentials</p>
                       <div className="space-y-2">
-                        <p className="text-sm text-foreground font-mono">demo@optimusai.ai</p>
-                        <p className="text-sm text-foreground font-mono">optimusaidemo1234</p>
+                        <p className="text-sm text-muted-foreground">
+                          <span className="font-semibold text-foreground">Email:</span>{" "}
+                          <span className="font-mono">demo@optimusai.ai</span>
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          <span className="font-semibold text-foreground">Password:</span>{" "}
+                          <span className="font-mono">optimusaidemo1234</span>
+                        </p>
                       </div>
                     </div>
 
