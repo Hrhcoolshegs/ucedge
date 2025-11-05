@@ -66,40 +66,40 @@ export const Login = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-background flex">
       <div className="w-full flex flex-col lg:flex-row">
         {/* Left Side - Login Form */}
-        <div className="w-full lg:w-2/5 flex items-center justify-center p-6 lg:p-12 bg-card/50 backdrop-blur-sm">
-          <div className="w-full max-w-md space-y-8">
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-16 bg-card/50 backdrop-blur-sm">
+          <div className="w-full max-w-lg space-y-10">
             {/* Logo & Branding */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <div className="h-12 w-12 bg-primary rounded-xl flex items-center justify-center shadow-lg">
-                  <span className="text-primary-foreground font-bold text-xl">UC</span>
+            <div className="space-y-4 text-center lg:text-left">
+              <div className="flex items-center gap-4 justify-center lg:justify-start">
+                <div className="h-14 w-14 bg-primary rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-primary-foreground font-bold text-2xl">UC</span>
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-foreground">UC-Edge</h1>
-                  <p className="text-xs text-muted-foreground">United Capital Plc</p>
+                  <h1 className="text-3xl font-bold text-foreground">UC-Edge</h1>
+                  <p className="text-sm text-muted-foreground">United Capital Plc</p>
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground pl-15">Financial Services Intelligence Platform</p>
+              <p className="text-sm text-muted-foreground">Financial Services Intelligence Platform</p>
             </div>
 
             {/* Login Card */}
-            <div className="space-y-6">
+            <div className="space-y-8">
               {!showOTP ? (
                 <>
-                  <div className="space-y-2">
-                    <h2 className="text-3xl font-bold text-foreground tracking-tight">Welcome Back</h2>
-                    <p className="text-muted-foreground">Enter your credentials to access your dashboard</p>
+                  <div className="space-y-3">
+                    <h2 className="text-4xl font-bold text-foreground tracking-tight">Welcome Back</h2>
+                    <p className="text-muted-foreground text-base">Enter your credentials to access your dashboard</p>
                   </div>
 
                   {error && (
-                    <div className="bg-destructive/10 border border-destructive/30 text-destructive px-4 py-3 rounded-xl text-sm font-medium">
+                    <div className="bg-destructive/10 border border-destructive/30 text-destructive px-5 py-4 rounded-xl text-sm font-medium">
                       {error}
                     </div>
                   )}
 
-                  <form onSubmit={handleSubmit} className="space-y-5">
+                  <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Email */}
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       <label htmlFor="email" className="block text-sm font-semibold text-foreground">
                         Email Address
                       </label>
@@ -110,12 +110,12 @@ export const Login = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="your.email@unitedcapital.com"
                         required
-                        className="h-12 bg-background border-border focus:border-primary transition-all"
+                        className="h-14 text-base bg-background border-border focus:border-primary transition-all"
                       />
                     </div>
 
                     {/* Password */}
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       <label htmlFor="password" className="block text-sm font-semibold text-foreground">
                         Password
                       </label>
@@ -126,14 +126,14 @@ export const Login = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Enter your password"
                         required
-                        className="h-12 bg-background border-border focus:border-primary transition-all"
+                        className="h-14 text-base bg-background border-border focus:border-primary transition-all"
                       />
                     </div>
 
                     {/* Demo Credentials Info */}
-                    <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 space-y-2">
-                      <p className="text-xs font-semibold text-foreground">Demo Credentials</p>
-                      <div className="space-y-1">
+                    <div className="bg-primary/5 border border-primary/20 rounded-xl p-5 space-y-3">
+                      <p className="text-xs font-semibold text-foreground uppercase tracking-wide">Demo Credentials</p>
+                      <div className="space-y-2">
                         <p className="text-sm text-foreground font-mono">demo@optimusai.ai</p>
                         <p className="text-sm text-foreground font-mono">optimusaidemo1234</p>
                       </div>
@@ -142,7 +142,7 @@ export const Login = () => {
                     {/* Submit Button */}
                     <Button
                       type="submit"
-                      className="w-full h-12 text-base font-semibold shadow-lg hover:shadow-xl transition-all"
+                      className="w-full h-14 text-base font-semibold shadow-lg hover:shadow-xl transition-all mt-8"
                       disabled={loading}
                     >
                       {loading ? (
@@ -158,27 +158,27 @@ export const Login = () => {
                 </>
               ) : (
                 <>
-                  <div className="text-center space-y-4">
-                    <div className="inline-flex items-center justify-center w-20 h-20 bg-primary/10 rounded-2xl">
-                      <ShieldCheck className="h-10 w-10 text-primary" />
+                  <div className="text-center space-y-6">
+                    <div className="inline-flex items-center justify-center w-24 h-24 bg-primary/10 rounded-2xl">
+                      <ShieldCheck className="h-12 w-12 text-primary" />
                     </div>
-                    <div className="space-y-2">
-                      <h2 className="text-2xl font-bold text-foreground">Two-Factor Authentication</h2>
-                      <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+                    <div className="space-y-3">
+                      <h2 className="text-3xl font-bold text-foreground">Two-Factor Authentication</h2>
+                      <p className="text-base text-muted-foreground max-w-md mx-auto">
                         Enter the 6-digit verification code to secure your account
                       </p>
                     </div>
                   </div>
 
                   {error && (
-                    <div className="bg-destructive/10 border border-destructive/30 text-destructive px-4 py-3 rounded-xl text-sm font-medium text-center">
+                    <div className="bg-destructive/10 border border-destructive/30 text-destructive px-5 py-4 rounded-xl text-sm font-medium text-center">
                       {error}
                     </div>
                   )}
 
-                  <form onSubmit={handleOTPSubmit} className="space-y-6">
+                  <form onSubmit={handleOTPSubmit} className="space-y-8">
                     {/* OTP Input */}
-                    <div className="flex justify-center py-4">
+                    <div className="flex justify-center py-6">
                       <InputOTP
                         maxLength={6}
                         value={otp}
@@ -196,15 +196,15 @@ export const Login = () => {
                     </div>
 
                     {/* Demo OTP Info */}
-                    <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 text-center space-y-1">
-                      <p className="text-xs font-semibold text-foreground">Demo OTP Code</p>
-                      <p className="text-2xl text-primary font-mono font-bold tracking-wider">123456</p>
+                    <div className="bg-primary/5 border border-primary/20 rounded-xl p-5 text-center space-y-2">
+                      <p className="text-xs font-semibold text-foreground uppercase tracking-wide">Demo OTP Code</p>
+                      <p className="text-3xl text-primary font-mono font-bold tracking-wider">123456</p>
                     </div>
 
                     {/* Submit Button */}
                     <Button
                       type="submit"
-                      className="w-full h-12 text-base font-semibold shadow-lg hover:shadow-xl transition-all"
+                      className="w-full h-14 text-base font-semibold shadow-lg hover:shadow-xl transition-all"
                       disabled={loading || otp.length !== 6}
                     >
                       {loading ? (
@@ -224,7 +224,7 @@ export const Login = () => {
                         setOtp('');
                         setError('');
                       }}
-                      className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors font-medium"
+                      className="w-full text-base text-muted-foreground hover:text-foreground transition-colors font-medium mt-4"
                     >
                       ← Back to login
                     </button>
@@ -234,11 +234,11 @@ export const Login = () => {
             </div>
 
             {/* Footer */}
-            <div className="space-y-3 pt-6 border-t border-border">
-              <p className="text-center text-xs text-muted-foreground">
+            <div className="space-y-4 pt-8 border-t border-border text-center lg:text-left">
+              <p className="text-xs text-muted-foreground">
                 Protected by United Capital enterprise security protocols
               </p>
-              <p className="text-center text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 © 2024 United Capital Plc. All rights reserved.
               </p>
             </div>
@@ -246,7 +246,7 @@ export const Login = () => {
         </div>
 
         {/* Right Side - Hero Image */}
-        <div className="hidden lg:flex lg:w-3/5 items-center justify-center p-12 bg-gradient-to-br from-primary/10 via-primary/5 to-background relative overflow-hidden">
+        <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-16 bg-gradient-to-br from-primary/10 via-primary/5 to-background relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-primary/10" />
           <div className="relative max-w-3xl w-full">
             <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-primary/30 rounded-3xl blur-3xl opacity-50" />
