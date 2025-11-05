@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { MetricCard } from '@/components/common/MetricCard';
 import { ChartCard } from '@/components/common/ChartCard';
 import { Button } from '@/components/common/Button';
@@ -9,6 +10,7 @@ import {
 import { formatCurrency, formatNumber, formatPercentage } from '@/utils/formatters';
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useNavigate } from 'react-router-dom';
+import { CampaignWizard } from '@/components/campaigns/CampaignWizard';
 
 // Mock revenue data
 const revenueData = [
@@ -38,6 +40,7 @@ const customerGrowthData = [
 export const Overview = () => {
   const { customers, transactions, loading } = useData();
   const navigate = useNavigate();
+  const [campaignWizardOpen, setCampaignWizardOpen] = useState(false);
 
   if (loading) {
     return (
@@ -250,7 +253,7 @@ export const Overview = () => {
             variant="primary"
             size="lg"
             className="w-full"
-            onClick={() => navigate('/campaigns')}
+            onClick={() => setCampaignWizardOpen(true)}
           >
             <Target className="h-5 w-5" />
             Launch Campaign
@@ -278,6 +281,15 @@ export const Overview = () => {
           </Button>
         </div>
       </div>
+
+      <CampaignWizard
+        open={campaignWizardOpen}
+        onClose={() => setCampaignWizardOpen(false)}
+        onComplete={(data) => {
+          console.log('Campaign created:', data);
+          setCampaignWizardOpen(false);
+        }}
+      />
     </div>
   );
 };
