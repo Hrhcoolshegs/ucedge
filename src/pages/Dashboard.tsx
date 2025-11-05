@@ -2,6 +2,11 @@ import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Overview } from './Overview';
 import { TransactionsTab } from '@/components/dashboard/TransactionsTab';
+import { RiskAlertsTab } from '@/components/dashboard/RiskAlertsTab';
+import { CustomersTab } from '@/components/dashboard/CustomersTab';
+import { BehaviorTab } from '@/components/dashboard/BehaviorTab';
+import { ProductsTab } from '@/components/dashboard/ProductsTab';
+import { MarketingTab } from '@/components/dashboard/MarketingTab';
 
 export const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -69,33 +74,23 @@ export const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="risk" className="m-0">
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">Risk & Alerts tab coming soon...</p>
-            </div>
+            <RiskAlertsTab />
           </TabsContent>
 
           <TabsContent value="customers" className="m-0">
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">Customers tab coming soon...</p>
-            </div>
+            <CustomersTab />
           </TabsContent>
 
           <TabsContent value="behavior" className="m-0">
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">Behavior tab coming soon...</p>
-            </div>
+            <BehaviorTab />
           </TabsContent>
 
           <TabsContent value="products" className="m-0">
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">Products tab coming soon...</p>
-            </div>
+            <ProductsTab />
           </TabsContent>
 
           <TabsContent value="marketing" className="m-0">
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">Marketing tab coming soon...</p>
-            </div>
+            <MarketingTab />
           </TabsContent>
         </div>
       </Tabs>
