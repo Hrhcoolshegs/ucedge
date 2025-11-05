@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { 
   Home, LayoutDashboard, TrendingUp, Target, FileText, Users, 
   Bot, MessageSquare, BookOpen, Phone, BarChart3, Circle, 
-  Settings, ChevronLeft, ChevronRight
+  Settings, ChevronLeft, ChevronRight, Layers
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
@@ -11,6 +11,7 @@ const navItems = [
   { icon: Home, label: 'Overview', path: '/overview' },
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
   { icon: TrendingUp, label: 'Sentiment Analysis', path: '/sentiment-analysis' },
+  { icon: Layers, label: 'Segments', path: '/segments' },
   { icon: Target, label: 'Campaigns', path: '/campaigns' },
   { icon: FileText, label: 'Reports', path: '/reports' },
   { icon: Users, label: 'Customers', path: '/customers' },
