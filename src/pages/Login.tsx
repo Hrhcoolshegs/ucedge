@@ -63,183 +63,197 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-primary/10 flex items-center justify-center p-4">
-      <div className="w-full max-w-6xl flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-background flex">
+      <div className="w-full flex flex-col lg:flex-row">
         {/* Left Side - Login Form */}
-        <div className="w-full lg:w-1/2 max-w-md">
-          {/* Logo & Branding */}
-          <div className="text-center mb-8">
-            <div className="inline-block bg-primary text-primary-foreground px-8 py-3 rounded-xl font-bold text-3xl mb-3 shadow-lg">
-              UC-Edge
-            </div>
-            <p className="text-sm text-muted-foreground font-medium">Powered by United Capital Plc</p>
-            <p className="text-xs text-muted-foreground mt-1">Financial Services Intelligence Platform</p>
-          </div>
-
-          {/* Login Card */}
-          <div className="bg-card rounded-2xl shadow-2xl border border-border p-8">
-            {!showOTP ? (
-              <>
-                <h2 className="text-3xl font-bold text-foreground mb-2">Welcome Back</h2>
-                <p className="text-sm text-muted-foreground mb-6">Sign in to access your dashboard</p>
-
-                {error && (
-                  <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-lg mb-4 text-sm">
-                    {error}
-                  </div>
-                )}
-
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  {/* Email */}
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
-                      Email Address
-                    </label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="your.email@example.com"
-                      required
-                      className="h-12"
-                    />
-                  </div>
-
-                  {/* Password */}
-                  <div>
-                    <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
-                      Password
-                    </label>
-                    <Input
-                      id="password"
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      required
-                      className="h-12"
-                    />
-                  </div>
-
-                  {/* Demo Credentials Info */}
-                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
-                    <p className="text-xs font-medium text-foreground mb-2">Demo Credentials:</p>
-                    <p className="text-xs text-muted-foreground font-mono">demo@optimusai.ai</p>
-                    <p className="text-xs text-muted-foreground font-mono">optimusaidemo1234</p>
-                  </div>
-
-                  {/* Submit Button */}
-                  <Button
-                    type="submit"
-                    className="w-full h-12 text-base"
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <>
-                        <Loader2 className="h-5 w-5 animate-spin" />
-                        Signing in...
-                      </>
-                    ) : (
-                      'Sign In'
-                    )}
-                  </Button>
-                </form>
-              </>
-            ) : (
-              <>
-                <div className="text-center mb-6">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
-                    <ShieldCheck className="h-8 w-8 text-primary" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-foreground mb-2">Two-Factor Authentication</h2>
-                  <p className="text-sm text-muted-foreground">
-                    Enter the 6-digit code to verify your identity
-                  </p>
+        <div className="w-full lg:w-2/5 flex items-center justify-center p-6 lg:p-12 bg-card/50 backdrop-blur-sm">
+          <div className="w-full max-w-md space-y-8">
+            {/* Logo & Branding */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 bg-primary rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-primary-foreground font-bold text-xl">UC</span>
                 </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-foreground">UC-Edge</h1>
+                  <p className="text-xs text-muted-foreground">United Capital Plc</p>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground pl-15">Financial Services Intelligence Platform</p>
+            </div>
 
-                {error && (
-                  <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-lg mb-4 text-sm">
-                    {error}
+            {/* Login Card */}
+            <div className="space-y-6">
+              {!showOTP ? (
+                <>
+                  <div className="space-y-2">
+                    <h2 className="text-3xl font-bold text-foreground tracking-tight">Welcome Back</h2>
+                    <p className="text-muted-foreground">Enter your credentials to access your dashboard</p>
                   </div>
-                )}
 
-                <form onSubmit={handleOTPSubmit} className="space-y-6">
-                  {/* OTP Input */}
-                  <div className="flex justify-center">
-                    <InputOTP
-                      maxLength={6}
-                      value={otp}
-                      onChange={(value) => setOtp(value)}
+                  {error && (
+                    <div className="bg-destructive/10 border border-destructive/30 text-destructive px-4 py-3 rounded-xl text-sm font-medium">
+                      {error}
+                    </div>
+                  )}
+
+                  <form onSubmit={handleSubmit} className="space-y-5">
+                    {/* Email */}
+                    <div className="space-y-2">
+                      <label htmlFor="email" className="block text-sm font-semibold text-foreground">
+                        Email Address
+                      </label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="your.email@unitedcapital.com"
+                        required
+                        className="h-12 bg-background border-border focus:border-primary transition-all"
+                      />
+                    </div>
+
+                    {/* Password */}
+                    <div className="space-y-2">
+                      <label htmlFor="password" className="block text-sm font-semibold text-foreground">
+                        Password
+                      </label>
+                      <Input
+                        id="password"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Enter your password"
+                        required
+                        className="h-12 bg-background border-border focus:border-primary transition-all"
+                      />
+                    </div>
+
+                    {/* Demo Credentials Info */}
+                    <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 space-y-2">
+                      <p className="text-xs font-semibold text-foreground">Demo Credentials</p>
+                      <div className="space-y-1">
+                        <p className="text-sm text-foreground font-mono">demo@optimusai.ai</p>
+                        <p className="text-sm text-foreground font-mono">optimusaidemo1234</p>
+                      </div>
+                    </div>
+
+                    {/* Submit Button */}
+                    <Button
+                      type="submit"
+                      className="w-full h-12 text-base font-semibold shadow-lg hover:shadow-xl transition-all"
+                      disabled={loading}
                     >
-                      <InputOTPGroup>
-                        <InputOTPSlot index={0} className="h-14 w-14 text-lg" />
-                        <InputOTPSlot index={1} className="h-14 w-14 text-lg" />
-                        <InputOTPSlot index={2} className="h-14 w-14 text-lg" />
-                        <InputOTPSlot index={3} className="h-14 w-14 text-lg" />
-                        <InputOTPSlot index={4} className="h-14 w-14 text-lg" />
-                        <InputOTPSlot index={5} className="h-14 w-14 text-lg" />
-                      </InputOTPGroup>
-                    </InputOTP>
+                      {loading ? (
+                        <>
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                          Signing in...
+                        </>
+                      ) : (
+                        'Sign In to Dashboard'
+                      )}
+                    </Button>
+                  </form>
+                </>
+              ) : (
+                <>
+                  <div className="text-center space-y-4">
+                    <div className="inline-flex items-center justify-center w-20 h-20 bg-primary/10 rounded-2xl">
+                      <ShieldCheck className="h-10 w-10 text-primary" />
+                    </div>
+                    <div className="space-y-2">
+                      <h2 className="text-2xl font-bold text-foreground">Two-Factor Authentication</h2>
+                      <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+                        Enter the 6-digit verification code to secure your account
+                      </p>
+                    </div>
                   </div>
 
-                  {/* Demo OTP Info */}
-                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 text-center">
-                    <p className="text-xs font-medium text-foreground mb-1">Demo OTP Code:</p>
-                    <p className="text-lg text-primary font-mono font-bold">123456</p>
-                  </div>
+                  {error && (
+                    <div className="bg-destructive/10 border border-destructive/30 text-destructive px-4 py-3 rounded-xl text-sm font-medium text-center">
+                      {error}
+                    </div>
+                  )}
 
-                  {/* Submit Button */}
-                  <Button
-                    type="submit"
-                    className="w-full h-12 text-base"
-                    disabled={loading || otp.length !== 6}
-                  >
-                    {loading ? (
-                      <>
-                        <Loader2 className="h-5 w-5 animate-spin" />
-                        Verifying...
-                      </>
-                    ) : (
-                      'Verify & Continue'
-                    )}
-                  </Button>
+                  <form onSubmit={handleOTPSubmit} className="space-y-6">
+                    {/* OTP Input */}
+                    <div className="flex justify-center py-4">
+                      <InputOTP
+                        maxLength={6}
+                        value={otp}
+                        onChange={(value) => setOtp(value)}
+                      >
+                        <InputOTPGroup className="gap-3">
+                          <InputOTPSlot index={0} className="h-16 w-16 text-xl border-2 rounded-xl" />
+                          <InputOTPSlot index={1} className="h-16 w-16 text-xl border-2 rounded-xl" />
+                          <InputOTPSlot index={2} className="h-16 w-16 text-xl border-2 rounded-xl" />
+                          <InputOTPSlot index={3} className="h-16 w-16 text-xl border-2 rounded-xl" />
+                          <InputOTPSlot index={4} className="h-16 w-16 text-xl border-2 rounded-xl" />
+                          <InputOTPSlot index={5} className="h-16 w-16 text-xl border-2 rounded-xl" />
+                        </InputOTPGroup>
+                      </InputOTP>
+                    </div>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowOTP(false);
-                      setOtp('');
-                      setError('');
-                    }}
-                    className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    Back to login
-                  </button>
-                </form>
-              </>
-            )}
+                    {/* Demo OTP Info */}
+                    <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 text-center space-y-1">
+                      <p className="text-xs font-semibold text-foreground">Demo OTP Code</p>
+                      <p className="text-2xl text-primary font-mono font-bold tracking-wider">123456</p>
+                    </div>
 
-            <div className="mt-6 text-center">
-              <p className="text-xs text-muted-foreground">
-                Protected by United Capital security protocols
+                    {/* Submit Button */}
+                    <Button
+                      type="submit"
+                      className="w-full h-12 text-base font-semibold shadow-lg hover:shadow-xl transition-all"
+                      disabled={loading || otp.length !== 6}
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                          Verifying...
+                        </>
+                      ) : (
+                        'Verify & Continue'
+                      )}
+                    </Button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowOTP(false);
+                        setOtp('');
+                        setError('');
+                      }}
+                      className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors font-medium"
+                    >
+                      ← Back to login
+                    </button>
+                  </form>
+                </>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="space-y-3 pt-6 border-t border-border">
+              <p className="text-center text-xs text-muted-foreground">
+                Protected by United Capital enterprise security protocols
+              </p>
+              <p className="text-center text-xs text-muted-foreground">
+                © 2024 United Capital Plc. All rights reserved.
               </p>
             </div>
           </div>
-
-          <p className="text-center text-xs text-muted-foreground mt-6">
-            © 2024 United Capital Plc. All rights reserved.
-          </p>
         </div>
 
         {/* Right Side - Hero Image */}
-        <div className="hidden lg:block lg:w-1/2">
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 rounded-3xl blur-3xl" />
+        <div className="hidden lg:flex lg:w-3/5 items-center justify-center p-12 bg-gradient-to-br from-primary/10 via-primary/5 to-background relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-primary/10" />
+          <div className="relative max-w-3xl w-full">
+            <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-primary/30 rounded-3xl blur-3xl opacity-50" />
             <img 
               src={ucHero} 
               alt="United Capital Financial Services" 
-              className="relative rounded-3xl shadow-2xl w-full h-auto object-cover"
+              className="relative rounded-2xl shadow-2xl w-full h-auto object-cover ring-1 ring-primary/20"
             />
           </div>
         </div>
