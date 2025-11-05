@@ -63,8 +63,18 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-background flex">
-      <div className="w-full flex flex-col lg:flex-row">
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-background flex flex-col">
+      {/* Prototype Banner */}
+      <div className="w-full bg-primary text-primary-foreground py-4 px-6 text-center border-b-4 border-primary/80">
+        <p className="text-lg font-bold uppercase tracking-wide">
+          ⚠️ PROTOTYPE - FOR DEMO PURPOSES ONLY
+        </p>
+        <p className="text-sm font-semibold mt-1">
+          © {new Date().getFullYear()} Optimus AI Labs. All Rights Reserved.
+        </p>
+      </div>
+
+      <div className="flex-1 w-full flex flex-col lg:flex-row">
         {/* Left Side - Login Form */}
         <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-16 bg-card/50 backdrop-blur-sm">
           <div className="w-full max-w-lg space-y-10">
