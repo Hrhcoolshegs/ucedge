@@ -3,9 +3,14 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 interface AuthContextType {
   isAuthenticated: boolean;
   user: { email: string } | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<{ requiresOTP: boolean; error?: string }>;
+  verifyOTP: (otp: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
 }
+
+const DEMO_EMAIL = 'demo@optimusai.ai';
+const DEMO_PASSWORD = 'optimusaidemo1234';
+const DEMO_OTP = '123456';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -17,17 +22,43 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const email = localStorage.getItem('uc-edge-user');
     return email ? { email } : null;
   });
+  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
 
   const login = async (email: string, password: string) => {
-    // Mock authentication - accepts any email/password
-    return new Promise<void>((resolve) => {
+    return new Promise<{ requiresOTP: boolean; error?: string }>((resolve) => {
       setTimeout(() => {
-        setIsAuthenticated(true);
-        setUser({ email });
-        localStorage.setItem('uc-edge-auth', 'true');
-        localStorage.setItem('uc-edge-user', email);
-        resolve();
-      }, 1000);
+        // Check for demo credentials
+        if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
+          setPendingEmail(email);
+          resolve({ requiresOTP: true });
+        } else if (email === DEMO_EMAIL || password === DEMO_PASSWORD) {
+          resolve({ requiresOTP: false, error: 'Invalid credentials' });
+        } else {
+          // Accept any other email/password without OTP
+          setIsAuthenticated(true);
+          setUser({ email });
+          localStorage.setItem('uc-edge-auth', 'true');
+          localStorage.setItem('uc-edge-user', email);
+          resolve({ requiresOTP: false });
+        }
+      }, 800);
+    });
+  };
+
+  const verifyOTP = async (otp: string) => {
+    return new Promise<{ success: boolean; error?: string }>((resolve) => {
+      setTimeout(() => {
+        if (otp === DEMO_OTP && pendingEmail) {
+          setIsAuthenticated(true);
+          setUser({ email: pendingEmail });
+          localStorage.setItem('uc-edge-auth', 'true');
+          localStorage.setItem('uc-edge-user', pendingEmail);
+          setPendingEmail(null);
+          resolve({ success: true });
+        } else {
+          resolve({ success: false, error: 'Invalid OTP code' });
+        }
+      }, 800);
     });
   };
 
@@ -39,7 +70,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, verifyOTP, logout }}>
       {children}
     </AuthContext.Provider>
   );
