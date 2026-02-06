@@ -10,11 +10,11 @@ export interface PlatformUser {
   status: 'active' | 'inactive';
 }
 
-export const DEMO_USERS: PlatformUser[] = [
+export const PLATFORM_USERS: PlatformUser[] = [
   {
     id: 'user_admin_001',
     name: 'Adewale Okonkwo',
-    email: 'demo@optimusai.ai',
+    email: 'adewale@unitedcapital.com',
     role: 'admin',
     avatarInitials: 'AO',
     lastActive: new Date(),
@@ -23,7 +23,7 @@ export const DEMO_USERS: PlatformUser[] = [
   {
     id: 'user_manager_001',
     name: 'Funke Adeyemi',
-    email: 'funke@optimusai.ai',
+    email: 'funke@unitedcapital.com',
     role: 'campaign_manager',
     avatarInitials: 'FA',
     lastActive: new Date(Date.now() - 2 * 60 * 60 * 1000),
@@ -32,7 +32,7 @@ export const DEMO_USERS: PlatformUser[] = [
   {
     id: 'user_analyst_001',
     name: 'Chidi Nwosu',
-    email: 'chidi@optimusai.ai',
+    email: 'chidi@unitedcapital.com',
     role: 'analyst',
     avatarInitials: 'CN',
     lastActive: new Date(Date.now() - 5 * 60 * 60 * 1000),

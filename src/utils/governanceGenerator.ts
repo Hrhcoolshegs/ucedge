@@ -1,6 +1,6 @@
 import { PendingApproval, ContentApproval, ActivityLog } from '@/types/governance';
 import { CommunicationAuditLog } from '@/types/audit';
-import { DEMO_USERS } from '@/types/user';
+import { PLATFORM_USERS } from '@/types/user';
 import { Customer } from '@/types';
 
 const channels = ['email', 'sms', 'push', 'whatsapp', 'in_app'] as const;
@@ -106,8 +106,8 @@ export function generateAuditLogs(customers: Customer[], count: number): Communi
       },
       gdprCompliant: true,
       dataResidency: 'NG-Lagos',
-      initiatedBy: pick(DEMO_USERS).name,
-      approvedBy: Math.random() > 0.5 ? DEMO_USERS[0].name : undefined,
+      initiatedBy: pick(PLATFORM_USERS).name,
+      approvedBy: Math.random() > 0.5 ? PLATFORM_USERS[0].name : undefined,
       contentHash: generateHash(msg),
     });
   }
@@ -147,7 +147,7 @@ export function generatePendingApprovals(customers: Customer[]): PendingApproval
       channel: pick(['email', 'sms', 'push']),
       contentPreview: tpl.content,
       scheduledTime: new Date(Date.now() + Math.random() * 86400000),
-      requestedBy: pick([DEMO_USERS[1].name, DEMO_USERS[2].name]),
+      requestedBy: pick([PLATFORM_USERS[1].name, PLATFORM_USERS[2].name]),
       requestedAt: randomDate(3),
       status: 'pending',
     });
@@ -182,7 +182,7 @@ export function generateContentApprovals(): ContentApproval[] {
   ];
 
   contents.forEach((c, i) => {
-    const submitter = pick([DEMO_USERS[1], DEMO_USERS[2]]);
+    const submitter = pick([PLATFORM_USERS[1], PLATFORM_USERS[2]]);
     const status = statuses[i % statuses.length];
     const submitted = randomDate(14);
     items.push({
@@ -194,7 +194,7 @@ export function generateContentApprovals(): ContentApproval[] {
       journeyName: 'journey' in c ? c.journey : undefined,
       campaignName: 'campaign' in c ? c.campaign : undefined,
       submittedAt: submitted,
-      reviewer: status !== 'pending' ? DEMO_USERS[0].name : undefined,
+      reviewer: status !== 'pending' ? PLATFORM_USERS[0].name : undefined,
       status,
       reviewedAt: status !== 'pending' ? new Date(submitted.getTime() + Math.random() * 86400000) : undefined,
       comments: status === 'rejected' ? 'Content does not meet brand guidelines. Please revise tone and call-to-action.' : undefined,
@@ -231,7 +231,7 @@ export function generateActivityLogs(): ActivityLog[] {
 
   for (let round = 0; round < 3; round++) {
     actions.forEach((a, i) => {
-      const u = DEMO_USERS[a.userIdx];
+      const u = PLATFORM_USERS[a.userIdx];
       logs.push({
         id: `activity_${round}_${i}_${Date.now()}`,
         timestamp: randomDate(14 - round * 4),
