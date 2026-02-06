@@ -1,10 +1,15 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import { PlatformUser, PLATFORM_USERS } from '@/types/user';
 
+const VALID_OTP = '123456';
+
 interface AuthContextType {
   isAuthenticated: boolean;
   user: PlatformUser | null;
-  loginAsUser: (userId: string) => void;
+  pendingUser: PlatformUser | null;
+  selectUser: (userId: string) => void;
+  verifyOtp: (code: string) => boolean;
+  cancelOtp: () => void;
   logout: () => void;
 }
 
@@ -33,27 +38,39 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<PlatformUser | null>(() => {
     return hydrateUser(localStorage.getItem('uc-edge-user'));
   });
+  const [pendingUser, setPendingUser] = useState<PlatformUser | null>(null);
 
-  const loginAsUser = (userId: string) => {
+  const selectUser = (userId: string) => {
     const platformUser = findUser(userId);
     if (!platformUser) return;
+    setPendingUser({ ...platformUser, lastActive: new Date() });
+  };
 
-    const authUser: PlatformUser = { ...platformUser, lastActive: new Date() };
+  const verifyOtp = (code: string): boolean => {
+    if (code !== VALID_OTP || !pendingUser) return false;
+
     setIsAuthenticated(true);
-    setUser(authUser);
+    setUser(pendingUser);
     localStorage.setItem('uc-edge-auth', 'true');
-    localStorage.setItem('uc-edge-user', JSON.stringify(authUser));
+    localStorage.setItem('uc-edge-user', JSON.stringify(pendingUser));
+    setPendingUser(null);
+    return true;
+  };
+
+  const cancelOtp = () => {
+    setPendingUser(null);
   };
 
   const logout = () => {
     setIsAuthenticated(false);
     setUser(null);
+    setPendingUser(null);
     localStorage.removeItem('uc-edge-auth');
     localStorage.removeItem('uc-edge-user');
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, loginAsUser, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, pendingUser, selectUser, verifyOtp, cancelOtp, logout }}>
       {children}
     </AuthContext.Provider>
   );
