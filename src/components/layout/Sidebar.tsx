@@ -56,10 +56,10 @@ export const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
     'Dashboard': true,
-    'Customer Intelligence': false,
-    'Engagement': false,
-    'AI & Analytics': false,
-    'Support': false,
+    'Customer Intelligence': true,
+    'Engagement': true,
+    'AI & Analytics': true,
+    'Support': true,
   });
 
   const toggleGroup = (label: string) => {

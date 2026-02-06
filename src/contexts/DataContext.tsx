@@ -6,7 +6,6 @@ import { CommunicationAuditLog, ConsentRecord } from '@/types/audit';
 import { generateCustomers, generateTransactions } from '@/utils/dataGenerator';
 import { generateEvents } from '@/utils/eventGenerator';
 import { generateDefaultJourneys } from '@/utils/journeyGenerator';
-import { calculateDaysBetween } from '@/utils/formatters';
 
 interface DataContextType {
   customers: Customer[];
