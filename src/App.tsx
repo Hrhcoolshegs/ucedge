@@ -16,7 +16,6 @@ import { Campaigns } from "@/pages/Campaigns";
 import { SentimentAnalysis } from "@/pages/SentimentAnalysis";
 import Reports from "@/pages/Reports";
 import { Customers } from "@/pages/Customers";
-import { AIAgents } from "@/pages/AIAgents";
 import { Conversations } from "@/pages/Conversations";
 import { KnowledgeBase } from "@/pages/KnowledgeBase";
 import { LiveSupport } from "@/pages/LiveSupport";
@@ -65,7 +64,6 @@ const App = () => (
                   <Route path="/campaigns" element={<Campaigns />} />
                   <Route path="/reports" element={<Reports />} />
                   <Route path="/customers" element={<Customers />} />
-                  <Route path="/ai-agents" element={<AIAgents />} />
                   <Route path="/conversations" element={<Conversations />} />
                   <Route path="/knowledge" element={<KnowledgeBase />} />
                   <Route path="/support" element={<LiveSupport />} />

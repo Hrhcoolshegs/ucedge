@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import {
   Home, LayoutDashboard, TrendingUp, Target, Users,
-  Bot, MessageSquare, BookOpen, Phone, BarChart3, Circle,
+  MessageSquare, BookOpen, Phone, BarChart3, Circle,
   Settings, ChevronLeft, ChevronRight, Layers, ChevronDown, GitBranch,
   Shield, CheckCircle, FileCheck, ClipboardCheck, LogOut
 } from 'lucide-react';
@@ -46,9 +46,8 @@ const menuGroups: Array<{
     ]
   },
   {
-    label: 'AI & Analytics',
+    label: 'Analytics',
     items: [
-      { icon: Bot, label: 'AI Agents', path: '/ai-agents', permission: 'can_view_analytics' },
       { icon: BarChart3, label: 'Analytics', path: '/analytics', permission: 'can_view_analytics' },
     ]
   },
@@ -80,7 +79,7 @@ export const Sidebar = () => {
     'Dashboard': true,
     'Customer Intelligence': true,
     'Engagement': true,
-    'AI & Analytics': true,
+    'Analytics': true,
     'Compliance': true,
     'Support': true,
   });
