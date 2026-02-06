@@ -9,7 +9,7 @@ import { journeyToFlow, flowToJourneyNodes, createFlowNode } from '@/utils/journ
 import { Node, Edge } from '@xyflow/react';
 import {
   Mail, Clock, Filter, GitBranch, Zap, Users, TrendingUp, Activity,
-  ArrowRight, Plus, PenTool,
+  ArrowRight, Plus, PenTool, Search, X,
 } from 'lucide-react';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
@@ -51,13 +51,35 @@ export default function JourneyBuilder() {
   const [newName, setNewName] = useState('');
   const [newDesc, setNewDesc] = useState('');
   const [newTrigger, setNewTrigger] = useState<string>('event');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [triggerFilter, setTriggerFilter] = useState('all');
   const canEdit = usePermission('can_edit_journeys');
   const canCreate = usePermission('can_create_journeys');
 
-  const activeJourneys = journeys.filter((j) => j.status === 'active');
-  const totalEntered = journeys.reduce((s, j) => s + j.analytics.totalEntered, 0);
-  const totalCompleted = journeys.reduce((s, j) => s + j.analytics.totalCompleted, 0);
-  const avgConversion = journeys.length > 0 ? journeys.reduce((s, j) => s + j.analytics.conversionRate, 0) / journeys.length : 0;
+  const filteredJourneys = journeys.filter((j) => {
+    const matchesSearch = searchQuery === '' ||
+      j.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      j.description.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesStatus = statusFilter === 'all' || j.status === statusFilter;
+
+    const matchesTrigger = triggerFilter === 'all' || j.trigger.type === triggerFilter;
+
+    return matchesSearch && matchesStatus && matchesTrigger;
+  });
+
+  const hasActiveFilters = statusFilter !== 'all' || triggerFilter !== 'all';
+
+  const clearFilters = () => {
+    setStatusFilter('all');
+    setTriggerFilter('all');
+  };
+
+  const activeJourneys = filteredJourneys.filter((j) => j.status === 'active');
+  const totalEntered = filteredJourneys.reduce((s, j) => s + j.analytics.totalEntered, 0);
+  const totalCompleted = filteredJourneys.reduce((s, j) => s + j.analytics.totalCompleted, 0);
+  const avgConversion = filteredJourneys.length > 0 ? filteredJourneys.reduce((s, j) => s + j.analytics.conversionRate, 0) / filteredJourneys.length : 0;
 
   const handleOpenCanvas = useCallback((journey: Journey) => {
     setEditingJourney(journey);
@@ -163,8 +185,73 @@ export default function JourneyBuilder() {
         </CardContent></Card>
       </div>
 
+      <Card className="p-4">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Filter className="h-4 w-4" />
+              <span>Filters</span>
+              {hasActiveFilters && (
+                <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
+                  Active
+                </span>
+              )}
+            </div>
+            {hasActiveFilters && (
+              <Button variant="ghost" size="sm" onClick={clearFilters}>
+                <X className="h-4 w-4 mr-1" />
+                Clear All
+              </Button>
+            )}
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-3 flex-wrap">
+            <div className="relative flex-1 min-w-[250px]">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search journeys..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="paused">Paused</SelectItem>
+                <SelectItem value="draft">Draft</SelectItem>
+                <SelectItem value="completed">Completed</SelectItem>
+                <SelectItem value="archived">Archived</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={triggerFilter} onValueChange={setTriggerFilter}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Trigger Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Triggers</SelectItem>
+                <SelectItem value="event">Event-Based</SelectItem>
+                <SelectItem value="segment">Segment Entry</SelectItem>
+                <SelectItem value="date">Date-Based</SelectItem>
+                <SelectItem value="api">API Trigger</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="text-sm text-muted-foreground">
+            Showing {filteredJourneys.length} of {journeys.length} journeys
+          </div>
+        </div>
+      </Card>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {journeys.map((journey) => (
+        {filteredJourneys.map((journey) => (
           <Card key={journey.id} className="hover:shadow-md transition-shadow group">
             <CardHeader className="pb-2">
               <div className="flex items-start justify-between">

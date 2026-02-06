@@ -1,15 +1,26 @@
 import { useState } from 'react';
-import { TrendingUp, Users, DollarSign, ShoppingCart, ArrowUp, ArrowDown, Download } from 'lucide-react';
+import { TrendingUp, Users, DollarSign, ShoppingCart, ArrowUp, ArrowDown, Download, Filter as FilterIcon, X } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useData } from '@/contexts/DataContext';
 import { formatCurrency } from '@/utils/formatters';
 import { ExportPreviewModal } from '@/components/common/ExportPreviewModal';
+import { DateRangeFilter, DateRange } from '@/components/common/DateRangeFilter';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export const Analytics = () => {
   const { customers, transactions } = useData();
   const [showExport, setShowExport] = useState(false);
+  const [dateRange, setDateRange] = useState<DateRange>({ from: undefined, to: undefined });
+  const [metricFilter, setMetricFilter] = useState('all');
+
+  const hasActiveFilters = dateRange.from || dateRange.to || metricFilter !== 'all';
+
+  const clearFilters = () => {
+    setDateRange({ from: undefined, to: undefined });
+    setMetricFilter('all');
+  };
 
   const monthlyData = [
     { month: 'Jul', revenue: 45000000, customers: 720000, transactions: 4500000 },
@@ -111,6 +122,53 @@ export const Analytics = () => {
           </div>
         </Card>
       </div>
+
+      {/* Filters */}
+      <Card className="p-4">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <FilterIcon className="h-4 w-4" />
+              <span>Filters</span>
+              {hasActiveFilters && (
+                <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
+                  Active
+                </span>
+              )}
+            </div>
+            {hasActiveFilters && (
+              <Button variant="ghost" size="sm" onClick={clearFilters}>
+                <X className="h-4 w-4 mr-1" />
+                Clear All
+              </Button>
+            )}
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-3 flex-wrap">
+            <DateRangeFilter
+              value={dateRange}
+              onChange={setDateRange}
+              placeholder="Date range"
+            />
+
+            <Select value={metricFilter} onValueChange={setMetricFilter}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Metric Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Metrics</SelectItem>
+                <SelectItem value="revenue">Revenue Only</SelectItem>
+                <SelectItem value="customers">Customers Only</SelectItem>
+                <SelectItem value="transactions">Transactions Only</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="text-sm text-muted-foreground">
+            Viewing analytics data {dateRange.from && dateRange.to ? 'for selected period' : 'for all time'}
+          </div>
+        </div>
+      </Card>
 
       {/* Charts Row 1 */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

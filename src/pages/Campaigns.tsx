@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Plus, Search, Edit, Trash2, Send } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Send, Filter, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { StatusBadge } from '@/components/common/StatusBadge';
 import { LifecycleBadge } from '@/components/common/LifecycleBadge';
 import { CampaignWizard } from '@/components/campaigns/CampaignWizard';
@@ -9,17 +10,45 @@ import { useCampaigns } from '@/contexts/CampaignsContext';
 import { formatCurrency, formatPercentage } from '@/utils/formatters';
 import { useToast } from '@/hooks/use-toast';
 import { Campaign } from '@/types/campaign';
+import { RangeFilter, NumericRange } from '@/components/common/RangeFilter';
+import { Card } from '@/components/ui/card';
 
 export const Campaigns = () => {
   const [wizardOpen, setWizardOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [channelFilter, setChannelFilter] = useState('all');
+  const [roiRange, setRoiRange] = useState<NumericRange>({ min: undefined, max: undefined });
   const [editingCampaign, setEditingCampaign] = useState<Campaign | null>(null);
   const { campaigns, updateCampaign, deleteCampaign } = useCampaigns();
   const { toast } = useToast();
 
-  const filteredCampaigns = campaigns.filter(campaign =>
-    campaign.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredCampaigns = campaigns.filter(campaign => {
+    const matchesSearch = campaign.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           campaign.goal.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesStatus = statusFilter === 'all' || campaign.status === statusFilter;
+
+    const matchesType = typeFilter === 'all' || campaign.type === typeFilter;
+
+    const matchesChannel = channelFilter === 'all' || campaign.channel === channelFilter;
+
+    const matchesRoi = (roiRange.min === undefined || campaign.roi >= roiRange.min) &&
+                        (roiRange.max === undefined || campaign.roi <= roiRange.max);
+
+    return matchesSearch && matchesStatus && matchesType && matchesChannel && matchesRoi;
+  });
+
+  const hasActiveFilters = statusFilter !== 'all' || typeFilter !== 'all' ||
+    channelFilter !== 'all' || roiRange.min !== undefined || roiRange.max !== undefined;
+
+  const clearFilters = () => {
+    setStatusFilter('all');
+    setTypeFilter('all');
+    setChannelFilter('all');
+    setRoiRange({ min: undefined, max: undefined });
+  };
 
   const handleComplete = () => {
     setWizardOpen(false);
@@ -71,18 +100,95 @@ export const Campaigns = () => {
         </Button>
       </div>
 
-      {/* Search */}
-      <div className="flex gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search campaigns..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
+      {/* Filters */}
+      <Card className="p-4">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Filter className="h-4 w-4" />
+              <span>Filters</span>
+              {hasActiveFilters && (
+                <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
+                  Active
+                </span>
+              )}
+            </div>
+            {hasActiveFilters && (
+              <Button variant="ghost" size="sm" onClick={clearFilters}>
+                <X className="h-4 w-4 mr-1" />
+                Clear All
+              </Button>
+            )}
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-3 flex-wrap">
+            <div className="relative flex-1 min-w-[250px]">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search campaigns..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="scheduled">Scheduled</SelectItem>
+                <SelectItem value="draft">Draft</SelectItem>
+                <SelectItem value="completed">Completed</SelectItem>
+                <SelectItem value="paused">Paused</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={typeFilter} onValueChange={setTypeFilter}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="promotional">Promotional</SelectItem>
+                <SelectItem value="transactional">Transactional</SelectItem>
+                <SelectItem value="lifecycle">Lifecycle</SelectItem>
+                <SelectItem value="educational">Educational</SelectItem>
+                <SelectItem value="retention">Retention</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={channelFilter} onValueChange={setChannelFilter}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Channel" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Channels</SelectItem>
+                <SelectItem value="email">Email</SelectItem>
+                <SelectItem value="sms">SMS</SelectItem>
+                <SelectItem value="push">Push</SelectItem>
+                <SelectItem value="whatsapp">WhatsApp</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <RangeFilter
+              value={roiRange}
+              onChange={setRoiRange}
+              label="ROI Multiplier"
+              min={0}
+              max={10}
+              step={0.1}
+              suffix="x"
+            />
+          </div>
+
+          <div className="text-sm text-muted-foreground">
+            Showing {filteredCampaigns.length} of {campaigns.length} campaigns
+          </div>
         </div>
-      </div>
+      </Card>
 
       {/* Campaigns Table */}
       <div className="bg-card border rounded-lg overflow-hidden">

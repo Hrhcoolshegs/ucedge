@@ -4,19 +4,40 @@ import { Button } from '@/components/common/Button';
 import { Button as ShadButton } from '@/components/ui/button';
 import { useData } from '@/contexts/DataContext';
 import { generateSentimentBuckets, SentimentBucket } from '@/utils/sentimentBucketGenerator';
-import { RefreshCw, Users, TrendingUp, AlertTriangle, AlertCircle, Sparkles, Download } from 'lucide-react';
+import { RefreshCw, Users, TrendingUp, AlertTriangle, AlertCircle, Sparkles, Download, Filter as FilterIcon, X } from 'lucide-react';
 import { formatNumber, formatCurrency } from '@/utils/formatters';
 import { cn } from '@/lib/utils';
 import { LifecycleBadge } from '@/components/common/LifecycleBadge';
 import { ExportPreviewModal } from '@/components/common/ExportPreviewModal';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export const SentimentAnalysis = () => {
   const { customers } = useData();
   const [selectedBucket, setSelectedBucket] = useState<SentimentBucket | null>(null);
-  
-  const buckets = useMemo(() => {
+  const [priorityFilter, setPriorityFilter] = useState('all');
+  const [engagementFilter, setEngagementFilter] = useState('all');
+  const [fitFilter, setFitFilter] = useState('all');
+
+  const allBuckets = useMemo(() => {
     return generateSentimentBuckets(customers.map(c => c.id));
   }, [customers]);
+
+  const buckets = useMemo(() => {
+    return allBuckets.filter(bucket => {
+      const matchesPriority = priorityFilter === 'all' || bucket.priority === priorityFilter;
+      const matchesEngagement = engagementFilter === 'all' || bucket.engagementLevel === engagementFilter;
+      const matchesFit = fitFilter === 'all' || bucket.fitScore === fitFilter;
+      return matchesPriority && matchesEngagement && matchesFit;
+    });
+  }, [allBuckets, priorityFilter, engagementFilter, fitFilter]);
+
+  const hasActiveFilters = priorityFilter !== 'all' || engagementFilter !== 'all' || fitFilter !== 'all';
+
+  const clearFilters = () => {
+    setPriorityFilter('all');
+    setEngagementFilter('all');
+    setFitFilter('all');
+  };
 
   const idealCustomers = buckets.filter(b => b.priority === 'ideal')
     .reduce((sum, b) => sum + b.customerCount, 0);
@@ -145,6 +166,77 @@ export const SentimentAnalysis = () => {
           </div>
         </Card>
       </div>
+
+      {/* Filters */}
+      <Card className="p-4">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <FilterIcon className="h-4 w-4" />
+              <span>Filters</span>
+              {hasActiveFilters && (
+                <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
+                  Active
+                </span>
+              )}
+            </div>
+            {hasActiveFilters && (
+              <ShadButton variant="ghost" size="sm" onClick={clearFilters}>
+                <X className="h-4 w-4 mr-1" />
+                Clear All
+              </ShadButton>
+            )}
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-3 flex-wrap">
+            <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Priority Level" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Priorities</SelectItem>
+                <SelectItem value="ideal">Ideal</SelectItem>
+                <SelectItem value="low">Low Priority</SelectItem>
+                <SelectItem value="medium">Medium Priority</SelectItem>
+                <SelectItem value="high">High Priority</SelectItem>
+                <SelectItem value="urgent">Urgent</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={engagementFilter} onValueChange={setEngagementFilter}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Engagement Level" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Engagement</SelectItem>
+                <SelectItem value="Very High">Very High</SelectItem>
+                <SelectItem value="High">High</SelectItem>
+                <SelectItem value="Average">Average</SelectItem>
+                <SelectItem value="Below Average">Below Average</SelectItem>
+                <SelectItem value="Low">Low</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={fitFilter} onValueChange={setFitFilter}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Product Fit" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Fit Scores</SelectItem>
+                <SelectItem value="Excellent">Excellent</SelectItem>
+                <SelectItem value="Good">Good</SelectItem>
+                <SelectItem value="Average">Average</SelectItem>
+                <SelectItem value="Below Average">Below Average</SelectItem>
+                <SelectItem value="Poor">Poor</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="text-sm text-muted-foreground">
+            Showing {buckets.length} of {allBuckets.length} sentiment buckets
+          </div>
+        </div>
+      </Card>
 
       {/* 5x5 Grid */}
       <Card className="p-6">

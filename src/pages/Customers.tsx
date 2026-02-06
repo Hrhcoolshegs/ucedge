@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Search, Filter, UserPlus, Mail, Phone, Calendar, TrendingUp, Download } from 'lucide-react';
+import { Search, Filter, UserPlus, Mail, Phone, Calendar, TrendingUp, Download, X } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,6 +12,8 @@ import { formatCurrency, formatDate } from '@/utils/formatters';
 import { useBulkSelection } from '@/hooks/useBulkSelection';
 import { BulkActionBar } from '@/components/segments/BulkActionBar';
 import { ExportPreviewModal } from '@/components/common/ExportPreviewModal';
+import { DateRangeFilter, DateRange } from '@/components/common/DateRangeFilter';
+import { RangeFilter, NumericRange } from '@/components/common/RangeFilter';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 
@@ -19,18 +21,57 @@ export const Customers = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [lifecycleFilter, setLifecycleFilter] = useState('all');
+  const [churnRiskFilter, setChurnRiskFilter] = useState('all');
+  const [locationFilter, setLocationFilter] = useState('all');
+  const [dateRange, setDateRange] = useState<DateRange>({ from: undefined, to: undefined });
+  const [clvRange, setClvRange] = useState<NumericRange>({ min: undefined, max: undefined });
+  const [sentimentRange, setSentimentRange] = useState<NumericRange>({ min: undefined, max: undefined });
   const { customers, getCustomerTransactions, DISPLAY_MULTIPLIER } = useData();
 
   const filteredCustomers = customers.filter(c => {
-    const matchesSearch = searchQuery === '' || 
+    const matchesSearch = searchQuery === '' ||
       c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       c.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       c.phone.includes(searchQuery);
-    
+
     const matchesLifecycle = lifecycleFilter === 'all' || c.lifecycleStage === lifecycleFilter;
-    
-    return matchesSearch && matchesLifecycle;
+
+    const matchesChurnRisk = churnRiskFilter === 'all' || c.churnRisk === churnRiskFilter;
+
+    const matchesLocation = locationFilter === 'all' || c.location === locationFilter;
+
+    const matchesDateRange = (!dateRange.from && !dateRange.to) ||
+      (c.lastTransactionDate >= (dateRange.from || new Date(0)) &&
+       c.lastTransactionDate <= (dateRange.to || new Date()));
+
+    const matchesCLV = (clvRange.min === undefined || c.lifetimeValue >= clvRange.min) &&
+                        (clvRange.max === undefined || c.lifetimeValue <= clvRange.max);
+
+    const matchesSentiment = (sentimentRange.min === undefined || c.sentimentScore >= sentimentRange.min) &&
+                              (sentimentRange.max === undefined || c.sentimentScore <= sentimentRange.max);
+
+    return matchesSearch && matchesLifecycle && matchesChurnRisk && matchesLocation &&
+           matchesDateRange && matchesCLV && matchesSentiment;
   }).slice(0, 50);
+
+  const hasActiveFilters = lifecycleFilter !== 'all' || churnRiskFilter !== 'all' ||
+    locationFilter !== 'all' || dateRange.from || dateRange.to ||
+    clvRange.min !== undefined || clvRange.max !== undefined ||
+    sentimentRange.min !== undefined || sentimentRange.max !== undefined;
+
+  const clearFilters = () => {
+    setLifecycleFilter('all');
+    setChurnRiskFilter('all');
+    setLocationFilter('all');
+    setDateRange({ from: undefined, to: undefined });
+    setClvRange({ min: undefined, max: undefined });
+    setSentimentRange({ min: undefined, max: undefined });
+  };
+
+  const uniqueLocations = useMemo(() =>
+    [...new Set(customers.map(c => c.location))].sort(),
+    [customers]
+  );
 
   const {
     selectedItems,
@@ -99,28 +140,102 @@ export const Customers = () => {
 
       {/* Filters */}
       <Card className="p-4">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search by name, email, or phone..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Filter className="h-4 w-4" />
+              <span>Filters</span>
+              {hasActiveFilters && (
+                <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
+                  Active
+                </span>
+              )}
+            </div>
+            {hasActiveFilters && (
+              <Button variant="ghost" size="sm" onClick={clearFilters}>
+                <X className="h-4 w-4 mr-1" />
+                Clear All
+              </Button>
+            )}
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-3 flex-wrap">
+            <div className="relative flex-1 min-w-[250px]">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by name, email, or phone..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+
+            <Select value={lifecycleFilter} onValueChange={setLifecycleFilter}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Lifecycle Stage" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Stages</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="at-risk">At Risk</SelectItem>
+                <SelectItem value="churned">Churned</SelectItem>
+                <SelectItem value="reactivated">Reactivated</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={churnRiskFilter} onValueChange={setChurnRiskFilter}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Churn Risk" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Risk Levels</SelectItem>
+                <SelectItem value="low">Low Risk</SelectItem>
+                <SelectItem value="medium">Medium Risk</SelectItem>
+                <SelectItem value="high">High Risk</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={locationFilter} onValueChange={setLocationFilter}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Location" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Locations</SelectItem>
+                {uniqueLocations.map(location => (
+                  <SelectItem key={location} value={location}>{location}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <DateRangeFilter
+              value={dateRange}
+              onChange={setDateRange}
+              placeholder="Last active date"
+            />
+
+            <RangeFilter
+              value={clvRange}
+              onChange={setClvRange}
+              label="Customer LTV"
+              min={0}
+              max={10000000}
+              step={100000}
+              prefix="₦"
+            />
+
+            <RangeFilter
+              value={sentimentRange}
+              onChange={setSentimentRange}
+              label="Sentiment Score"
+              min={1}
+              max={10}
+              step={1}
             />
           </div>
-          <Select value={lifecycleFilter} onValueChange={setLifecycleFilter}>
-            <SelectTrigger className="md:w-48">
-              <SelectValue placeholder="Lifecycle Stage" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Stages</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="at-risk">At Risk</SelectItem>
-              <SelectItem value="churned">Churned</SelectItem>
-              <SelectItem value="reactivated">Reactivated</SelectItem>
-            </SelectContent>
-          </Select>
+
+          <div className="text-sm text-muted-foreground">
+            Showing {filteredCustomers.length} of {customers.length * DISPLAY_MULTIPLIER} customers
+          </div>
         </div>
       </Card>
 

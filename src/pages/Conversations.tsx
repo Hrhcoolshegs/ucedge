@@ -1,15 +1,19 @@
 import { useState } from 'react';
-import { MessageSquare, Search, Filter, Clock, User, CheckCircle } from 'lucide-react';
+import { MessageSquare, Search, Filter, Clock, User, CheckCircle, X } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/utils/formatters';
+import { DateRangeFilter, DateRange } from '@/components/common/DateRangeFilter';
 
 export const Conversations = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [channelFilter, setChannelFilter] = useState('all');
+  const [unreadFilter, setUnreadFilter] = useState('all');
+  const [dateRange, setDateRange] = useState<DateRange>({ from: undefined, to: undefined });
 
   const conversations = [
     {
@@ -65,14 +69,34 @@ export const Conversations = () => {
   ];
 
   const filteredConversations = conversations.filter(c => {
-    const matchesSearch = searchQuery === '' || 
+    const matchesSearch = searchQuery === '' ||
       c.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
       c.subject.toLowerCase().includes(searchQuery.toLowerCase());
-    
+
     const matchesStatus = statusFilter === 'all' || c.status === statusFilter;
-    
-    return matchesSearch && matchesStatus;
+
+    const matchesChannel = channelFilter === 'all' || c.channel === channelFilter;
+
+    const matchesUnread = unreadFilter === 'all' ||
+      (unreadFilter === 'unread' && c.unread) ||
+      (unreadFilter === 'read' && !c.unread);
+
+    const matchesDateRange = (!dateRange.from && !dateRange.to) ||
+      (c.timestamp >= (dateRange.from || new Date(0)) &&
+       c.timestamp <= (dateRange.to || new Date()));
+
+    return matchesSearch && matchesStatus && matchesChannel && matchesUnread && matchesDateRange;
   });
+
+  const hasActiveFilters = statusFilter !== 'all' || channelFilter !== 'all' ||
+    unreadFilter !== 'all' || dateRange.from || dateRange.to;
+
+  const clearFilters = () => {
+    setStatusFilter('all');
+    setChannelFilter('all');
+    setUnreadFilter('all');
+    setDateRange({ from: undefined, to: undefined });
+  };
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
@@ -113,27 +137,82 @@ export const Conversations = () => {
 
       {/* Filters */}
       <Card className="p-4">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search conversations..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Filter className="h-4 w-4" />
+              <span>Filters</span>
+              {hasActiveFilters && (
+                <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
+                  Active
+                </span>
+              )}
+            </div>
+            {hasActiveFilters && (
+              <Button variant="ghost" size="sm" onClick={clearFilters}>
+                <X className="h-4 w-4 mr-1" />
+                Clear All
+              </Button>
+            )}
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-3 flex-wrap">
+            <div className="relative flex-1 min-w-[250px]">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search conversations..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="open">Open</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="resolved">Resolved</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={channelFilter} onValueChange={setChannelFilter}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Channel" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Channels</SelectItem>
+                <SelectItem value="email">Email</SelectItem>
+                <SelectItem value="chat">Chat</SelectItem>
+                <SelectItem value="phone">Phone</SelectItem>
+                <SelectItem value="whatsapp">WhatsApp</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={unreadFilter} onValueChange={setUnreadFilter}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Read Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Messages</SelectItem>
+                <SelectItem value="unread">Unread Only</SelectItem>
+                <SelectItem value="read">Read Only</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <DateRangeFilter
+              value={dateRange}
+              onChange={setDateRange}
+              placeholder="Date range"
             />
           </div>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="md:w-48">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="open">Open</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="resolved">Resolved</SelectItem>
-            </SelectContent>
-          </Select>
+
+          <div className="text-sm text-muted-foreground">
+            Showing {filteredConversations.length} of {conversations.length} conversations
+          </div>
         </div>
       </Card>
 
