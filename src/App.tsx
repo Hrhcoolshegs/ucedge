@@ -14,7 +14,7 @@ import { Overview } from "@/pages/Overview";
 import { Dashboard } from "@/pages/Dashboard";
 import { Campaigns } from "@/pages/Campaigns";
 import { SentimentAnalysis } from "@/pages/SentimentAnalysis";
-import { Reports } from "@/pages/Reports";
+import Reports from "@/pages/Reports";
 import { Customers } from "@/pages/Customers";
 import { AIAgents } from "@/pages/AIAgents";
 import { Conversations } from "@/pages/Conversations";
@@ -24,6 +24,10 @@ import { Analytics } from "@/pages/Analytics";
 import { Customer360 } from "@/pages/Customer360";
 import { Settings } from "@/pages/Settings";
 import JourneyBuilder from "@/pages/JourneyBuilder";
+import ApprovalQueue from "@/pages/ApprovalQueue";
+import AuditTrail from "@/pages/AuditTrail";
+import ConsentManagement from "@/pages/ConsentManagement";
+import GovernanceLogs from "@/pages/GovernanceLogs";
 import { MainLayout } from "@/components/layout/MainLayout";
 import NotFound from "./pages/NotFound";
 
@@ -69,6 +73,10 @@ const App = () => (
                   <Route path="/customer-360" element={<Customer360 />} />
                   <Route path="/journeys" element={<JourneyBuilder />} />
                   <Route path="/settings" element={<Settings />} />
+                  <Route path="/approvals" element={<ApprovalQueue />} />
+                  <Route path="/audit" element={<AuditTrail />} />
+                  <Route path="/consent" element={<ConsentManagement />} />
+                  <Route path="/governance" element={<GovernanceLogs />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>

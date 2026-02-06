@@ -1,12 +1,14 @@
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/common/Button';
+import { Button as ShadButton } from '@/components/ui/button';
 import { useData } from '@/contexts/DataContext';
 import { generateSentimentBuckets, SentimentBucket } from '@/utils/sentimentBucketGenerator';
-import { RefreshCw, Users, TrendingUp, AlertTriangle, AlertCircle, Sparkles } from 'lucide-react';
+import { RefreshCw, Users, TrendingUp, AlertTriangle, AlertCircle, Sparkles, Download } from 'lucide-react';
 import { formatNumber, formatCurrency } from '@/utils/formatters';
 import { cn } from '@/lib/utils';
 import { LifecycleBadge } from '@/components/common/LifecycleBadge';
+import { ExportPreviewModal } from '@/components/common/ExportPreviewModal';
 
 export const SentimentAnalysis = () => {
   const { customers } = useData();
@@ -25,6 +27,13 @@ export const SentimentAnalysis = () => {
   const urgentAction = buckets.filter(b => b.priority === 'urgent')
     .reduce((sum, b) => sum + b.customerCount, 0);
   const reactivated = customers.filter(c => c.reactivationCount > 0).length;
+  const [showExport, setShowExport] = useState(false);
+
+  const exportColumns = ['Bucket', 'Engagement', 'Fit', 'Customers', 'Avg LTV', 'Churn Rate', 'Priority'];
+  const exportRows = buckets.map(b => [
+    b.name, b.engagementLevel, b.fitScore, b.customerCount.toString(),
+    formatCurrency(b.avgLTV), `${(b.churnRate * 100).toFixed(1)}%`, b.priority,
+  ]);
 
   const getCellColor = (priority: SentimentBucket['priority']) => {
     switch (priority) {
@@ -58,10 +67,15 @@ export const SentimentAnalysis = () => {
             </span>
           </div>
         </div>
-        <Button variant="primary" className="gap-2">
-          <RefreshCw className="h-4 w-4" />
-          Refresh Analysis
-        </Button>
+        <div className="flex items-center gap-2">
+          <ShadButton variant="outline" onClick={() => setShowExport(true)}>
+            <Download className="h-4 w-4 mr-1" /> Export Data
+          </ShadButton>
+          <Button variant="primary" className="gap-2">
+            <RefreshCw className="h-4 w-4" />
+            Refresh Analysis
+          </Button>
+        </div>
       </div>
 
       {/* Summary Cards */}
@@ -268,6 +282,16 @@ export const SentimentAnalysis = () => {
       </Card>
 
       {/* Bucket Detail Modal - Simple version for now */}
+      {showExport && (
+        <ExportPreviewModal
+          title="Sentiment Analysis Export"
+          columns={exportColumns}
+          rows={exportRows}
+          onClose={() => setShowExport(false)}
+          recordCount={buckets.length}
+        />
+      )}
+
       {selectedBucket && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <Card className="w-full max-w-4xl max-h-[90vh] overflow-y-auto">

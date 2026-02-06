@@ -1,11 +1,15 @@
-import { TrendingUp, Users, DollarSign, ShoppingCart, ArrowUp, ArrowDown } from 'lucide-react';
+import { useState } from 'react';
+import { TrendingUp, Users, DollarSign, ShoppingCart, ArrowUp, ArrowDown, Download } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useData } from '@/contexts/DataContext';
 import { formatCurrency } from '@/utils/formatters';
+import { ExportPreviewModal } from '@/components/common/ExportPreviewModal';
 
 export const Analytics = () => {
   const { customers, transactions } = useData();
+  const [showExport, setShowExport] = useState(false);
 
   const monthlyData = [
     { month: 'Jul', revenue: 45000000, customers: 720000, transactions: 4500000 },
@@ -37,10 +41,25 @@ export const Analytics = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-accent">Analytics</h1>
-        <p className="text-muted-foreground mt-1">Platform-wide performance metrics and insights</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-accent">Analytics</h1>
+          <p className="text-muted-foreground mt-1">Platform-wide performance metrics and insights</p>
+        </div>
+        <Button variant="outline" onClick={() => setShowExport(true)}>
+          <Download className="h-4 w-4 mr-1" /> Export Data
+        </Button>
       </div>
+
+      {showExport && (
+        <ExportPreviewModal
+          title="Analytics Data Export"
+          columns={['Month', 'Revenue', 'Customers', 'Transactions']}
+          rows={monthlyData.map(m => [m.month, formatCurrency(m.revenue), m.customers.toLocaleString(), m.transactions.toLocaleString()])}
+          onClose={() => setShowExport(false)}
+          recordCount={monthlyData.length}
+        />
+      )}
 
       {/* KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

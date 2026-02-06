@@ -7,16 +7,35 @@ import { CustomersTab } from '@/components/dashboard/CustomersTab';
 import { BehaviorTab } from '@/components/dashboard/BehaviorTab';
 import { ProductsTab } from '@/components/dashboard/ProductsTab';
 import { MarketingTab } from '@/components/dashboard/MarketingTab';
+import { Button } from '@/components/ui/button';
+import { Download } from 'lucide-react';
+import { ExportPreviewModal } from '@/components/common/ExportPreviewModal';
+import { useData } from '@/contexts/DataContext';
+import { formatCurrency } from '@/utils/formatters';
 
 export const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
+  const [showExport, setShowExport] = useState(false);
+  const { customers, transactions } = useData();
+
+  const exportColumns = ['Name', 'Email', 'Stage', 'Balance', 'Churn Risk', 'LTV'];
+  const exportRows = customers.slice(0, 100).map(c => [c.name, c.email, c.lifecycleStage, formatCurrency(c.accountBalance), c.churnRisk, formatCurrency(c.lifetimeValue)]);
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-accent">Dashboard</h1>
-        <p className="text-muted-foreground mt-1">Comprehensive analytics and insights</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-accent">Dashboard</h1>
+          <p className="text-muted-foreground mt-1">Comprehensive analytics and insights</p>
+        </div>
+        <Button variant="outline" onClick={() => setShowExport(true)}>
+          <Download className="h-4 w-4 mr-1" /> Export Data
+        </Button>
       </div>
+
+      {showExport && (
+        <ExportPreviewModal title="Dashboard Data Export" columns={exportColumns} rows={exportRows} onClose={() => setShowExport(false)} containsPII={true} recordCount={customers.length} />
+      )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="w-full justify-start border-b border-border rounded-none h-12 bg-transparent p-0">

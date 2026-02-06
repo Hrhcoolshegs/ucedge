@@ -140,18 +140,36 @@ export const Login = () => {
                       />
                     </div>
 
-                    {/* Demo Credentials Info */}
                     <div className="bg-primary/5 border border-primary/20 rounded-xl p-5 space-y-3">
-                      <p className="text-xs font-semibold text-foreground uppercase tracking-wide">Demo Credentials</p>
-                      <div className="space-y-2">
-                        <p className="text-sm text-muted-foreground">
-                          <span className="font-semibold text-foreground">Email:</span>{" "}
-                          <span className="font-mono">demo@optimusai.ai</span>
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          <span className="font-semibold text-foreground">Password:</span>{" "}
-                          <span className="font-mono">optimusaidemo1234</span>
-                        </p>
+                      <p className="text-xs font-semibold text-foreground uppercase tracking-wide">Demo Accounts</p>
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between text-sm">
+                          <div>
+                            <p className="font-semibold text-foreground">Adewale Okonkwo</p>
+                            <p className="font-mono text-muted-foreground text-xs">demo@optimusai.ai</p>
+                          </div>
+                          <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">Admin</span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm">
+                          <div>
+                            <p className="font-semibold text-foreground">Funke Adeyemi</p>
+                            <p className="font-mono text-muted-foreground text-xs">funke@optimusai.ai</p>
+                          </div>
+                          <span className="text-xs bg-amber-500/10 text-amber-600 px-2 py-0.5 rounded-full font-medium">Manager</span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm">
+                          <div>
+                            <p className="font-semibold text-foreground">Chidi Nwosu</p>
+                            <p className="font-mono text-muted-foreground text-xs">chidi@optimusai.ai</p>
+                          </div>
+                          <span className="text-xs bg-blue-500/10 text-blue-600 px-2 py-0.5 rounded-full font-medium">Analyst</span>
+                        </div>
+                        <div className="border-t border-primary/10 pt-2">
+                          <p className="text-xs text-muted-foreground">
+                            <span className="font-semibold text-foreground">Password:</span>{" "}
+                            <span className="font-mono">optimusaidemo1234</span>
+                          </p>
+                        </div>
                       </div>
                     </div>
 

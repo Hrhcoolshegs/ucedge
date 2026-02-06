@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Search, Filter, UserPlus, Mail, Phone, Calendar, TrendingUp } from 'lucide-react';
+import { Search, Filter, UserPlus, Mail, Phone, Calendar, TrendingUp, Download } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,6 +11,7 @@ import { ChurnRiskIndicator } from '@/components/common/ChurnRiskIndicator';
 import { formatCurrency, formatDate } from '@/utils/formatters';
 import { useBulkSelection } from '@/hooks/useBulkSelection';
 import { BulkActionBar } from '@/components/segments/BulkActionBar';
+import { ExportPreviewModal } from '@/components/common/ExportPreviewModal';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 
@@ -55,11 +56,10 @@ export const Customers = () => {
     });
   };
 
+  const [showExport, setShowExport] = useState(false);
+
   const handleExport = () => {
-    toast({
-      title: "Export started",
-      description: `Exporting ${selectedCount} customers...`,
-    });
+    setShowExport(true);
   };
 
   return (
@@ -70,10 +70,15 @@ export const Customers = () => {
           <h1 className="text-3xl font-bold text-accent">Customers</h1>
           <p className="text-muted-foreground mt-1">Manage and view customer information</p>
         </div>
-        <Button>
-          <UserPlus className="h-4 w-4 mr-2" />
-          Add Customer
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => setShowExport(true)}>
+            <Download className="h-4 w-4 mr-1" /> Export Data
+          </Button>
+          <Button>
+            <UserPlus className="h-4 w-4 mr-2" />
+            Add Customer
+          </Button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -207,6 +212,17 @@ export const Customers = () => {
         onCreateCampaign={handleCreateCampaign}
         onExport={handleExport}
       />
+
+      {showExport && (
+        <ExportPreviewModal
+          title="Customer Data Export"
+          columns={['Name', 'Email', 'Phone', 'Lifecycle', 'Churn Risk', 'LTV']}
+          rows={filteredCustomers.map(c => [c.name, c.email, c.phone, c.lifecycleStage, c.churnRisk, formatCurrency(c.lifetimeValue)])}
+          onClose={() => setShowExport(false)}
+          containsPII={true}
+          recordCount={customers.length}
+        />
+      )}
     </div>
   );
 };
