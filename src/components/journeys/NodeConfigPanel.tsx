@@ -1,9 +1,12 @@
 import { Node } from '@xyflow/react';
-import { X } from 'lucide-react';
+import { X, Plus, Trash2, Info } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { PersonalizationEngine } from '@/utils/personalization';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useState } from 'react';
 
 interface NodeConfigPanelProps {
   node: Node | null;
@@ -16,8 +19,31 @@ export function NodeConfigPanel({ node, onUpdate, onClose, onDelete }: NodeConfi
   if (!node) return null;
 
   const d = node.data as any;
+  const [newVarKey, setNewVarKey] = useState('');
+  const [newVarValue, setNewVarValue] = useState('');
+
   const update = (key: string, value: any) => {
     onUpdate(node.id, { ...d, [key]: value });
+  };
+
+  const personalization = d.personalization || {};
+  const availableVars = PersonalizationEngine.getAvailableVariables();
+
+  const addPersonalizationVar = () => {
+    if (newVarKey && newVarValue) {
+      update('personalization', {
+        ...personalization,
+        [newVarKey]: newVarValue,
+      });
+      setNewVarKey('');
+      setNewVarValue('');
+    }
+  };
+
+  const removePersonalizationVar = (key: string) => {
+    const updated = { ...personalization };
+    delete updated[key];
+    update('personalization', updated);
   };
 
   return (
@@ -36,18 +62,105 @@ export function NodeConfigPanel({ node, onUpdate, onClose, onDelete }: NodeConfi
         </div>
 
         {node.type === 'trigger' && (
-          <div>
-            <label className="text-xs font-medium text-muted-foreground">Trigger Type</label>
-            <Select value={d.triggerType || 'event'} onValueChange={(v) => update('triggerType', v)}>
-              <SelectTrigger className="mt-1 h-9"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="event">Event Based</SelectItem>
-                <SelectItem value="segment_entry">Segment Entry</SelectItem>
-                <SelectItem value="schedule">Scheduled</SelectItem>
-                <SelectItem value="manual">Manual</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <>
+            <div>
+              <label className="text-xs font-medium text-muted-foreground">Trigger Type</label>
+              <Select value={d.triggerType || 'event'} onValueChange={(v) => update('triggerType', v)}>
+                <SelectTrigger className="mt-1 h-9"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="event">Event Based</SelectItem>
+                  <SelectItem value="segment_entry">Segment Entry</SelectItem>
+                  <SelectItem value="schedule">Scheduled</SelectItem>
+                  <SelectItem value="manual">Manual</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {d.triggerType === 'schedule' && (
+              <>
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground">Frequency</label>
+                  <Select value={d.frequency || 'once'} onValueChange={(v) => update('frequency', v)}>
+                    <SelectTrigger className="mt-1 h-9"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="once">Once</SelectItem>
+                      <SelectItem value="daily">Daily</SelectItem>
+                      <SelectItem value="weekly">Weekly</SelectItem>
+                      <SelectItem value="monthly">Monthly</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {d.frequency !== 'once' && (
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground">Time</label>
+                    <Input
+                      type="time"
+                      value={d.time || '09:00'}
+                      onChange={(e) => update('time', e.target.value)}
+                      className="mt-1 h-9"
+                    />
+                  </div>
+                )}
+
+                {d.frequency === 'weekly' && (
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground">Day of Week</label>
+                    <Select value={d.dayOfWeek?.toString() || '1'} onValueChange={(v) => update('dayOfWeek', parseInt(v))}>
+                      <SelectTrigger className="mt-1 h-9"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1">Monday</SelectItem>
+                        <SelectItem value="2">Tuesday</SelectItem>
+                        <SelectItem value="3">Wednesday</SelectItem>
+                        <SelectItem value="4">Thursday</SelectItem>
+                        <SelectItem value="5">Friday</SelectItem>
+                        <SelectItem value="6">Saturday</SelectItem>
+                        <SelectItem value="0">Sunday</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {d.frequency === 'monthly' && (
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground">Day of Month</label>
+                    <Input
+                      type="number"
+                      min="1"
+                      max="31"
+                      value={d.dayOfMonth || 1}
+                      onChange={(e) => update('dayOfMonth', parseInt(e.target.value))}
+                      className="mt-1 h-9"
+                    />
+                  </div>
+                )}
+              </>
+            )}
+
+            {d.triggerType === 'event' && (
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Event Type</label>
+                <Input
+                  value={d.eventType || ''}
+                  onChange={(e) => update('eventType', e.target.value)}
+                  className="mt-1 h-9"
+                  placeholder="e.g. account_created"
+                />
+              </div>
+            )}
+
+            {d.triggerType === 'segment_entry' && (
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Segment ID</label>
+                <Input
+                  value={d.segmentId || ''}
+                  onChange={(e) => update('segmentId', e.target.value)}
+                  className="mt-1 h-9"
+                  placeholder="Enter segment ID"
+                />
+              </div>
+            )}
+          </>
         )}
 
         {node.type === 'action' && (
@@ -75,9 +188,82 @@ export function NodeConfigPanel({ node, onUpdate, onClose, onDelete }: NodeConfi
                 value={d.body || ''}
                 onChange={(e) => update('body', e.target.value)}
                 className="mt-1 w-full h-20 rounded-md border border-input bg-background px-3 py-2 text-sm resize-none"
-                placeholder="Enter message content..."
+                placeholder="Enter message content... Use {{variableName}} for personalization"
               />
             </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-xs font-medium text-muted-foreground">Personalization</label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
+                      <Info className="h-3 w-3" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 text-xs">
+                    <div className="space-y-2">
+                      <p className="font-semibold">Available Variables:</p>
+                      {availableVars.slice(0, 5).map((v) => (
+                        <div key={v.name} className="flex items-start gap-2">
+                          <code className="text-primary">{`{{${v.name}}}`}</code>
+                          <span className="text-muted-foreground flex-1">{v.description}</span>
+                        </div>
+                      ))}
+                      <p className="text-muted-foreground pt-2 border-t">
+                        Add custom variables below to pass additional data.
+                      </p>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              {Object.entries(personalization).length > 0 && (
+                <div className="space-y-2 mb-2">
+                  {Object.entries(personalization).map(([key, value]) => (
+                    <div key={key} className="flex items-center gap-2 p-2 bg-muted/50 rounded">
+                      <code className="text-xs text-primary flex-1">{`{{${key}}}`}</code>
+                      <span className="text-xs text-muted-foreground truncate max-w-[100px]">
+                        {String(value)}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-5 w-5 p-0"
+                        onClick={() => removePersonalizationVar(key)}
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="flex gap-1">
+                <Input
+                  value={newVarKey}
+                  onChange={(e) => setNewVarKey(e.target.value)}
+                  placeholder="Key"
+                  className="h-8 text-xs"
+                />
+                <Input
+                  value={newVarValue}
+                  onChange={(e) => setNewVarValue(e.target.value)}
+                  placeholder="Value"
+                  className="h-8 text-xs"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={addPersonalizationVar}
+                  disabled={!newVarKey || !newVarValue}
+                >
+                  <Plus className="h-3 w-3" />
+                </Button>
+              </div>
+            </div>
+
             <div className="flex items-center justify-between">
               <label className="text-xs font-medium text-muted-foreground">Requires Approval</label>
               <Switch checked={d.requiresApproval || false} onCheckedChange={(v) => update('requiresApproval', v)} />

@@ -6,56 +6,66 @@ import {
   Shield, CheckCircle, FileCheck, ClipboardCheck, LogOut
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { ROLE_DEFINITIONS } from '@/types/rbac';
+import { ROLE_DEFINITIONS, hasPermission } from '@/types/rbac';
+import type { Permission } from '@/types/rbac';
 
-const menuGroups = [
+const menuGroups: Array<{
+  label: string;
+  items: Array<{
+    icon: any;
+    label: string;
+    path: string;
+    badge?: boolean;
+    permission?: Permission;
+  }>;
+}> = [
   {
     label: 'Dashboard',
     items: [
-      { icon: Home, label: 'Overview', path: '/overview' },
-      { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
+      { icon: Home, label: 'Overview', path: '/overview', permission: 'can_view_dashboard' },
+      { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard', permission: 'can_view_dashboard' },
     ]
   },
   {
     label: 'Customer Intelligence',
     items: [
-      { icon: Layers, label: 'Segments', path: '/segments' },
-      { icon: Users, label: 'Customers', path: '/customers' },
-      { icon: Circle, label: '360 View', path: '/customer-360' },
+      { icon: Layers, label: 'Segments', path: '/segments', permission: 'can_manage_segments' },
+      { icon: Users, label: 'Customers', path: '/customers', permission: 'can_view_customers' },
+      { icon: Circle, label: '360 View', path: '/customer-360', permission: 'can_view_customers' },
     ]
   },
   {
     label: 'Engagement',
     items: [
-      { icon: Target, label: 'Campaigns', path: '/campaigns' },
-      { icon: GitBranch, label: 'Journeys', path: '/journeys' },
-      { icon: ClipboardCheck, label: 'Approvals', path: '/approvals', badge: true },
-      { icon: TrendingUp, label: 'Sentiment', path: '/sentiment-analysis' },
+      { icon: Target, label: 'Campaigns', path: '/campaigns', permission: 'can_create_campaigns' },
+      { icon: GitBranch, label: 'Journeys', path: '/journeys', permission: 'can_create_journeys' },
+      { icon: ClipboardCheck, label: 'Approvals', path: '/approvals', badge: true, permission: 'can_approve_actions' },
+      { icon: TrendingUp, label: 'Sentiment', path: '/sentiment-analysis', permission: 'can_view_analytics' },
     ]
   },
   {
     label: 'AI & Analytics',
     items: [
-      { icon: Bot, label: 'AI Agents', path: '/ai-agents' },
-      { icon: BarChart3, label: 'Analytics', path: '/analytics' },
+      { icon: Bot, label: 'AI Agents', path: '/ai-agents', permission: 'can_view_analytics' },
+      { icon: BarChart3, label: 'Analytics', path: '/analytics', permission: 'can_view_analytics' },
     ]
   },
   {
     label: 'Compliance',
     items: [
-      { icon: Shield, label: 'Audit Trail', path: '/audit' },
-      { icon: CheckCircle, label: 'Consent', path: '/consent' },
-      { icon: FileCheck, label: 'Governance', path: '/governance' },
+      { icon: Shield, label: 'Audit Trail', path: '/audit', permission: 'can_view_audit' },
+      { icon: CheckCircle, label: 'Consent', path: '/consent', permission: 'can_view_consent' },
+      { icon: FileCheck, label: 'Governance', path: '/governance', permission: 'can_view_governance' },
     ]
   },
   {
     label: 'Support',
     items: [
-      { icon: MessageSquare, label: 'Conversations', path: '/conversations' },
-      { icon: BookOpen, label: 'Knowledge Base', path: '/knowledge' },
-      { icon: Phone, label: 'Live Support', path: '/support' },
+      { icon: MessageSquare, label: 'Conversations', path: '/conversations', permission: 'can_view_customers' },
+      { icon: BookOpen, label: 'Knowledge Base', path: '/knowledge', permission: 'can_view_dashboard' },
+      { icon: Phone, label: 'Live Support', path: '/support', permission: 'can_view_customers' },
     ]
   }
 ];
@@ -84,6 +94,16 @@ export const Sidebar = () => {
   };
 
   const roleLabel = user?.role ? ROLE_DEFINITIONS[user.role].label : '';
+
+  const filteredMenuGroups = useMemo(() => {
+    if (!user) return [];
+    return menuGroups.map(group => ({
+      ...group,
+      items: group.items.filter(item =>
+        !item.permission || hasPermission(user.role, item.permission)
+      )
+    })).filter(group => group.items.length > 0);
+  }, [user]);
 
   return (
     <div className={cn(
@@ -115,7 +135,7 @@ export const Sidebar = () => {
 
       <nav className="flex-1 overflow-y-auto p-2">
         <div className="space-y-2">
-          {menuGroups.map((group) => (
+          {filteredMenuGroups.map((group) => (
             <div key={group.label} className="space-y-1">
               {!collapsed && (
                 <button

@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import { PlatformUser, PLATFORM_USERS } from '@/types/user';
+import { activityLogger } from '@/services/activityLogger';
 
 const VALID_OTP = '123456';
 
@@ -54,6 +55,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('uc-edge-auth', 'true');
     localStorage.setItem('uc-edge-user', JSON.stringify(pendingUser));
     setPendingUser(null);
+
+    activityLogger.logLogin(pendingUser.id, pendingUser.name, pendingUser.role);
+
     return true;
   };
 
@@ -62,6 +66,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
+    if (user) {
+      activityLogger.logLogout(user.id, user.name, user.role);
+    }
+
     setIsAuthenticated(false);
     setUser(null);
     setPendingUser(null);

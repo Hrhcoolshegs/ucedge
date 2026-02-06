@@ -1,6 +1,7 @@
-import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import { createContext, useContext, useState, ReactNode, useCallback, useEffect } from 'react';
 import { Segment } from '@/types';
 import { useData } from './DataContext';
+import { SegmentEvaluator } from '@/services/segmentEvaluator';
 
 interface SegmentsContextType {
   segments: Segment[];
@@ -98,6 +99,29 @@ export const SegmentsProvider = ({ children }: { children: ReactNode }) => {
   const deleteSegment = useCallback((id: string) => {
     setSegments(prev => prev.filter(s => s.id !== id));
   }, []);
+
+  useEffect(() => {
+    const reevaluateSegments = () => {
+      const updatedSegments = segments.map(segment => {
+        const evaluation = SegmentEvaluator.evaluateSegment(segment, customers);
+        return {
+          ...segment,
+          customerCount: evaluation.metrics.customerCount,
+          metrics: {
+            ...segment.metrics,
+            ...evaluation.metrics,
+          },
+          lastUpdated: new Date().toISOString(),
+        };
+      });
+
+      setSegments(updatedSegments);
+    };
+
+    const intervalId = setInterval(reevaluateSegments, 60000);
+
+    return () => clearInterval(intervalId);
+  }, [customers, segments]);
 
   const getSegmentCustomers = useCallback((segmentId: string) => {
     const segment = segments.find(s => s.id === segmentId);
