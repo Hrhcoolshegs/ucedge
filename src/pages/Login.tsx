@@ -101,7 +101,7 @@ export const Login = () => {
                 Protected by United Capital enterprise security protocols
               </p>
               <p className="text-xs text-muted-foreground">
-                &copy; {new Date().getFullYear()} United Capital Plc. All rights reserved.
+                &copy; {new Date().getFullYear()} Optimus AI Labs. All rights reserved.
               </p>
             </div>
           </div>
