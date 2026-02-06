@@ -1,8 +1,8 @@
 import { NavLink } from 'react-router-dom';
-import { 
-  Home, LayoutDashboard, TrendingUp, Target, Users, 
-  Bot, MessageSquare, BookOpen, Phone, BarChart3, Circle, 
-  Settings, ChevronLeft, ChevronRight, Layers, ChevronDown
+import {
+  Home, LayoutDashboard, TrendingUp, Target, Users,
+  Bot, MessageSquare, BookOpen, Phone, BarChart3, Circle,
+  Settings, ChevronLeft, ChevronRight, Layers, ChevronDown, GitBranch
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
@@ -27,6 +27,7 @@ const menuGroups = [
     label: 'Engagement',
     items: [
       { icon: Target, label: 'Campaigns', path: '/campaigns' },
+      { icon: GitBranch, label: 'Journeys', path: '/journeys' },
       { icon: TrendingUp, label: 'Sentiment', path: '/sentiment-analysis' },
     ]
   },

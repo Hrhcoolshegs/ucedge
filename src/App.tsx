@@ -23,6 +23,7 @@ import { LiveSupport } from "@/pages/LiveSupport";
 import { Analytics } from "@/pages/Analytics";
 import { Customer360 } from "@/pages/Customer360";
 import { Settings } from "@/pages/Settings";
+import JourneyBuilder from "@/pages/JourneyBuilder";
 import { MainLayout } from "@/components/layout/MainLayout";
 import NotFound from "./pages/NotFound";
 
@@ -66,6 +67,7 @@ const App = () => (
                   <Route path="/support" element={<LiveSupport />} />
                   <Route path="/analytics" element={<Analytics />} />
                   <Route path="/customer-360" element={<Customer360 />} />
+                  <Route path="/journeys" element={<JourneyBuilder />} />
                   <Route path="/settings" element={<Settings />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
