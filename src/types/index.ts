@@ -144,7 +144,7 @@ export interface Segment {
   id: string;
   name: string;
   description: string;
-  type: 'lifecycle' | 'sentiment' | 'custom' | 'auto';
+  type: 'lifecycle' | 'sentiment' | 'custom' | 'auto' | 'business';
   customerCount: number;
   business_unit_id?: string;
   business_unit?: BusinessUnit;
@@ -152,6 +152,16 @@ export interface Segment {
     lifecycleStages?: Array<"new" | "active" | "loyal" | "at-risk" | "churned" | "reactivated">;
     sentimentBuckets?: string[];
     customFilters?: Record<string, any>;
+  };
+  business_filters?: {
+    loan_status?: string[];
+    loan_risk_band?: string[];
+    fund_types?: string[];
+    aum_range?: { min?: number; max?: number };
+    risk_profile?: string[];
+    portfolio_aum_range?: { min?: number; max?: number };
+    deal_stages?: string[];
+    deal_probability_min?: number;
   };
   metrics: {
     totalLTV: number;

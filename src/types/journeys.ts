@@ -14,7 +14,7 @@ export interface Journey {
 }
 
 export interface JourneyTrigger {
-  type: 'event' | 'segment_entry' | 'schedule' | 'manual';
+  type: 'event' | 'segment_entry' | 'schedule' | 'manual' | 'business_event';
   config: {
     eventType?: EventType;
     eventFilters?: Record<string, any>;
@@ -24,6 +24,12 @@ export interface JourneyTrigger {
       time?: string;
       dayOfWeek?: number;
       dayOfMonth?: number;
+    };
+    businessTrigger?: {
+      type: 'loan_due_soon' | 'loan_overdue' | 'subscription_completed' | 'large_redemption' |
+            'portfolio_risk_change' | 'deal_stage_change' | 'high_risk_detected';
+      business_unit_id?: string;
+      conditions?: Record<string, any>;
     };
   };
 }
@@ -54,16 +60,23 @@ export interface WaitNodeConfig {
 export interface ConditionNodeConfig {
   conditions: {
     field: string;
-    operator: 'equals' | 'not_equals' | 'greater_than' | 'less_than' | 'contains';
+    operator: 'equals' | 'not_equals' | 'greater_than' | 'less_than' | 'contains' | 'has_value' | 'is_empty';
     value: any;
   }[];
   logic: 'and' | 'or';
   truePath: string;
   falsePath: string;
+  businessConditions?: {
+    type: 'has_multiple_business_profiles' | 'high_risk_signal' | 'consent_available' |
+          'payment_received' | 'meeting_scheduled' | 'deal_closed';
+    min_profiles?: number;
+    required_consent_channels?: string[];
+  };
 }
 
 export interface ActionNodeConfig {
-  actionType: 'send_message' | 'update_profile' | 'assign_segment' | 'trigger_webhook';
+  actionType: 'send_message' | 'update_profile' | 'assign_segment' | 'trigger_webhook' |
+               'create_support_case' | 'assign_rm_task' | 'add_timeline_note';
   channel?: 'email' | 'sms' | 'push' | 'whatsapp' | 'in_app';
   template?: string;
   content?: {
@@ -73,6 +86,12 @@ export interface ActionNodeConfig {
     ctaUrl?: string;
   };
   personalization?: Record<string, string>;
+  businessContext?: {
+    business_unit_id?: string;
+    event_type?: string;
+    assignee_user_id?: string;
+    priority?: 'low' | 'medium' | 'high' | 'urgent';
+  };
 }
 
 export interface SplitNodeConfig {

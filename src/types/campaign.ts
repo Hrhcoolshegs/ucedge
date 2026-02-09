@@ -6,6 +6,8 @@ export interface Campaign {
   targetAudience: string;
   lifecycleTarget: "new" | "active" | "loyal" | "at-risk" | "churned" | "reactivated" | "all" | null;
   business_unit_id?: string;
+  product_context?: Record<string, any>;
+  objective?: "ONBOARDING" | "RETENTION" | "CROSS_SELL" | "COLLECTIONS" | "DEAL_NURTURE" | "ENGAGEMENT" | "REACTIVATION";
   segmentSize: number;
   subject: string;
   message: string;
@@ -34,7 +36,9 @@ export interface CampaignFormData {
   priority: Campaign['priority'];
   budget?: number;
   business_unit_id?: string;
-  targetingMethod: 'sentiment' | 'lifecycle' | 'custom';
+  product_context?: Record<string, any>;
+  objective?: Campaign['objective'];
+  targetingMethod: 'sentiment' | 'lifecycle' | 'custom' | 'business';
   selectedBuckets: string[];
   selectedLifecycleStages: Array<"new" | "active" | "loyal" | "at-risk" | "churned" | "reactivated">;
   lifecycleFilters?: {
@@ -43,6 +47,12 @@ export interface CampaignFormData {
     reactivationProbability?: string;
     daysSinceReactivation?: string;
     reactivationSource?: string[];
+  };
+  businessFilters?: {
+    loan_status?: string[];
+    fund_types?: string[];
+    risk_profile?: string[];
+    deal_stages?: string[];
   };
   subject: string;
   message: string;
