@@ -40,17 +40,21 @@ export const ChurnConfig = () => {
   const [stages, setStages] = useState<ChurnStage[]>([]);
   const [metrics, setMetrics] = useState<ChurnMetricWithStage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingMetric, setEditingMetric] = useState<ChurnMetricWithStage | null>(null);
 
   const loadData = useCallback(async () => {
     try {
       setLoading(true);
+      setError(null);
       const [s, m] = await Promise.all([fetchChurnStages(), fetchChurnMetrics()]);
       setStages(s);
       setMetrics(m);
-    } catch {
-      toast({ title: 'Failed to load churn configuration', variant: 'destructive' });
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Failed to load churn configuration';
+      setError(errorMsg);
+      toast({ title: 'Failed to load churn configuration', description: errorMsg, variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -132,6 +136,28 @@ export const ChurnConfig = () => {
             </Card>
           ))}
         </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold text-accent">Churn Configuration</h1>
+          <p className="text-muted-foreground mt-1">Define metrics to track customer churn</p>
+        </div>
+        <Card className="p-8 text-center">
+          <AlertTriangle className="h-12 w-12 text-destructive mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-foreground mb-2">Failed to Load Configuration</h2>
+          <p className="text-muted-foreground mb-4">{error}</p>
+          <button
+            onClick={loadData}
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            Retry
+          </button>
+        </Card>
       </div>
     );
   }
