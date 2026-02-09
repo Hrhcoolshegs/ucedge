@@ -53,3 +53,80 @@ export const TRANSACTION_DESCRIPTIONS = {
   transfer: ['Transfer to account', 'Fund transfer', 'Inter-bank transfer', 'Internal transfer'],
   investment: ['Investment purchase', 'Fixed deposit', 'Mutual fund', 'Treasury bills']
 };
+
+// Education Levels
+export const EDUCATION_LEVELS = [
+  'Secondary School',
+  'National Diploma (ND)',
+  'Higher National Diploma (HND)',
+  'Bachelor\'s Degree',
+  'Master\'s Degree',
+  'PhD',
+  'Professional Certification'
+];
+
+// Marital Status
+export const MARITAL_STATUS = ['Single', 'Married', 'Divorced', 'Widowed'] as const;
+
+// Employment Types
+export const EMPLOYMENT_TYPES = ['Full-time', 'Part-time', 'Self-employed', 'Unemployed', 'Retired'] as const;
+
+// Nigerian States in Lagos Area
+export const NIGERIAN_STATES = [
+  'Lagos',
+  'Ogun',
+  'Oyo',
+  'Rivers',
+  'Abuja',
+  'Kano',
+  'Delta',
+  'Anambra',
+  'Edo',
+  'Kaduna'
+];
+
+// Street Names for Address Generation
+export const STREET_NAMES = [
+  'Adeyemo Alakija',
+  'Admiralty Way',
+  'Adeola Odeku',
+  'Ajose Adeogun',
+  'Awolowo Road',
+  'Bishop Oluwole',
+  'Broad Street',
+  'Herbert Macaulay',
+  'Ikorodu Road',
+  'Kingsway Road',
+  'Lateef Jakande',
+  'Marina',
+  'Obafemi Awolowo',
+  'Oju Elegba',
+  'Oregun Road',
+  'Ozumba Mbadiwe',
+  'Thompson Avenue',
+  'Toyin Street'
+];
+
+// Employers
+export const EMPLOYERS = [
+  'First Bank of Nigeria',
+  'GTBank',
+  'Access Bank',
+  'Dangote Group',
+  'MTN Nigeria',
+  'Shell Petroleum',
+  'Nigerian National Petroleum',
+  'Nestle Nigeria',
+  'PZ Cussons',
+  'Federal Ministry of Finance',
+  'Lagos State Government',
+  'KPMG Nigeria',
+  'PwC Nigeria',
+  'Deloitte Nigeria',
+  'Self-Employed',
+  'Unilever Nigeria',
+  'Chevron Nigeria',
+  'Globacom',
+  'Airtel Nigeria',
+  'United Bank for Africa'
+];

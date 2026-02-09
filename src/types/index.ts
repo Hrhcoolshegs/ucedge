@@ -79,13 +79,33 @@ export interface Customer {
   primary_relationship_owner_user_id?: string;
   primary_relationship_owner?: User;
   business_profiles?: CustomerBusinessProfile[];
-  
-  // Demographics
+
+  // Demographics & Biodata
   age: number;
+  dateOfBirth: string;
   gender: "Male" | "Female";
+  nationality: string;
+  maritalStatus: "Single" | "Married" | "Divorced" | "Widowed";
+  dependents: number;
+  education: string;
+
+  // Contact & Location
   location: string;
+  address: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  alternatePhone?: string;
+  emergencyContact: string;
+  emergencyPhone: string;
+
+  // Employment
   occupation: string;
+  employer: string;
+  employmentType: "Full-time" | "Part-time" | "Self-employed" | "Unemployed" | "Retired";
+  yearsAtCurrentJob: number;
   incomeRange: string;
+  monthlyIncome: number;
   
   // Financial Profile
   accountBalance: number;

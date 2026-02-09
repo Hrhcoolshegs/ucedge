@@ -6,7 +6,13 @@ import {
   OCCUPATIONS,
   INCOME_RANGES,
   BANK_PRODUCTS,
-  TRANSACTION_DESCRIPTIONS
+  TRANSACTION_DESCRIPTIONS,
+  EDUCATION_LEVELS,
+  MARITAL_STATUS,
+  EMPLOYMENT_TYPES,
+  NIGERIAN_STATES,
+  STREET_NAMES,
+  EMPLOYERS
 } from './constants';
 
 const random = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -194,25 +200,59 @@ export const generateCustomers = (count: number = 850000): Customer[] => {
     const email = `${name.toLowerCase().replace(' ', '.')}@example.com`;
     const dateJoined = randomDate(startDate, endDate);
     const lifecycleStage = stages[stageIndex++] as Customer['lifecycleStage'];
-    
+
     const isChurned = lifecycleStage === 'churned';
     const isReactivated = isChurned && Math.random() < 0.03; // 3% of churned are reactivated
-    
-    const status: Customer['status'] = 
+
+    const status: Customer['status'] =
       lifecycleStage === 'churned' ? 'inactive' :
       lifecycleStage === 'at-risk' ? 'at-risk' :
       'active';
 
-    const engagementLevel: Customer['engagementLevel'] = 
+    const engagementLevel: Customer['engagementLevel'] =
       lifecycleStage === 'loyal' ? 'high' :
       lifecycleStage === 'at-risk' || lifecycleStage === 'churned' ? 'low' :
       randomChoice(['high', 'medium', 'low']);
 
-    const churnRisk: Customer['churnRisk'] = 
+    const churnRisk: Customer['churnRisk'] =
       lifecycleStage === 'at-risk' ? 'high' :
       lifecycleStage === 'churned' ? 'high' :
       lifecycleStage === 'new' ? 'medium' :
       'low';
+
+    const age = random(22, 65);
+    const dateOfBirth = new Date();
+    dateOfBirth.setFullYear(dateOfBirth.getFullYear() - age);
+    dateOfBirth.setMonth(random(0, 11));
+    dateOfBirth.setDate(random(1, 28));
+
+    const maritalStatus = randomChoice(MARITAL_STATUS);
+    const dependents = maritalStatus === 'Married' ? random(0, 5) : (Math.random() > 0.7 ? random(1, 3) : 0);
+
+    const location = randomChoice(LAGOS_LOCATIONS);
+    const state = randomChoice(NIGERIAN_STATES);
+    const streetNumber = random(1, 250);
+    const streetName = randomChoice(STREET_NAMES);
+    const address = `${streetNumber} ${streetName} Street`;
+    const postalCode = `${random(100000, 999999)}`;
+
+    const occupation = randomChoice(OCCUPATIONS);
+    const employmentType = randomChoice(EMPLOYMENT_TYPES);
+    const employer = employmentType === 'Self-employed' ? 'Self-Employed' : randomChoice(EMPLOYERS);
+    const yearsAtCurrentJob = random(0, 20);
+
+    const incomeRange = randomChoice(INCOME_RANGES);
+    let monthlyIncome: number;
+    switch (incomeRange) {
+      case '₦100k-200k': monthlyIncome = random(100000, 200000); break;
+      case '₦200k-500k': monthlyIncome = random(200000, 500000); break;
+      case '₦500k-1M': monthlyIncome = random(500000, 1000000); break;
+      case '₦1M+': monthlyIncome = random(1000000, 5000000); break;
+      default: monthlyIncome = 150000;
+    }
+
+    const emergencyContactName = generateNigerianName(randomChoice(['Male', 'Female'] as const));
+    const emergencyPhone = generatePhoneNumber();
 
     const accountBalance = random(50000, 25000000);
     const productsOwned = ['Savings Account'];
@@ -242,11 +282,35 @@ export const generateCustomers = (count: number = 850000): Customer[] => {
       phone: generatePhoneNumber(),
       dateJoined: dateJoined.toISOString(),
       status,
-      age: random(22, 65),
+
+      // Demographics & Biodata
+      age,
+      dateOfBirth: dateOfBirth.toISOString(),
       gender,
-      location: randomChoice(LAGOS_LOCATIONS),
-      occupation: randomChoice(OCCUPATIONS),
-      incomeRange: randomChoice(INCOME_RANGES),
+      nationality: 'Nigerian',
+      maritalStatus,
+      dependents,
+      education: randomChoice(EDUCATION_LEVELS),
+
+      // Contact & Location
+      location,
+      address,
+      city: location,
+      state,
+      postalCode,
+      alternatePhone: Math.random() > 0.5 ? generatePhoneNumber() : undefined,
+      emergencyContact: emergencyContactName,
+      emergencyPhone,
+
+      // Employment
+      occupation,
+      employer,
+      employmentType,
+      yearsAtCurrentJob,
+      incomeRange,
+      monthlyIncome,
+
+      // Financial Profile
       accountBalance,
       totalDeposits: random(500000, 50000000),
       totalWithdrawals: random(250000, 40000000),

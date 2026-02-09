@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { User, Mail, Phone, MapPin, Calendar, DollarSign, ShoppingCart, TrendingUp, MessageSquare, AlertCircle } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Calendar, DollarSign, ShoppingCart, TrendingUp, MessageSquare, AlertCircle, Building2, Heart, GraduationCap, Briefcase, Users } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -135,8 +135,9 @@ export const Customer360 = () => {
         </Card>
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-4">
+      <Tabs defaultValue="biodata" className="space-y-4">
         <TabsList>
+          <TabsTrigger value="biodata">Biodata</TabsTrigger>
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="transactions">Transactions</TabsTrigger>
           <TabsTrigger value="activity">Activity</TabsTrigger>
@@ -147,6 +148,202 @@ export const Customer360 = () => {
           <TabsTrigger value="journeys">Journeys</TabsTrigger>
           <TabsTrigger value="communications">Communications</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="biodata" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <User className="h-5 w-5 text-primary" />
+                <h3 className="text-lg font-semibold text-foreground">Personal Information</h3>
+              </div>
+              <div className="space-y-3">
+                <div className="flex justify-between items-start border-b pb-2">
+                  <span className="text-sm text-muted-foreground">Full Name</span>
+                  <span className="text-sm font-medium text-foreground text-right">{customer.name}</span>
+                </div>
+                <div className="flex justify-between items-start border-b pb-2">
+                  <span className="text-sm text-muted-foreground">Date of Birth</span>
+                  <span className="text-sm font-medium text-foreground text-right">{formatDate(customer.dateOfBirth)}</span>
+                </div>
+                <div className="flex justify-between items-start border-b pb-2">
+                  <span className="text-sm text-muted-foreground">Age</span>
+                  <span className="text-sm font-medium text-foreground text-right">{customer.age} years</span>
+                </div>
+                <div className="flex justify-between items-start border-b pb-2">
+                  <span className="text-sm text-muted-foreground">Gender</span>
+                  <span className="text-sm font-medium text-foreground text-right">{customer.gender}</span>
+                </div>
+                <div className="flex justify-between items-start border-b pb-2">
+                  <span className="text-sm text-muted-foreground">Nationality</span>
+                  <span className="text-sm font-medium text-foreground text-right">{customer.nationality}</span>
+                </div>
+                <div className="flex justify-between items-start border-b pb-2">
+                  <span className="text-sm text-muted-foreground">Marital Status</span>
+                  <span className="text-sm font-medium text-foreground text-right">{customer.maritalStatus}</span>
+                </div>
+                <div className="flex justify-between items-start">
+                  <span className="text-sm text-muted-foreground">Dependents</span>
+                  <span className="text-sm font-medium text-foreground text-right">{customer.dependents}</span>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <MapPin className="h-5 w-5 text-primary" />
+                <h3 className="text-lg font-semibold text-foreground">Contact & Address</h3>
+              </div>
+              <div className="space-y-3">
+                <div className="flex justify-between items-start border-b pb-2">
+                  <span className="text-sm text-muted-foreground">Email</span>
+                  <span className="text-sm font-medium text-foreground text-right break-all">{customer.email}</span>
+                </div>
+                <div className="flex justify-between items-start border-b pb-2">
+                  <span className="text-sm text-muted-foreground">Phone</span>
+                  <span className="text-sm font-medium text-foreground text-right">{customer.phone}</span>
+                </div>
+                {customer.alternatePhone && (
+                  <div className="flex justify-between items-start border-b pb-2">
+                    <span className="text-sm text-muted-foreground">Alternate Phone</span>
+                    <span className="text-sm font-medium text-foreground text-right">{customer.alternatePhone}</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-start border-b pb-2">
+                  <span className="text-sm text-muted-foreground">Address</span>
+                  <span className="text-sm font-medium text-foreground text-right">{customer.address}</span>
+                </div>
+                <div className="flex justify-between items-start border-b pb-2">
+                  <span className="text-sm text-muted-foreground">City</span>
+                  <span className="text-sm font-medium text-foreground text-right">{customer.city}</span>
+                </div>
+                <div className="flex justify-between items-start border-b pb-2">
+                  <span className="text-sm text-muted-foreground">State</span>
+                  <span className="text-sm font-medium text-foreground text-right">{customer.state}</span>
+                </div>
+                <div className="flex justify-between items-start">
+                  <span className="text-sm text-muted-foreground">Postal Code</span>
+                  <span className="text-sm font-medium text-foreground text-right">{customer.postalCode}</span>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Briefcase className="h-5 w-5 text-primary" />
+                <h3 className="text-lg font-semibold text-foreground">Employment Information</h3>
+              </div>
+              <div className="space-y-3">
+                <div className="flex justify-between items-start border-b pb-2">
+                  <span className="text-sm text-muted-foreground">Occupation</span>
+                  <span className="text-sm font-medium text-foreground text-right">{customer.occupation}</span>
+                </div>
+                <div className="flex justify-between items-start border-b pb-2">
+                  <span className="text-sm text-muted-foreground">Employer</span>
+                  <span className="text-sm font-medium text-foreground text-right">{customer.employer}</span>
+                </div>
+                <div className="flex justify-between items-start border-b pb-2">
+                  <span className="text-sm text-muted-foreground">Employment Type</span>
+                  <span className="text-sm font-medium text-foreground text-right">{customer.employmentType}</span>
+                </div>
+                <div className="flex justify-between items-start border-b pb-2">
+                  <span className="text-sm text-muted-foreground">Years at Current Job</span>
+                  <span className="text-sm font-medium text-foreground text-right">{customer.yearsAtCurrentJob} years</span>
+                </div>
+                <div className="flex justify-between items-start border-b pb-2">
+                  <span className="text-sm text-muted-foreground">Income Range</span>
+                  <span className="text-sm font-medium text-foreground text-right">{customer.incomeRange}</span>
+                </div>
+                <div className="flex justify-between items-start">
+                  <span className="text-sm text-muted-foreground">Monthly Income</span>
+                  <span className="text-sm font-medium text-foreground text-right">{formatCurrency(customer.monthlyIncome)}</span>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <GraduationCap className="h-5 w-5 text-primary" />
+                <h3 className="text-lg font-semibold text-foreground">Education & Emergency Contact</h3>
+              </div>
+              <div className="space-y-3">
+                <div className="flex justify-between items-start border-b pb-2">
+                  <span className="text-sm text-muted-foreground">Education Level</span>
+                  <span className="text-sm font-medium text-foreground text-right">{customer.education}</span>
+                </div>
+                <div className="pt-4 border-t">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Heart className="h-4 w-4 text-destructive" />
+                    <span className="text-sm font-semibold text-foreground">Emergency Contact</span>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-start border-b pb-2">
+                      <span className="text-sm text-muted-foreground">Name</span>
+                      <span className="text-sm font-medium text-foreground text-right">{customer.emergencyContact}</span>
+                    </div>
+                    <div className="flex justify-between items-start">
+                      <span className="text-sm text-muted-foreground">Phone</span>
+                      <span className="text-sm font-medium text-foreground text-right">{customer.emergencyPhone}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          <Card className="p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <DollarSign className="h-5 w-5 text-primary" />
+              <h3 className="text-lg font-semibold text-foreground">Financial Summary</h3>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="p-4 bg-muted rounded-lg">
+                <p className="text-xs text-muted-foreground mb-1">Account Balance</p>
+                <p className="text-lg font-bold text-foreground">{formatCurrency(customer.accountBalance)}</p>
+              </div>
+              <div className="p-4 bg-muted rounded-lg">
+                <p className="text-xs text-muted-foreground mb-1">Total Deposits</p>
+                <p className="text-lg font-bold text-foreground">{formatCurrency(customer.totalDeposits)}</p>
+              </div>
+              <div className="p-4 bg-muted rounded-lg">
+                <p className="text-xs text-muted-foreground mb-1">Total Withdrawals</p>
+                <p className="text-lg font-bold text-foreground">{formatCurrency(customer.totalWithdrawals)}</p>
+              </div>
+              <div className="p-4 bg-muted rounded-lg">
+                <p className="text-xs text-muted-foreground mb-1">Lifetime Value</p>
+                <p className="text-lg font-bold text-foreground">{formatCurrency(customer.lifetimeValue)}</p>
+              </div>
+            </div>
+            <div className="mt-4 p-4 bg-muted rounded-lg">
+              <p className="text-xs text-muted-foreground mb-2">Products Owned</p>
+              <div className="flex flex-wrap gap-2">
+                {customer.productsOwned.map((product, idx) => (
+                  <Badge key={idx} variant="outline">{product}</Badge>
+                ))}
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Calendar className="h-5 w-5 text-primary" />
+              <h3 className="text-lg font-semibold text-foreground">Account Information</h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 bg-muted rounded-lg">
+                <p className="text-xs text-muted-foreground mb-1">Member Since</p>
+                <p className="text-sm font-semibold text-foreground">{formatDate(customer.dateJoined)}</p>
+              </div>
+              <div className="p-4 bg-muted rounded-lg">
+                <p className="text-xs text-muted-foreground mb-1">Last Transaction</p>
+                <p className="text-sm font-semibold text-foreground">{formatDate(customer.lastTransactionDate)}</p>
+              </div>
+              <div className="p-4 bg-muted rounded-lg">
+                <p className="text-xs text-muted-foreground mb-1">Last Contact</p>
+                <p className="text-sm font-semibold text-foreground">{formatDate(customer.lastContactDate)}</p>
+              </div>
+            </div>
+          </Card>
+        </TabsContent>
 
         <TabsContent value="overview" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
