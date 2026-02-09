@@ -5,7 +5,7 @@ import { PLATFORM_USERS } from '@/types/user';
 import { ROLE_DEFINITIONS } from '@/types/rbac';
 import { Shield, BarChart3, Megaphone, ArrowRight, ArrowLeft, ShieldCheck, Loader2 } from 'lucide-react';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
-import bannerImage from '@/assets/image.png';
+import bannerImage from '@/assets/image-copy.png';
 
 const ROLE_ICONS: Record<string, typeof Shield> = {
   admin: Shield,
