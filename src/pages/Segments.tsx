@@ -12,12 +12,14 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import { Card } from '@/components/ui/card';
 import { RangeFilter, NumericRange } from '@/components/common/RangeFilter';
+import { BusinessUnitFilter } from '@/components/common/BusinessUnitFilter';
 
 export default function Segments() {
   const navigate = useNavigate();
   const { segments, deleteSegment } = useSegments();
   const { customers, DISPLAY_MULTIPLIER } = useData();
   const [searchQuery, setSearchQuery] = useState('');
+  const [businessUnitFilter, setBusinessUnitFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
   const [sentimentFilter, setSentimentFilter] = useState('all');
   const [sizeRange, setSizeRange] = useState<NumericRange>({ min: undefined, max: undefined });
@@ -38,10 +40,11 @@ export default function Segments() {
     return matchesSearch && matchesType && matchesSentiment && matchesSize;
   });
 
-  const hasActiveFilters = typeFilter !== 'all' || sentimentFilter !== 'all' ||
+  const hasActiveFilters = businessUnitFilter !== 'all' || typeFilter !== 'all' || sentimentFilter !== 'all' ||
     sizeRange.min !== undefined || sizeRange.max !== undefined;
 
   const clearFilters = () => {
+    setBusinessUnitFilter('all');
     setTypeFilter('all');
     setSentimentFilter('all');
     setSizeRange({ min: undefined, max: undefined });
@@ -149,6 +152,8 @@ export default function Segments() {
                 className="pl-9"
               />
             </div>
+
+            <BusinessUnitFilter value={businessUnitFilter} onChange={setBusinessUnitFilter} />
 
             <Select value={typeFilter} onValueChange={setTypeFilter}>
               <SelectTrigger className="w-[160px]">

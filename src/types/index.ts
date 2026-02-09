@@ -1,3 +1,55 @@
+export interface User {
+  id: string;
+  email: string;
+  full_name: string;
+  role: string;
+  workspace_preferences: {
+    default_landing?: string;
+    pinned_widgets?: string[];
+    default_filters?: Record<string, any>;
+  };
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BusinessUnit {
+  id: string;
+  code: 'MICROFIN' | 'ASSETMGT' | 'INVBANK' | 'WEALTH';
+  name: string;
+  description: string;
+  created_at: string;
+}
+
+export interface CustomerBusinessProfile {
+  id: string;
+  customer_id: string;
+  business_unit_id: string;
+  business_unit?: BusinessUnit;
+  profile_status: 'ACTIVE' | 'INACTIVE' | 'PROSPECT';
+  kyc_status: 'PENDING' | 'VERIFIED' | 'REJECTED';
+  relationship_owner_user_id?: string;
+  relationship_owner?: User;
+  tags: string[];
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CustomerTimelineEvent {
+  id: string;
+  customer_id: string;
+  business_unit_id?: string;
+  business_unit?: BusinessUnit;
+  event_type: 'ENGAGEMENT' | 'TRANSACTION' | 'LOAN' | 'PORTFOLIO' | 'DEAL' | 'CONSENT' | 'NOTE' | 'SUPPORT' | 'KYC' | 'RISK_REVIEW' | 'LIFECYCLE';
+  title: string;
+  description?: string;
+  metadata: Record<string, any>;
+  occurred_at: string;
+  created_by_user_id?: string;
+  created_by?: User;
+  created_at: string;
+}
+
 export interface LifecycleEvent {
   id: string;
   customerId: string;
@@ -19,6 +71,14 @@ export interface Customer {
   phone: string;
   dateJoined: string;
   status: "active" | "inactive" | "at-risk";
+
+  customer_number?: string;
+  entity_type?: 'INDIVIDUAL' | 'CORPORATE' | 'GOVT';
+  unique_identifiers?: Record<string, string>;
+  risk_rating?: 'LOW' | 'MEDIUM' | 'HIGH';
+  primary_relationship_owner_user_id?: string;
+  primary_relationship_owner?: User;
+  business_profiles?: CustomerBusinessProfile[];
   
   // Demographics
   age: number;
@@ -86,6 +146,8 @@ export interface Segment {
   description: string;
   type: 'lifecycle' | 'sentiment' | 'custom' | 'auto';
   customerCount: number;
+  business_unit_id?: string;
+  business_unit?: BusinessUnit;
   criteria: {
     lifecycleStages?: Array<"new" | "active" | "loyal" | "at-risk" | "churned" | "reactivated">;
     sentimentBuckets?: string[];

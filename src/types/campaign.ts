@@ -5,6 +5,7 @@ export interface Campaign {
   status: "active" | "scheduled" | "completed" | "paused";
   targetAudience: string;
   lifecycleTarget: "new" | "active" | "loyal" | "at-risk" | "churned" | "reactivated" | "all" | null;
+  business_unit_id?: string;
   segmentSize: number;
   subject: string;
   message: string;
@@ -32,6 +33,7 @@ export interface CampaignFormData {
   goal: Campaign['goal'];
   priority: Campaign['priority'];
   budget?: number;
+  business_unit_id?: string;
   targetingMethod: 'sentiment' | 'lifecycle' | 'custom';
   selectedBuckets: string[];
   selectedLifecycleStages: Array<"new" | "active" | "loyal" | "at-risk" | "churned" | "reactivated">;

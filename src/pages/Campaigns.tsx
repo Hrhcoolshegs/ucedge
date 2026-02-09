@@ -11,11 +11,13 @@ import { formatCurrency, formatPercentage } from '@/utils/formatters';
 import { useToast } from '@/hooks/use-toast';
 import { Campaign } from '@/types/campaign';
 import { RangeFilter, NumericRange } from '@/components/common/RangeFilter';
+import { BusinessUnitFilter } from '@/components/common/BusinessUnitFilter';
 import { Card } from '@/components/ui/card';
 
 export const Campaigns = () => {
   const [wizardOpen, setWizardOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [businessUnitFilter, setBusinessUnitFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
   const [channelFilter, setChannelFilter] = useState('all');
@@ -40,10 +42,11 @@ export const Campaigns = () => {
     return matchesSearch && matchesStatus && matchesType && matchesChannel && matchesRoi;
   });
 
-  const hasActiveFilters = statusFilter !== 'all' || typeFilter !== 'all' ||
+  const hasActiveFilters = businessUnitFilter !== 'all' || statusFilter !== 'all' || typeFilter !== 'all' ||
     channelFilter !== 'all' || roiRange.min !== undefined || roiRange.max !== undefined;
 
   const clearFilters = () => {
+    setBusinessUnitFilter('all');
     setStatusFilter('all');
     setTypeFilter('all');
     setChannelFilter('all');
@@ -131,6 +134,8 @@ export const Campaigns = () => {
                 className="pl-10"
               />
             </div>
+
+            <BusinessUnitFilter value={businessUnitFilter} onChange={setBusinessUnitFilter} />
 
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-[160px]">

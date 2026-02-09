@@ -10,6 +10,10 @@ import { ChurnRiskIndicator } from '@/components/common/ChurnRiskIndicator';
 import { formatCurrency, formatDate } from '@/utils/formatters';
 import { EventsTimeline } from '@/components/events/EventsTimeline';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BusinessProfilesTab } from '@/components/customer360/BusinessProfilesTab';
+import { GroupTimelineTab } from '@/components/customer360/GroupTimelineTab';
+import { RiskTab } from '@/components/customer360/RiskTab';
+import { ComplianceTab } from '@/components/customer360/ComplianceTab';
 
 export const Customer360 = () => {
   const {
@@ -136,6 +140,10 @@ export const Customer360 = () => {
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="transactions">Transactions</TabsTrigger>
           <TabsTrigger value="activity">Activity</TabsTrigger>
+          <TabsTrigger value="business-profiles">Business Profiles</TabsTrigger>
+          <TabsTrigger value="group-timeline">Group Timeline</TabsTrigger>
+          <TabsTrigger value="risk">Risk</TabsTrigger>
+          <TabsTrigger value="compliance">Compliance</TabsTrigger>
           <TabsTrigger value="journeys">Journeys</TabsTrigger>
           <TabsTrigger value="communications">Communications</TabsTrigger>
         </TabsList>
@@ -217,6 +225,22 @@ export const Customer360 = () => {
             </div>
             <EventsTimeline events={customerEvents} limit={50} />
           </Card>
+        </TabsContent>
+
+        <TabsContent value="business-profiles">
+          <BusinessProfilesTab customerId={customer.id} />
+        </TabsContent>
+
+        <TabsContent value="group-timeline">
+          <GroupTimelineTab customerId={customer.id} />
+        </TabsContent>
+
+        <TabsContent value="risk">
+          <RiskTab customer={customer} />
+        </TabsContent>
+
+        <TabsContent value="compliance">
+          <ComplianceTab customer={customer} />
         </TabsContent>
 
         <TabsContent value="journeys" className="space-y-4">

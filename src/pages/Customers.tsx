@@ -14,12 +14,14 @@ import { BulkActionBar } from '@/components/segments/BulkActionBar';
 import { ExportPreviewModal } from '@/components/common/ExportPreviewModal';
 import { DateRangeFilter, DateRange } from '@/components/common/DateRangeFilter';
 import { RangeFilter, NumericRange } from '@/components/common/RangeFilter';
+import { BusinessUnitFilter } from '@/components/common/BusinessUnitFilter';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 
 export const Customers = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [businessUnitFilter, setBusinessUnitFilter] = useState('all');
   const [lifecycleFilter, setLifecycleFilter] = useState('all');
   const [churnRiskFilter, setChurnRiskFilter] = useState('all');
   const [locationFilter, setLocationFilter] = useState('all');
@@ -54,12 +56,13 @@ export const Customers = () => {
            matchesDateRange && matchesCLV && matchesSentiment;
   }).slice(0, 50);
 
-  const hasActiveFilters = lifecycleFilter !== 'all' || churnRiskFilter !== 'all' ||
+  const hasActiveFilters = businessUnitFilter !== 'all' || lifecycleFilter !== 'all' || churnRiskFilter !== 'all' ||
     locationFilter !== 'all' || dateRange.from || dateRange.to ||
     clvRange.min !== undefined || clvRange.max !== undefined ||
     sentimentRange.min !== undefined || sentimentRange.max !== undefined;
 
   const clearFilters = () => {
+    setBusinessUnitFilter('all');
     setLifecycleFilter('all');
     setChurnRiskFilter('all');
     setLocationFilter('all');
@@ -169,6 +172,8 @@ export const Customers = () => {
                 className="pl-10"
               />
             </div>
+
+            <BusinessUnitFilter value={businessUnitFilter} onChange={setBusinessUnitFilter} />
 
             <Select value={lifecycleFilter} onValueChange={setLifecycleFilter}>
               <SelectTrigger className="w-[180px]">

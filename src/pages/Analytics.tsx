@@ -7,17 +7,20 @@ import { useData } from '@/contexts/DataContext';
 import { formatCurrency } from '@/utils/formatters';
 import { ExportPreviewModal } from '@/components/common/ExportPreviewModal';
 import { DateRangeFilter, DateRange } from '@/components/common/DateRangeFilter';
+import { BusinessUnitFilter } from '@/components/common/BusinessUnitFilter';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export const Analytics = () => {
   const { customers, transactions } = useData();
   const [showExport, setShowExport] = useState(false);
+  const [businessUnitFilter, setBusinessUnitFilter] = useState('all');
   const [dateRange, setDateRange] = useState<DateRange>({ from: undefined, to: undefined });
   const [metricFilter, setMetricFilter] = useState('all');
 
-  const hasActiveFilters = dateRange.from || dateRange.to || metricFilter !== 'all';
+  const hasActiveFilters = businessUnitFilter !== 'all' || dateRange.from || dateRange.to || metricFilter !== 'all';
 
   const clearFilters = () => {
+    setBusinessUnitFilter('all');
     setDateRange({ from: undefined, to: undefined });
     setMetricFilter('all');
   };
@@ -145,6 +148,8 @@ export const Analytics = () => {
           </div>
 
           <div className="flex flex-col md:flex-row gap-3 flex-wrap">
+            <BusinessUnitFilter value={businessUnitFilter} onChange={setBusinessUnitFilter} />
+
             <DateRangeFilter
               value={dateRange}
               onChange={setDateRange}
