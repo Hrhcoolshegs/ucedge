@@ -3,7 +3,9 @@ import {
   Home, LayoutDashboard, TrendingUp, Target, Users,
   MessageSquare, BookOpen, Phone, BarChart3, Circle,
   Settings, ChevronLeft, ChevronRight, Layers, ChevronDown, GitBranch,
-  Shield, CheckCircle, FileCheck, ClipboardCheck, LogOut, Activity
+  Shield, CheckCircle, FileCheck, ClipboardCheck, LogOut, Activity,
+  Wallet, Rocket, Sparkles, Lightbulb, Award, GraduationCap,
+  MessageCircle, Bot, FileText, Brain
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useMemo } from 'react';
@@ -29,43 +31,57 @@ const menuGroups: Array<{
     ]
   },
   {
-    label: 'Customer Intelligence',
+    label: 'Customer 360 Management',
     items: [
-      { icon: Layers, label: 'Segments', path: '/segments', permission: 'can_manage_segments' },
-      { icon: Users, label: 'Customers', path: '/customers', permission: 'can_view_customers' },
-      { icon: Circle, label: '360 View', path: '/customer-360', permission: 'can_view_customers' },
-      { icon: Activity, label: 'Churn Config', path: '/churn-config', permission: 'can_view_customers' },
+      { icon: Circle, label: 'Customer 360', path: '/customer-360', permission: 'can_view_customers' },
+      { icon: GitBranch, label: 'Journey Automation', path: '/journeys', permission: 'can_create_journeys' },
+      { icon: Layers, label: 'Detailed Segmentation', path: '/segments', permission: 'can_manage_segments' },
+      { icon: Activity, label: 'Churn Prevention', path: '/churn-config', permission: 'can_view_customers' },
+      { icon: Wallet, label: 'Personal Finance', path: '/personal-finance', permission: 'can_view_customers' },
+      { icon: Users, label: 'All Customers', path: '/customers', permission: 'can_view_customers' },
     ]
   },
   {
-    label: 'Engagement',
+    label: 'Growth Automation',
     items: [
-      { icon: Target, label: 'Campaigns', path: '/campaigns', permission: 'can_create_campaigns' },
-      { icon: GitBranch, label: 'Journeys', path: '/journeys', permission: 'can_create_journeys' },
-      { icon: ClipboardCheck, label: 'Approvals', path: '/approvals', badge: true, permission: 'can_approve_actions' },
-      { icon: TrendingUp, label: 'Sentiment', path: '/sentiment-analysis', permission: 'can_view_analytics' },
+      { icon: Target, label: 'Product Targeting', path: '/campaigns', permission: 'can_create_campaigns' },
+      { icon: Sparkles, label: 'Personalization', path: '/personalization', permission: 'can_create_campaigns' },
+      { icon: Lightbulb, label: 'Product Education', path: '/product-education', permission: 'can_view_dashboard' },
+      { icon: Award, label: 'Recommendations', path: '/recommendations', permission: 'can_view_dashboard' },
+      { icon: TrendingUp, label: 'Premium Listings', path: '/premium-listings', permission: 'can_view_dashboard' },
     ]
   },
   {
-    label: 'Analytics',
+    label: 'Business Intelligence',
     items: [
+      { icon: FileText, label: 'Reports & Analysis', path: '/reports', permission: 'can_view_analytics' },
       { icon: BarChart3, label: 'Analytics', path: '/analytics', permission: 'can_view_analytics' },
-    ]
-  },
-  {
-    label: 'Compliance',
-    items: [
+      { icon: Brain, label: 'NLP Report Query', path: '/nlp-query', permission: 'can_view_analytics' },
       { icon: Shield, label: 'Audit Trail', path: '/audit', permission: 'can_view_audit' },
-      { icon: CheckCircle, label: 'Consent', path: '/consent', permission: 'can_view_consent' },
       { icon: FileCheck, label: 'Governance', path: '/governance', permission: 'can_view_governance' },
     ]
   },
   {
-    label: 'Support',
+    label: 'Knowledge & Learning',
     items: [
-      { icon: MessageSquare, label: 'Conversations', path: '/conversations', permission: 'can_view_customers' },
       { icon: BookOpen, label: 'Knowledge Base', path: '/knowledge', permission: 'can_view_dashboard' },
+      { icon: GraduationCap, label: 'Learning Assistant', path: '/learning-assistant', permission: 'can_view_dashboard' },
+    ]
+  },
+  {
+    label: 'Support Automation',
+    items: [
       { icon: Phone, label: 'Live Support', path: '/support', permission: 'can_view_customers' },
+      { icon: MessageSquare, label: 'Conversations', path: '/conversations', permission: 'can_view_customers' },
+      { icon: MessageCircle, label: 'Omni-channel', path: '/omni-channel', permission: 'can_view_customers' },
+    ]
+  },
+  {
+    label: 'Compliance & Approvals',
+    items: [
+      { icon: ClipboardCheck, label: 'Approvals', path: '/approvals', badge: true, permission: 'can_approve_actions' },
+      { icon: CheckCircle, label: 'Consent', path: '/consent', permission: 'can_view_consent' },
+      { icon: TrendingUp, label: 'Sentiment Analysis', path: '/sentiment-analysis', permission: 'can_view_analytics' },
     ]
   }
 ];
@@ -78,11 +94,12 @@ export const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
     'Dashboard': true,
-    'Customer Intelligence': true,
-    'Engagement': true,
-    'Analytics': true,
-    'Compliance': true,
-    'Support': true,
+    'Customer 360 Management': true,
+    'Growth Automation': true,
+    'Business Intelligence': true,
+    'Knowledge & Learning': true,
+    'Support Automation': true,
+    'Compliance & Approvals': true,
   });
   const { user, logout } = useAuth();
 
