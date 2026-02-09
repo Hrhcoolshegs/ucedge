@@ -5,7 +5,7 @@ import { PLATFORM_USERS } from '@/types/user';
 import { ROLE_DEFINITIONS } from '@/types/rbac';
 import { Shield, BarChart3, Megaphone, ArrowRight, ArrowLeft, ShieldCheck, Loader2 } from 'lucide-react';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
-import ucHero from '@/assets/uc-hero.png';
+import bannerImage from '@/assets/image.png';
 
 const ROLE_ICONS: Record<string, typeof Shield> = {
   admin: Shield,
@@ -117,13 +117,11 @@ export const Login = () => {
         </div>
 
         <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-16 bg-gradient-to-br from-primary/10 via-primary/5 to-background relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-primary/10" />
-          <div className="relative max-w-3xl w-full">
-            <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-primary/30 rounded-3xl blur-3xl opacity-50" />
+          <div className="relative w-full h-full flex items-center justify-center">
             <img
-              src={ucHero}
-              alt="United Capital Financial Services"
-              className="relative rounded-2xl shadow-2xl w-full h-auto object-cover ring-1 ring-primary/20"
+              src={bannerImage}
+              alt="United Capital Financial Services - Africa's Foremost Financial Services Group"
+              className="w-full h-full object-cover"
             />
           </div>
         </div>
