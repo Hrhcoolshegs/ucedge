@@ -1,14 +1,61 @@
+import { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CustomerBusinessProfile } from '@/types';
 import { Building2, CheckCircle2, XCircle, Clock, User } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 interface BusinessProfilesTabProps {
   customerId: string;
 }
 
 export const BusinessProfilesTab = ({ customerId }: BusinessProfilesTabProps) => {
-  const profiles: CustomerBusinessProfile[] = [];
+  const [profiles, setProfiles] = useState<CustomerBusinessProfile[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      const { data, error } = await supabase
+        .from('customer_business_profiles')
+        .select(`
+          id,
+          profile_status,
+          kyc_status,
+          tags,
+          notes,
+          created_at,
+          business_unit:business_units (
+            id,
+            code,
+            name,
+            description
+          ),
+          relationship_owner:users!relationship_owner_user_id (
+            id,
+            full_name,
+            email
+          )
+        `)
+        .eq('customer_id', customerId);
+
+      if (!error && data) {
+        setProfiles(data as any);
+      }
+      setLoading(false);
+    };
+
+    fetchProfiles();
+  }, [customerId]);
+
+  if (loading) {
+    return (
+      <Card className="p-6">
+        <div className="flex items-center justify-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      </Card>
+    );
+  }
 
   if (profiles.length === 0) {
     return (

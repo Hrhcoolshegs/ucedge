@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CustomerTimelineEvent } from '@/types';
 import { formatDate } from '@/utils/formatters';
+import { supabase } from '@/lib/supabase';
 import {
   MessageSquare,
   CreditCard,
@@ -53,7 +55,52 @@ const getEventColor = (eventType: CustomerTimelineEvent['event_type']) => {
 };
 
 export const GroupTimelineTab = ({ customerId }: GroupTimelineTabProps) => {
-  const events: CustomerTimelineEvent[] = [];
+  const [events, setEvents] = useState<CustomerTimelineEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTimeline = async () => {
+      const { data, error } = await supabase
+        .from('customer_timeline_events')
+        .select(`
+          id,
+          event_type,
+          title,
+          description,
+          metadata,
+          occurred_at,
+          created_at,
+          business_unit:business_units (
+            id,
+            code,
+            name
+          ),
+          created_by:users!created_by_user_id (
+            id,
+            full_name
+          )
+        `)
+        .eq('customer_id', customerId)
+        .order('occurred_at', { ascending: false });
+
+      if (!error && data) {
+        setEvents(data as any);
+      }
+      setLoading(false);
+    };
+
+    fetchTimeline();
+  }, [customerId]);
+
+  if (loading) {
+    return (
+      <Card className="p-6">
+        <div className="flex items-center justify-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      </Card>
+    );
+  }
 
   if (events.length === 0) {
     return (
