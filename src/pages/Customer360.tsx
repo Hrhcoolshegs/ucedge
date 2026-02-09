@@ -346,6 +346,106 @@ export const Customer360 = () => {
         </TabsContent>
 
         <TabsContent value="overview" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Customer Profile</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Age</span>
+                  <span className="text-sm font-medium text-foreground">{customer.age} years</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Gender</span>
+                  <span className="text-sm font-medium text-foreground">{customer.gender}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Location</span>
+                  <span className="text-sm font-medium text-foreground">{customer.location}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Occupation</span>
+                  <span className="text-sm font-medium text-foreground">{customer.occupation}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Employer</span>
+                  <span className="text-sm font-medium text-foreground">{customer.employer}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Education</span>
+                  <span className="text-sm font-medium text-foreground">{customer.education}</span>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Engagement Metrics</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Engagement Level</span>
+                  <Badge variant={customer.engagementLevel === 'high' ? 'default' : 'secondary'} className="capitalize">{customer.engagementLevel}</Badge>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Sentiment Score</span>
+                  <span className="text-sm font-medium text-foreground">{customer.sentimentScore}/10</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Satisfaction</span>
+                  <span className="text-sm font-medium text-foreground">{customer.satisfactionScore}/5 ⭐</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Support Tickets</span>
+                  <span className="text-sm font-medium text-foreground">{customer.supportTickets}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Campaigns Received</span>
+                  <span className="text-sm font-medium text-foreground">{customer.campaignsReceived}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Campaigns Engaged</span>
+                  <span className="text-sm font-medium text-foreground">{customer.campaignsEngaged}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Conversion Rate</span>
+                  <span className="text-sm font-medium text-foreground">{(customer.conversionRate * 100).toFixed(1)}%</span>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Financial Overview</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Income Range</span>
+                  <span className="text-sm font-medium text-foreground">{customer.incomeRange}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Monthly Income</span>
+                  <span className="text-sm font-medium text-foreground">{formatCurrency(customer.monthlyIncome)}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Current Balance</span>
+                  <span className="text-sm font-medium text-foreground">{formatCurrency(customer.accountBalance)}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Total Deposits</span>
+                  <span className="text-sm font-medium text-foreground">{formatCurrency(customer.totalDeposits)}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Total Withdrawals</span>
+                  <span className="text-sm font-medium text-foreground">{formatCurrency(customer.totalWithdrawals)}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Lifetime Value</span>
+                  <span className="text-sm font-medium text-foreground">{formatCurrency(customer.lifetimeValue)}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Transaction Freq.</span>
+                  <span className="text-sm font-medium text-foreground">{customer.transactionFrequency}/month</span>
+                </div>
+              </div>
+            </Card>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="p-6">
               <h3 className="text-lg font-semibold text-foreground mb-4">Spending Trend</h3>
@@ -376,6 +476,37 @@ export const Customer360 = () => {
               </div>
             </Card>
           </div>
+
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold text-foreground mb-4">Products & Services</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-muted-foreground mb-3">Active Products</p>
+                <div className="flex flex-wrap gap-2">
+                  {customer.productsOwned.map((product, idx) => (
+                    <Badge key={idx} variant="default">{product}</Badge>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground mb-3">Key Dates</p>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Last Transaction:</span>
+                    <span className="text-foreground">{formatDate(customer.lastTransactionDate)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Last Contact:</span>
+                    <span className="text-foreground">{formatDate(customer.lastContactDate)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Last Campaign:</span>
+                    <span className="text-foreground">{formatDate(customer.lastCampaignDate)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
         </TabsContent>
 
         <TabsContent value="transactions">

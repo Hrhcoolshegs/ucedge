@@ -1,4 +1,5 @@
-import { Journey } from '../types/journeys';
+import { Journey, JourneyExecution } from '../types/journeys';
+import { Customer } from '../types';
 
 export function generateDefaultJourneys(): Journey[] {
   return [
@@ -8,6 +9,57 @@ export function generateDefaultJourneys(): Journey[] {
     createChurnPreventionJourney(),
     createHighValueNurtureJourney()
   ];
+}
+
+export function generateJourneyExecutions(customers: Customer[], journeys: Journey[]): JourneyExecution[] {
+  const executions: JourneyExecution[] = [];
+  const now = new Date();
+
+  customers.slice(0, 100).forEach((customer, index) => {
+    const numJourneys = Math.floor(Math.random() * 3) + 1;
+    const customerJourneys = journeys.sort(() => 0.5 - Math.random()).slice(0, numJourneys);
+
+    customerJourneys.forEach((journey, jIndex) => {
+      const startedAt = new Date(now.getTime() - Math.random() * 30 * 86400000);
+      const isCompleted = Math.random() > 0.3;
+      const isActive = !isCompleted && Math.random() > 0.2;
+      const isFailed = !isCompleted && !isActive;
+
+      const status: JourneyExecution['status'] = isCompleted ? 'completed' : isActive ? 'active' : 'failed';
+      const completedAt = isCompleted ? new Date(startedAt.getTime() + Math.random() * 7 * 86400000) : undefined;
+
+      const nodes = journey.nodes.filter(n => n.type !== 'end');
+      const currentNodeIndex = isCompleted ? nodes.length - 1 : Math.floor(Math.random() * nodes.length);
+      const currentNode = nodes[currentNodeIndex];
+
+      executions.push({
+        executionId: `exec_${index}_${jIndex}_${Math.random().toString(36).substring(7)}`,
+        journeyId: journey.id,
+        customerId: customer.id,
+        status,
+        currentNodeId: currentNode.id,
+        startedAt: startedAt.toISOString(),
+        completedAt: completedAt?.toISOString(),
+        failedAt: isFailed ? new Date(startedAt.getTime() + Math.random() * 3 * 86400000).toISOString() : undefined,
+        failureReason: isFailed ? 'Customer unsubscribed from communications' : undefined,
+        context: {
+          customerName: customer.name,
+          customerEmail: customer.email,
+          balance: customer.accountBalance,
+          lifecycleStage: customer.lifecycleStage
+        },
+        stepHistory: nodes.slice(0, currentNodeIndex + 1).map((node, idx) => ({
+          nodeId: node.id,
+          nodeName: node.name,
+          enteredAt: new Date(startedAt.getTime() + idx * 86400000).toISOString(),
+          completedAt: new Date(startedAt.getTime() + (idx + 1) * 86400000).toISOString(),
+          outcome: 'success'
+        }))
+      });
+    });
+  });
+
+  return executions;
 }
 
 function createOnboardingJourney(): Journey {

@@ -6,7 +6,7 @@ import { CommunicationAuditLog, ConsentRecord } from '@/types/audit';
 import { PendingApproval, ContentApproval, ActivityLog } from '@/types/governance';
 import { generateCustomers, generateTransactions } from '@/utils/dataGenerator';
 import { generateEvents } from '@/utils/eventGenerator';
-import { generateDefaultJourneys } from '@/utils/journeyGenerator';
+import { generateDefaultJourneys, generateJourneyExecutions } from '@/utils/journeyGenerator';
 import { generateAuditLogs, generatePendingApprovals, generateContentApprovals, generateActivityLogs } from '@/utils/governanceGenerator';
 
 interface DataContextType {
@@ -133,7 +133,9 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     if (customers.length > 0 && !eventsInitialized) {
       const realCustomers = customers.slice(0, 500);
       setEvents(generateEvents(realCustomers, 30));
-      setJourneys(generateDefaultJourneys());
+      const generatedJourneys = generateDefaultJourneys();
+      setJourneys(generatedJourneys);
+      setJourneyExecutions(generateJourneyExecutions(realCustomers, generatedJourneys));
       setAuditLogs(generateAuditLogs(customers, 300));
       setPendingApprovals(generatePendingApprovals(customers));
       setContentApprovals(generateContentApprovals());
