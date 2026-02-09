@@ -3,7 +3,7 @@ import {
   Home, LayoutDashboard, TrendingUp, Target, Users,
   MessageSquare, BookOpen, Phone, BarChart3, Circle,
   Settings, ChevronLeft, ChevronRight, Layers, ChevronDown, GitBranch,
-  Shield, CheckCircle, FileCheck, ClipboardCheck, LogOut
+  Shield, CheckCircle, FileCheck, ClipboardCheck, LogOut, Activity
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useMemo } from 'react';
@@ -34,6 +34,7 @@ const menuGroups: Array<{
       { icon: Layers, label: 'Segments', path: '/segments', permission: 'can_manage_segments' },
       { icon: Users, label: 'Customers', path: '/customers', permission: 'can_view_customers' },
       { icon: Circle, label: '360 View', path: '/customer-360', permission: 'can_view_customers' },
+      { icon: Activity, label: 'Churn Config', path: '/churn-config', permission: 'can_view_customers' },
     ]
   },
   {

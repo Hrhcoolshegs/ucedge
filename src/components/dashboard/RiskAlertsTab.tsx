@@ -5,8 +5,8 @@ import { LifecycleBadge } from '@/components/common/LifecycleBadge';
 import { ChurnRiskIndicator } from '@/components/common/ChurnRiskIndicator';
 import { useData } from '@/contexts/DataContext';
 import { formatCurrency } from '@/utils/formatters';
-import { AlertCircle, AlertTriangle, TrendingDown, UserMinus, UserCheck, AlertOctagon } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { AlertCircle, AlertTriangle, TrendingDown, UserMinus, UserCheck, AlertOctagon, Settings2 } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 
 export const RiskAlertsTab = () => {
@@ -28,7 +28,19 @@ export const RiskAlertsTab = () => {
 
   return (
     <div className="space-y-6">
-      {/* Risk Summary Cards */}
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-muted-foreground">
+          Churn detection based on your configured metrics and thresholds
+        </p>
+        <Link
+          to="/churn-config"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+        >
+          <Settings2 className="h-4 w-4" />
+          Configure Metrics
+        </Link>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <MetricCard
           title="High Risk"

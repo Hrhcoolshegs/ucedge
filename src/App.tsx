@@ -27,6 +27,7 @@ import ApprovalQueue from "@/pages/ApprovalQueue";
 import AuditTrail from "@/pages/AuditTrail";
 import ConsentManagement from "@/pages/ConsentManagement";
 import GovernanceLogs from "@/pages/GovernanceLogs";
+import { ChurnConfig } from "@/pages/ChurnConfig";
 import { MainLayout } from "@/components/layout/MainLayout";
 import NotFound from "./pages/NotFound";
 
@@ -75,6 +76,7 @@ const App = () => (
                   <Route path="/audit" element={<AuditTrail />} />
                   <Route path="/consent" element={<ConsentManagement />} />
                   <Route path="/governance" element={<GovernanceLogs />} />
+                  <Route path="/churn-config" element={<ChurnConfig />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>
