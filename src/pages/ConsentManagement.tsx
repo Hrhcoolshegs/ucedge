@@ -1,13 +1,17 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useData } from '@/contexts/DataContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { CheckCircle, XCircle, Search, Download, Mail, MessageSquare, Bell, Send, Shield, Clock } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { CheckCircle, XCircle, Search, Download, Mail, MessageSquare, Bell, Send, Shield, Clock, AlertCircle, CheckCheck, XOctagon } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from 'recharts';
 import { ExportPreviewModal } from '@/components/common/ExportPreviewModal';
 import { ConsentRecord } from '@/types/audit';
+import { Approval, ComplianceSettings } from '@/types/governance';
+import { supabase } from '@/lib/supabase';
+import { formatDate } from '@/utils/formatters';
 
 const COLORS = ['#10b981', '#ef4444', '#94a3b8'];
 
@@ -16,6 +20,50 @@ export default function ConsentManagement() {
   const [search, setSearch] = useState('');
   const [selectedConsent, setSelectedConsent] = useState<ConsentRecord | null>(null);
   const [showExport, setShowExport] = useState(false);
+  const [approvals, setApprovals] = useState<Approval[]>([]);
+  const [complianceSettings, setComplianceSettings] = useState<ComplianceSettings | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchGovernanceData = async () => {
+      const [approvalsResult, settingsResult] = await Promise.all([
+        supabase
+          .from('approvals')
+          .select(`
+            id,
+            request_type,
+            customer_id,
+            business_unit_id,
+            payload,
+            requested_by_user_id,
+            status,
+            decided_by_user_id,
+            decision_reason,
+            created_at,
+            decided_at,
+            business_unit:business_units (id, code, name),
+            requested_by:users!requested_by_user_id (id, full_name, email),
+            decided_by:users!decided_by_user_id (id, full_name, email)
+          `)
+          .order('created_at', { ascending: false })
+          .limit(20),
+        supabase
+          .from('compliance_settings')
+          .select('*')
+          .maybeSingle()
+      ]);
+
+      if (!approvalsResult.error && approvalsResult.data) {
+        setApprovals(approvalsResult.data as any);
+      }
+      if (!settingsResult.error && settingsResult.data) {
+        setComplianceSettings(settingsResult.data as any);
+      }
+      setLoading(false);
+    };
+
+    fetchGovernanceData();
+  }, []);
 
   const records = useMemo(() => Array.from(consentRecords.values()), [consentRecords]);
 
@@ -71,6 +119,8 @@ export default function ConsentManagement() {
     r.preferences.quietHours.enabled ? 'Yes' : 'No',
   ]);
 
+  const pendingApprovals = useMemo(() => approvals.filter(a => a.status === 'PENDING'), [approvals]);
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -82,6 +132,108 @@ export default function ConsentManagement() {
           <Download className="h-4 w-4 mr-1" /> Export Data
         </Button>
       </div>
+
+      {complianceSettings?.compliance_mode_enabled && (
+        <Card className="border-2 border-amber-200 bg-amber-50">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Shield className="h-5 w-5 text-amber-600" />
+                <CardTitle className="text-lg">Approvals Queue</CardTitle>
+                {pendingApprovals.length > 0 && (
+                  <Badge variant="secondary" className="bg-amber-100 text-amber-800">
+                    {pendingApprovals.length} Pending
+                  </Badge>
+                )}
+              </div>
+              <Badge variant="outline" className="text-xs">Compliance Mode Active</Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+            ) : approvals.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-4">
+                No approval requests found
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {approvals.slice(0, 5).map((approval) => (
+                  <Card key={approval.id} className={`p-4 ${
+                    approval.status === 'PENDING' ? 'border-2 border-amber-300' :
+                    approval.status === 'APPROVED' ? 'border-l-4 border-l-green-500' :
+                    'border-l-4 border-l-red-500'
+                  }`}>
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <Badge variant={
+                          approval.status === 'PENDING' ? 'secondary' :
+                          approval.status === 'APPROVED' ? 'default' :
+                          'destructive'
+                        }>
+                          {approval.status === 'PENDING' && <AlertCircle className="h-3 w-3 mr-1" />}
+                          {approval.status === 'APPROVED' && <CheckCheck className="h-3 w-3 mr-1" />}
+                          {approval.status === 'REJECTED' && <XOctagon className="h-3 w-3 mr-1" />}
+                          {approval.status}
+                        </Badge>
+                        <Badge variant="outline" className="text-xs">
+                          {approval.request_type.replace(/_/g, ' ')}
+                        </Badge>
+                        {approval.business_unit && (
+                          <Badge variant="secondary" className="text-xs">
+                            {approval.business_unit.code}
+                          </Badge>
+                        )}
+                      </div>
+                      <span className="text-xs text-muted-foreground">{formatDate(approval.created_at)}</span>
+                    </div>
+
+                    <div className="space-y-1 text-sm">
+                      <p className="font-medium">
+                        {approval.payload.campaign_name || approval.payload.journey_name || approval.payload.segment_name || approval.payload.loan_id || approval.payload.deal_id || 'Request'}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Requested by: {approval.requested_by?.full_name || 'Unknown'}
+                      </p>
+                      {approval.status !== 'PENDING' && approval.decided_by && (
+                        <p className="text-xs text-muted-foreground">
+                          {approval.status === 'APPROVED' ? 'Approved' : 'Rejected'} by: {approval.decided_by.full_name} on {formatDate(approval.decided_at!)}
+                        </p>
+                      )}
+                      {approval.decision_reason && (
+                        <p className="text-xs mt-2 p-2 bg-muted rounded">
+                          <span className="font-medium">Reason:</span> {approval.decision_reason}
+                        </p>
+                      )}
+                    </div>
+
+                    {approval.payload && Object.keys(approval.payload).length > 0 && (
+                      <div className="mt-3 pt-3 border-t">
+                        <p className="text-xs font-medium mb-1">Request Details:</p>
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          {Object.entries(approval.payload).slice(0, 4).map(([key, value]) => (
+                            <div key={key}>
+                              <span className="text-muted-foreground">{key.replace(/_/g, ' ')}: </span>
+                              <span className="font-medium">{typeof value === 'object' ? JSON.stringify(value).slice(0, 30) : String(value).slice(0, 30)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </Card>
+                ))}
+                {approvals.length > 5 && (
+                  <p className="text-xs text-center text-muted-foreground pt-2">
+                    Showing 5 of {approvals.length} approval requests
+                  </p>
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card><CardContent className="pt-6">

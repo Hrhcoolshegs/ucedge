@@ -1,7 +1,11 @@
+import { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Customer } from '@/types';
-import { AlertTriangle, Shield, TrendingUp, Clock } from 'lucide-react';
+import { RiskSignal } from '@/types/governance';
+import { AlertTriangle, Shield, TrendingUp, Clock, Activity } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
+import { formatDate } from '@/utils/formatters';
 
 interface RiskTabProps {
   customer: Customer;
@@ -9,6 +13,39 @@ interface RiskTabProps {
 
 export const RiskTab = ({ customer }: RiskTabProps) => {
   const riskRating = customer.risk_rating || 'MEDIUM';
+  const [riskSignals, setRiskSignals] = useState<RiskSignal[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRiskSignals = async () => {
+      const { data, error } = await supabase
+        .from('risk_signals')
+        .select(`
+          id,
+          customer_id,
+          business_unit_id,
+          signal_type,
+          score,
+          band,
+          rationale,
+          created_at,
+          business_unit:business_units (
+            id,
+            code,
+            name
+          )
+        `)
+        .eq('customer_id', customer.id)
+        .order('created_at', { ascending: false });
+
+      if (!error && data) {
+        setRiskSignals(data as any);
+      }
+      setLoading(false);
+    };
+
+    fetchRiskSignals();
+  }, [customer.id]);
 
   const getRiskColor = (rating: string) => {
     switch (rating) {
@@ -120,12 +157,62 @@ export const RiskTab = ({ customer }: RiskTabProps) => {
 
       <Card className="p-6">
         <div className="flex items-center gap-2 mb-4">
-          <Clock className="h-5 w-5 text-primary" />
-          <h3 className="text-lg font-semibold text-foreground">Recent Risk Events</h3>
+          <Activity className="h-5 w-5 text-primary" />
+          <h3 className="text-lg font-semibold text-foreground">Risk Signals by Business Unit</h3>
         </div>
-        <p className="text-sm text-muted-foreground text-center py-8">
-          No recent risk events recorded
-        </p>
+
+        {loading ? (
+          <div className="flex items-center justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        ) : riskSignals.length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-8">
+            No risk signals detected
+          </p>
+        ) : (
+          <div className="space-y-4">
+            {riskSignals.map((signal) => {
+              const signalColor =
+                signal.band === 'HIGH' ? 'border-red-200 bg-red-50' :
+                signal.band === 'MEDIUM' ? 'border-yellow-200 bg-yellow-50' :
+                'border-green-200 bg-green-50';
+
+              const badgeVariant =
+                signal.band === 'HIGH' ? 'destructive' :
+                signal.band === 'MEDIUM' ? 'secondary' :
+                'default';
+
+              return (
+                <Card key={signal.id} className={`p-4 border-2 ${signalColor}`}>
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <Badge variant={badgeVariant}>{signal.band}</Badge>
+                      <Badge variant="outline">{signal.signal_type}</Badge>
+                      {signal.business_unit && (
+                        <Badge variant="secondary" className="text-xs">
+                          {signal.business_unit.code}
+                        </Badge>
+                      )}
+                    </div>
+                    <span className="text-xs text-muted-foreground">{formatDate(signal.created_at)}</span>
+                  </div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-2xl font-bold">
+                      {signal.score}
+                    </span>
+                    <span className="text-sm text-muted-foreground">/100</span>
+                  </div>
+                  <p className="text-sm">{signal.rationale}</p>
+                  {signal.business_unit && (
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Detected by: {signal.business_unit.name}
+                    </p>
+                  )}
+                </Card>
+              );
+            })}
+          </div>
+        )}
       </Card>
     </div>
   );

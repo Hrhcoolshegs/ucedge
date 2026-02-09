@@ -1,7 +1,9 @@
-import { useState } from 'react';
-import { TrendingUp, Users, DollarSign, ShoppingCart, ArrowUp, ArrowDown, Download, Filter as FilterIcon, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { TrendingUp, Users, DollarSign, ShoppingCart, ArrowUp, ArrowDown, Download, Filter as FilterIcon, X, Building2, AlertTriangle, Activity } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useData } from '@/contexts/DataContext';
 import { formatCurrency } from '@/utils/formatters';
@@ -9,6 +11,8 @@ import { ExportPreviewModal } from '@/components/common/ExportPreviewModal';
 import { DateRangeFilter, DateRange } from '@/components/common/DateRangeFilter';
 import { BusinessUnitFilter } from '@/components/common/BusinessUnitFilter';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { supabase } from '@/lib/supabase';
+import { RiskSignal } from '@/types/governance';
 
 export const Analytics = () => {
   const { customers, transactions } = useData();
@@ -16,6 +20,74 @@ export const Analytics = () => {
   const [businessUnitFilter, setBusinessUnitFilter] = useState('all');
   const [dateRange, setDateRange] = useState<DateRange>({ from: undefined, to: undefined });
   const [metricFilter, setMetricFilter] = useState('all');
+  const [riskSignals, setRiskSignals] = useState<RiskSignal[]>([]);
+  const [crossBusinessMetrics, setCrossBusinessMetrics] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchGroup360Data = async () => {
+      const [signalsResult, profilesResult, customersResult] = await Promise.all([
+        supabase
+          .from('risk_signals')
+          .select(`
+            id,
+            customer_id,
+            business_unit_id,
+            signal_type,
+            score,
+            band,
+            created_at,
+            business_unit:business_units (id, code, name)
+          `)
+          .order('created_at', { ascending: false })
+          .limit(50),
+        supabase
+          .from('customer_business_profiles')
+          .select('id, customer_id, business_unit_id, profile_status'),
+        supabase
+          .from('customers')
+          .select('id, name, entity_type')
+      ]);
+
+      if (!signalsResult.error && signalsResult.data) {
+        setRiskSignals(signalsResult.data as any);
+      }
+
+      if (!profilesResult.error && profilesResult.data && !customersResult.error && customersResult.data) {
+        const profiles = profilesResult.data;
+        const customers = customersResult.data;
+
+        const businessUnitCoverage = ['MICROFIN', 'ASSETMGT', 'INVBANK', 'WEALTH'].map(code => {
+          const unitProfiles = profiles.filter((p: any) => {
+            const buData = p.business_unit_id;
+            return true;
+          });
+          return {
+            code,
+            name: code === 'MICROFIN' ? 'Microfinance' : code === 'ASSETMGT' ? 'Asset Mgmt' : code === 'INVBANK' ? 'Inv Banking' : 'Wealth',
+            customers: unitProfiles.length,
+            active: unitProfiles.filter((p: any) => p.profile_status === 'ACTIVE').length
+          };
+        });
+
+        const customersWithMultipleBU = customers.filter((c: any) => {
+          const customerProfiles = profiles.filter((p: any) => p.customer_id === c.id);
+          return customerProfiles.length >= 2;
+        });
+
+        setCrossBusinessMetrics({
+          totalCustomers: customers.length,
+          crossBusinessCustomers: customersWithMultipleBU.length,
+          businessUnitCoverage,
+          totalRiskSignals: signalsResult.data?.length || 0
+        });
+      }
+
+      setLoading(false);
+    };
+
+    fetchGroup360Data();
+  }, []);
 
   const hasActiveFilters = businessUnitFilter !== 'all' || dateRange.from || dateRange.to || metricFilter !== 'all';
 
@@ -74,6 +146,14 @@ export const Analytics = () => {
           recordCount={monthlyData.length}
         />
       )}
+
+      <Tabs defaultValue="overview" className="w-full">
+        <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="group360">Group 360 Analytics</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-6 mt-6">
 
       {/* KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -244,6 +324,144 @@ export const Analytics = () => {
           </ResponsiveContainer>
         </Card>
       </div>
+        </TabsContent>
+
+        <TabsContent value="group360" className="space-y-6 mt-6">
+          {loading ? (
+            <Card className="p-6">
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+            </Card>
+          ) : (
+            <>
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-6">Cross-Business Coverage</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  <Card className="p-4 bg-blue-50 border-blue-200">
+                    <div className="flex items-center gap-3">
+                      <Users className="h-8 w-8 text-blue-600" />
+                      <div>
+                        <p className="text-sm text-blue-900">Total Customers</p>
+                        <p className="text-2xl font-bold text-blue-600">{crossBusinessMetrics?.totalCustomers || 0}</p>
+                      </div>
+                    </div>
+                  </Card>
+                  <Card className="p-4 bg-green-50 border-green-200">
+                    <div className="flex items-center gap-3">
+                      <Building2 className="h-8 w-8 text-green-600" />
+                      <div>
+                        <p className="text-sm text-green-900">Cross-Business Customers</p>
+                        <p className="text-2xl font-bold text-green-600">{crossBusinessMetrics?.crossBusinessCustomers || 0}</p>
+                      </div>
+                    </div>
+                  </Card>
+                  <Card className="p-4 bg-amber-50 border-amber-200">
+                    <div className="flex items-center gap-3">
+                      <AlertTriangle className="h-8 w-8 text-amber-600" />
+                      <div>
+                        <p className="text-sm text-amber-900">Active Risk Signals</p>
+                        <p className="text-2xl font-bold text-amber-600">{crossBusinessMetrics?.totalRiskSignals || 0}</p>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+
+                <div className="text-sm text-muted-foreground mb-4">
+                  <p className="font-medium mb-2">Cross-Sell Opportunity</p>
+                  <p>
+                    {crossBusinessMetrics?.crossBusinessCustomers || 0} customers ({
+                      crossBusinessMetrics?.totalCustomers > 0
+                        ? ((crossBusinessMetrics.crossBusinessCustomers / crossBusinessMetrics.totalCustomers) * 100).toFixed(1)
+                        : 0
+                    }%) have relationships across multiple business units
+                  </p>
+                </div>
+              </Card>
+
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4">Performance by Business Unit</h3>
+                {crossBusinessMetrics?.businessUnitCoverage && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {crossBusinessMetrics.businessUnitCoverage.map((bu: any) => (
+                      <Card key={bu.code} className="p-4">
+                        <div className="flex items-center gap-2 mb-3">
+                          <Building2 className="h-5 w-5 text-primary" />
+                          <h4 className="font-semibold">{bu.name}</h4>
+                        </div>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Total Profiles:</span>
+                            <span className="font-bold">{bu.customers}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Active:</span>
+                            <span className="font-bold text-green-600">{bu.active}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Inactive:</span>
+                            <span className="font-bold text-gray-600">{bu.customers - bu.active}</span>
+                          </div>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </Card>
+
+              <Card className="p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Activity className="h-5 w-5 text-primary" />
+                  <h3 className="text-lg font-semibold text-foreground">Risk Command Center</h3>
+                </div>
+                {riskSignals.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-8">
+                    No risk signals detected
+                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    {riskSignals.slice(0, 10).map((signal) => (
+                      <Card
+                        key={signal.id}
+                        className={`p-3 ${
+                          signal.band === 'HIGH' ? 'border-l-4 border-l-red-500 bg-red-50' :
+                          signal.band === 'MEDIUM' ? 'border-l-4 border-l-yellow-500 bg-yellow-50' :
+                          'border-l-4 border-l-green-500 bg-green-50'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Badge variant={
+                              signal.band === 'HIGH' ? 'destructive' :
+                              signal.band === 'MEDIUM' ? 'secondary' :
+                              'default'
+                            }>
+                              {signal.band}
+                            </Badge>
+                            <Badge variant="outline" className="text-xs">{signal.signal_type}</Badge>
+                            {signal.business_unit && (
+                              <Badge variant="secondary" className="text-xs">
+                                {signal.business_unit.code}
+                              </Badge>
+                            )}
+                          </div>
+                          <span className="text-xl font-bold">{signal.score}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-2">{signal.rationale}</p>
+                      </Card>
+                    ))}
+                    {riskSignals.length > 10 && (
+                      <p className="text-xs text-center text-muted-foreground pt-2">
+                        Showing 10 of {riskSignals.length} risk signals
+                      </p>
+                    )}
+                  </div>
+                )}
+              </Card>
+            </>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
