@@ -147,7 +147,7 @@ export function generatePendingApprovals(customers: Customer[]): PendingApproval
       channel: pick(['email', 'sms', 'push']),
       contentPreview: tpl.content,
       scheduledTime: new Date(Date.now() + Math.random() * 86400000),
-      requestedBy: pick([PLATFORM_USERS[1].name, PLATFORM_USERS[2].name]),
+      requestedBy: pick([PLATFORM_USERS[1].name, PLATFORM_USERS[2].name, PLATFORM_USERS[3].name]),
       requestedAt: randomDate(3),
       status: 'pending',
     });
@@ -182,7 +182,7 @@ export function generateContentApprovals(): ContentApproval[] {
   ];
 
   contents.forEach((c, i) => {
-    const submitter = pick([PLATFORM_USERS[1], PLATFORM_USERS[2]]);
+    const submitter = pick([PLATFORM_USERS[1], PLATFORM_USERS[2], PLATFORM_USERS[3]]);
     const status = statuses[i % statuses.length];
     const submitted = randomDate(14);
     items.push({

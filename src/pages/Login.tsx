@@ -2,32 +2,44 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { PLATFORM_USERS } from '@/types/user';
-import { ROLE_DEFINITIONS } from '@/types/rbac';
-import { Shield, BarChart3, Megaphone, ArrowRight, ArrowLeft, ShieldCheck, Loader2 } from 'lucide-react';
+import {
+  Eye,
+  TrendingUp,
+  BarChart3,
+  Handshake,
+  ArrowRight,
+  ArrowLeft,
+  ShieldCheck,
+  Loader2,
+  Shield,
+} from 'lucide-react';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
-import bannerImage from '@/assets/image-copy.png';
+import bannerImage from '@/assets/ucap-corporate-brochure-1.jpg';
 
-const ROLE_ICONS: Record<string, typeof Shield> = {
-  admin: Shield,
-  campaign_manager: Megaphone,
-  analyst: BarChart3,
-};
-
-const ROLE_COLORS: Record<string, { bg: string; border: string; text: string }> = {
-  admin: {
-    bg: 'bg-emerald-500/10',
-    border: 'border-emerald-500/20 hover:border-emerald-500/50',
-    text: 'text-emerald-600',
+const WORKSPACE_CONFIG: Record<string, { icon: typeof Shield; color: string; bgColor: string; borderColor: string }> = {
+  'Group Oversight': {
+    icon: Eye,
+    color: 'text-rose-600',
+    bgColor: 'bg-rose-500/10',
+    borderColor: 'border-rose-200 hover:border-rose-400',
   },
-  campaign_manager: {
-    bg: 'bg-amber-500/10',
-    border: 'border-amber-500/20 hover:border-amber-500/50',
-    text: 'text-amber-600',
+  'Customer Growth': {
+    icon: TrendingUp,
+    color: 'text-teal-600',
+    bgColor: 'bg-teal-500/10',
+    borderColor: 'border-teal-200 hover:border-teal-400',
   },
-  analyst: {
-    bg: 'bg-sky-500/10',
-    border: 'border-sky-500/20 hover:border-sky-500/50',
-    text: 'text-sky-600',
+  'Analytics & Insights': {
+    icon: BarChart3,
+    color: 'text-sky-600',
+    bgColor: 'bg-sky-500/10',
+    borderColor: 'border-sky-200 hover:border-sky-400',
+  },
+  'Relationship & Deals': {
+    icon: Handshake,
+    color: 'text-amber-600',
+    bgColor: 'bg-amber-500/10',
+    borderColor: 'border-amber-200 hover:border-amber-400',
   },
 };
 
@@ -74,56 +86,59 @@ export const Login = () => {
   const showOtp = !!pendingUser;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-background flex flex-col">
-      <div className="flex-1 w-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-16 bg-card/50 backdrop-blur-sm">
-          <div className="w-full max-w-lg space-y-10">
-            <div className="space-y-4 text-center lg:text-left">
-              <div className="flex items-center gap-4 justify-center lg:justify-start">
-                <div className="h-14 w-14 bg-primary rounded-xl flex items-center justify-center shadow-lg">
-                  <span className="text-primary-foreground font-bold text-2xl">UC</span>
-                </div>
-                <div>
-                  <h1 className="text-3xl font-bold text-foreground">UC-Edge</h1>
-                  <p className="text-sm text-muted-foreground">United Capital Plc</p>
-                </div>
+    <div className="min-h-screen flex flex-col lg:flex-row">
+      <div className="w-full lg:w-[52%] min-h-screen flex items-center justify-center p-6 sm:p-10 lg:p-16 bg-white relative">
+        <div className="w-full max-w-[480px] space-y-8">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3.5">
+              <div className="h-12 w-12 bg-[#C8102E] rounded-xl flex items-center justify-center shadow-sm">
+                <span className="text-white font-bold text-lg tracking-tight">UC</span>
               </div>
-              <p className="text-sm text-muted-foreground">Financial Services Intelligence Platform</p>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 tracking-tight">UC-Edge</h1>
+                <p className="text-xs text-gray-500 font-medium">United Capital Plc</p>
+              </div>
             </div>
+          </div>
 
-            {!showOtp ? (
-              <ProfileSelector onSelect={handleSelect} />
-            ) : (
-              <OtpStep
-                user={pendingUser}
-                otpValue={otpValue}
-                otpError={otpError}
-                verifying={verifying}
-                onOtpChange={handleOtpChange}
-                onVerify={handleVerify}
-                onBack={handleBack}
-              />
-            )}
+          {!showOtp ? (
+            <ProfileSelector onSelect={handleSelect} />
+          ) : (
+            <OtpStep
+              user={pendingUser}
+              otpValue={otpValue}
+              otpError={otpError}
+              verifying={verifying}
+              onOtpChange={handleOtpChange}
+              onVerify={handleVerify}
+              onBack={handleBack}
+            />
+          )}
 
-            <div className="space-y-4 pt-8 border-t border-border text-center lg:text-left">
-              <p className="text-xs text-muted-foreground">
-                Protected by United Capital enterprise security protocols
+          <div className="pt-6 border-t border-gray-100">
+            <div className="flex items-center justify-between">
+              <p className="text-[11px] text-gray-400">
+                Protected by United Capital enterprise security
               </p>
-              <p className="text-xs text-muted-foreground">
-                &copy; {new Date().getFullYear()} Optimus AI Labs. All rights reserved.
+              <p className="text-[11px] text-gray-400">
+                &copy; {new Date().getFullYear()} Optimus AI Labs
               </p>
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-16 bg-gradient-to-br from-primary/10 via-primary/5 to-background relative overflow-hidden">
-          <div className="relative w-full h-full flex items-center justify-center">
-            <img
-              src={bannerImage}
-              alt="United Capital Financial Services - Africa's Foremost Financial Services Group"
-              className="w-full h-full object-cover"
-            />
-          </div>
+      <div className="hidden lg:block lg:w-[48%] relative overflow-hidden">
+        <img
+          src={bannerImage}
+          alt="United Capital - Africa's Foremost Financial Services Group"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+        <div className="absolute bottom-10 left-10 right-10">
+          <p className="text-white/80 text-sm font-medium tracking-wide">
+            Financial Services Intelligence Platform
+          </p>
         </div>
       </div>
     </div>
@@ -132,37 +147,40 @@ export const Login = () => {
 
 function ProfileSelector({ onSelect }: { onSelect: (id: string) => void }) {
   return (
-    <div className="space-y-8">
-      <div className="space-y-3">
-        <h2 className="text-4xl font-bold text-foreground tracking-tight">Welcome</h2>
-        <p className="text-muted-foreground text-base">Select your profile to continue</p>
+    <div className="space-y-6">
+      <div className="space-y-1.5">
+        <h2 className="text-[28px] font-bold text-gray-900 tracking-tight">Welcome back</h2>
+        <p className="text-gray-500 text-sm">Select your workspace to continue</p>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {PLATFORM_USERS.map((u) => {
-          const roleDef = ROLE_DEFINITIONS[u.role];
-          const colors = ROLE_COLORS[u.role] ?? ROLE_COLORS.analyst;
-          const Icon = ROLE_ICONS[u.role] ?? BarChart3;
+          const config = WORKSPACE_CONFIG[u.workspace] ?? WORKSPACE_CONFIG['Group Oversight'];
+          const Icon = config.icon;
 
           return (
             <button
               key={u.id}
               onClick={() => onSelect(u.id)}
-              className={`w-full group flex items-center gap-4 p-5 rounded-xl border-2 ${colors.border} bg-card transition-all duration-200 hover:shadow-lg cursor-pointer text-left`}
+              className={`w-full group flex items-center gap-4 p-4 rounded-xl border ${config.borderColor} bg-white transition-all duration-200 hover:shadow-md cursor-pointer text-left`}
             >
-              <div className={`h-12 w-12 rounded-lg ${colors.bg} flex items-center justify-center shrink-0`}>
-                <Icon className={`h-6 w-6 ${colors.text}`} />
+              <div className={`h-11 w-11 rounded-lg ${config.bgColor} flex items-center justify-center shrink-0`}>
+                <Icon className={`h-5 w-5 ${config.color}`} />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <p className="font-semibold text-foreground text-base">{u.name}</p>
-                  <span className={`text-xs ${colors.bg} ${colors.text} px-2 py-0.5 rounded-full font-medium`}>
-                    {roleDef.label}
+                  <p className="font-semibold text-gray-900 text-[15px]">{u.name}</p>
+                  <span className="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded font-medium uppercase tracking-wider">
+                    Admin
                   </span>
                 </div>
-                <p className="text-sm text-muted-foreground mt-0.5 truncate">{roleDef.description}</p>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className={`text-xs font-medium ${config.color}`}>{u.workspace}</span>
+                  <span className="text-gray-300 text-xs">--</span>
+                  <span className="text-xs text-gray-400 truncate">{u.workspaceDescription}</span>
+                </div>
               </div>
-              <ArrowRight className="h-5 w-5 text-muted-foreground opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 shrink-0" />
+              <ArrowRight className="h-4 w-4 text-gray-300 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 shrink-0" />
             </button>
           );
         })}
@@ -172,7 +190,7 @@ function ProfileSelector({ onSelect }: { onSelect: (id: string) => void }) {
 }
 
 interface OtpStepProps {
-  user: { name: string; email: string; avatarInitials: string; role: string };
+  user: { name: string; email: string; avatarInitials: string; role: string; workspace: string };
   otpValue: string;
   otpError: boolean;
   verifying: boolean;
@@ -182,37 +200,37 @@ interface OtpStepProps {
 }
 
 function OtpStep({ user, otpValue, otpError, verifying, onOtpChange, onVerify, onBack }: OtpStepProps) {
-  const colors = ROLE_COLORS[user.role] ?? ROLE_COLORS.analyst;
+  const config = WORKSPACE_CONFIG[user.workspace] ?? WORKSPACE_CONFIG['Group Oversight'];
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-3">
+    <div className="space-y-6">
+      <div className="space-y-2">
         <button
           onClick={onBack}
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-2"
+          className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-700 transition-colors mb-1"
         >
           <ArrowLeft className="h-4 w-4" />
           Back
         </button>
-        <h2 className="text-4xl font-bold text-foreground tracking-tight">Verify Identity</h2>
-        <p className="text-muted-foreground text-base">
-          Enter the 6-digit code to continue as <span className="font-medium text-foreground">{user.name}</span>
+        <h2 className="text-[28px] font-bold text-gray-900 tracking-tight">Verify identity</h2>
+        <p className="text-gray-500 text-sm">
+          Enter the 6-digit code to continue as <span className="font-medium text-gray-900">{user.name}</span>
         </p>
       </div>
 
-      <div className={`flex items-center gap-4 p-4 rounded-xl border ${colors.border.split(' ')[0]} bg-card`}>
-        <div className={`h-11 w-11 rounded-lg ${colors.bg} flex items-center justify-center shrink-0`}>
-          <span className={`text-sm font-bold ${colors.text}`}>{user.avatarInitials}</span>
+      <div className={`flex items-center gap-3.5 p-3.5 rounded-xl border ${config.borderColor.split(' ')[0]} bg-gray-50/50`}>
+        <div className={`h-10 w-10 rounded-lg ${config.bgColor} flex items-center justify-center shrink-0`}>
+          <span className={`text-sm font-bold ${config.color}`}>{user.avatarInitials}</span>
         </div>
         <div className="min-w-0">
-          <p className="font-semibold text-foreground text-sm">{user.name}</p>
-          <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+          <p className="font-semibold text-gray-900 text-sm">{user.name}</p>
+          <p className="text-xs text-gray-400 truncate">{user.workspace} -- {user.email}</p>
         </div>
       </div>
 
       <div className="space-y-5">
         <div className="flex flex-col items-center gap-4">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2 text-sm text-gray-400">
             <ShieldCheck className="h-4 w-4" />
             <span>Two-Factor Authentication</span>
           </div>
@@ -240,7 +258,7 @@ function OtpStep({ user, otpValue, otpError, verifying, onOtpChange, onVerify, o
         <button
           onClick={onVerify}
           disabled={otpValue.length !== 6 || verifying}
-          className="w-full h-12 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
+          className="w-full h-11 rounded-xl bg-[#C8102E] text-white font-semibold text-sm hover:bg-[#A00D24] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
         >
           {verifying ? (
             <>
@@ -253,8 +271,8 @@ function OtpStep({ user, otpValue, otpError, verifying, onOtpChange, onVerify, o
         </button>
 
         <div className="text-center">
-          <p className="text-xs text-muted-foreground">
-            OTP Code: <span className="font-mono font-semibold text-foreground">123456</span>
+          <p className="text-xs text-gray-400">
+            OTP Code: <span className="font-mono font-semibold text-gray-700">123456</span>
           </p>
         </div>
       </div>

@@ -6,6 +6,8 @@ export interface PlatformUser {
   email: string;
   role: UserRole;
   avatarInitials: string;
+  workspace: string;
+  workspaceDescription: string;
   lastActive: Date;
   status: 'active' | 'inactive';
 }
@@ -17,6 +19,8 @@ export const PLATFORM_USERS: PlatformUser[] = [
     email: 'adewale.okonkwo@ucapital.com',
     role: 'admin',
     avatarInitials: 'AO',
+    workspace: 'Group Oversight',
+    workspaceDescription: 'Cross-business monitoring, approvals & compliance',
     lastActive: new Date(),
     status: 'active',
   },
@@ -26,6 +30,8 @@ export const PLATFORM_USERS: PlatformUser[] = [
     email: 'funke.adeyemi@ucapital.com',
     role: 'admin',
     avatarInitials: 'FA',
+    workspace: 'Customer Growth',
+    workspaceDescription: 'Campaigns, journeys & customer acquisition',
     lastActive: new Date(Date.now() - 2 * 60 * 60 * 1000),
     status: 'active',
   },
@@ -35,6 +41,8 @@ export const PLATFORM_USERS: PlatformUser[] = [
     email: 'chidi.nwosu@ucapital.com',
     role: 'admin',
     avatarInitials: 'CN',
+    workspace: 'Analytics & Insights',
+    workspaceDescription: 'Reports, dashboards & data intelligence',
     lastActive: new Date(Date.now() - 5 * 60 * 60 * 1000),
     status: 'active',
   },
@@ -44,6 +52,8 @@ export const PLATFORM_USERS: PlatformUser[] = [
     email: 'zainab.bello@ucapital.com',
     role: 'admin',
     avatarInitials: 'ZB',
+    workspace: 'Relationship & Deals',
+    workspaceDescription: 'Portfolio management, deals & client relations',
     lastActive: new Date(Date.now() - 3 * 60 * 60 * 1000),
     status: 'active',
   },
