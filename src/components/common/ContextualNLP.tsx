@@ -133,6 +133,22 @@ const CONTEXT_KNOWLEDGE: Record<string, any> = {
       'How many active customers?',
       'What are the top alerts?'
     ]
+  },
+  'sentiment-analysis': {
+    description: 'Customer sentiment analysis and insights',
+    capabilities: [
+      'Analyze customer sentiment',
+      'Track sentiment trends',
+      'View sentiment by segment',
+      'Monitor feedback patterns',
+      'Identify sentiment drivers'
+    ],
+    sampleQuestions: [
+      'What is the overall sentiment?',
+      'Show me negative sentiment trends',
+      'Which segments have the best sentiment?',
+      'What are customers saying?'
+    ]
   }
 };
 
@@ -213,6 +229,10 @@ export const ContextualNLP = ({ context }: ContextualNLPProps) => {
 
     if (question.includes('filter') || question.includes('search') || question.includes('find')) {
       return 'Filtering & Search:\n\nAvailable filters:\n• Business Unit: Filter by Microfinance, Asset Mgmt, Inv Banking, or Wealth\n• Date Range: Select specific time periods\n• Status: Active, Inactive, Pending, etc.\n• Customer Type: Individual, Corporate, Government\n• Risk Level: Low, Medium, High\n\nTips:\n• Combine multiple filters for precise results\n• Save common filter combinations\n• Export filtered data for analysis\n• Use advanced search for specific criteria';
+    }
+
+    if (question.includes('sentiment') || question.includes('feedback') || question.includes('opinion')) {
+      return 'Customer Sentiment Analysis:\n\n😊 Sentiment Overview:\n• Positive: 65% (↑ 5%)\n• Neutral: 25%\n• Negative: 10% (↓ 2%)\n\n📊 Sentiment by Segment:\n• High Value: 78% positive\n• Medium Value: 68% positive\n• Low Value: 52% positive\n• At Risk: 35% positive\n\n🔍 Key Insights:\n• Product quality is main positive driver\n• Customer service mentioned most frequently\n• Response time affects sentiment\n• Mobile app experience improving\n\nTop Positive Themes:\n• Fast service\n• Helpful support staff\n• Easy-to-use platform\n\nTop Negative Themes:\n• Long wait times\n• Complex processes\n• Limited features\n\nUse this data to improve customer experience and retention.';
     }
 
     return `I understand you're asking about "${userQuestion}".\n\nBased on your current page (${contextInfo.description}), here are some things I can help with:\n\n${contextInfo.capabilities.map((c: string) => `• ${c}`).join('\n')}\n\nCould you rephrase your question or try one of these:\n${contextInfo.sampleQuestions.slice(0, 3).map((q: string) => `• ${q}`).join('\n')}`;

@@ -56,6 +56,7 @@ const menuGroups: Array<{
     items: [
       { icon: FileText, label: 'Reports & Analysis', path: '/reports', permission: 'can_view_analytics' },
       { icon: BarChart3, label: 'Analytics', path: '/analytics', permission: 'can_view_analytics' },
+      { icon: TrendingUp, label: 'Sentiment Analysis', path: '/sentiment-analysis', permission: 'can_view_analytics' },
       { icon: Brain, label: 'NLP Report Query', path: '/nlp-query', permission: 'can_view_analytics' },
       { icon: Shield, label: 'Audit Trail', path: '/audit', permission: 'can_view_audit' },
       { icon: FileCheck, label: 'Governance', path: '/governance', permission: 'can_view_governance' },
@@ -81,7 +82,6 @@ const menuGroups: Array<{
     items: [
       { icon: ClipboardCheck, label: 'Approvals', path: '/approvals', badge: true, permission: 'can_approve_actions' },
       { icon: CheckCircle, label: 'Consent', path: '/consent', permission: 'can_view_consent' },
-      { icon: TrendingUp, label: 'Sentiment Analysis', path: '/sentiment-analysis', permission: 'can_view_analytics' },
     ]
   }
 ];
