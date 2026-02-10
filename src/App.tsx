@@ -19,7 +19,6 @@ import { Customers } from "@/pages/Customers";
 import { Conversations } from "@/pages/Conversations";
 import { KnowledgeBase } from "@/pages/KnowledgeBase";
 import { LiveSupport } from "@/pages/LiveSupport";
-import { Analytics } from "@/pages/Analytics";
 import { Customer360 } from "@/pages/Customer360";
 import { Settings } from "@/pages/Settings";
 import JourneyBuilder from "@/pages/JourneyBuilder";
@@ -68,7 +67,8 @@ const App = () => (
                   <Route path="/conversations" element={<Conversations />} />
                   <Route path="/knowledge" element={<KnowledgeBase />} />
                   <Route path="/support" element={<LiveSupport />} />
-                  <Route path="/analytics" element={<Analytics />} />
+                  <Route path="/analytics" element={<Navigate to="/reports" replace />} />
+                  <Route path="/nlp-query" element={<Navigate to="/reports" replace />} />
                   <Route path="/customer-360" element={<Customer360 />} />
                   <Route path="/journeys" element={<JourneyBuilder />} />
                   <Route path="/settings" element={<Settings />} />

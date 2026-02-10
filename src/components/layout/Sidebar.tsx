@@ -1,10 +1,10 @@
 import { NavLink } from 'react-router-dom';
 import {
   Home, LayoutDashboard, TrendingUp, Target, Users,
-  MessageSquare, Phone, BarChart3, Circle,
+  MessageSquare, Phone, Circle,
   Settings, ChevronLeft, ChevronRight, Layers, ChevronDown, GitBranch,
   Shield, CheckCircle, FileCheck, ClipboardCheck, LogOut, Activity,
-  Award, FileText, Brain
+  Award, FileText
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useMemo } from 'react';
@@ -50,10 +50,8 @@ const menuGroups: Array<{
   {
     label: 'Business Intelligence',
     items: [
-      { icon: FileText, label: 'Reports & Analysis', path: '/reports', permission: 'can_view_analytics' },
-      { icon: BarChart3, label: 'Analytics', path: '/analytics', permission: 'can_view_analytics' },
+      { icon: FileText, label: 'Reports & Analytics', path: '/reports', permission: 'can_view_analytics' },
       { icon: TrendingUp, label: 'Sentiment Analysis', path: '/sentiment-analysis', permission: 'can_view_analytics' },
-      { icon: Brain, label: 'NLP Report Query', path: '/nlp-query', permission: 'can_view_analytics' },
       { icon: Shield, label: 'Audit Trail', path: '/audit', permission: 'can_view_audit' },
       { icon: FileCheck, label: 'Governance', path: '/governance', permission: 'can_view_governance' },
     ]
