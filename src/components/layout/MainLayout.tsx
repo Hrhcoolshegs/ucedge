@@ -1,19 +1,8 @@
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
-import { ContextualNLP } from '@/components/common/ContextualNLP';
 
 export const MainLayout = () => {
-  const location = useLocation();
-
-  const getCurrentPageContext = () => {
-    const path = location.pathname.split('/')[1] || 'dashboard';
-    return {
-      page: path,
-      section: location.pathname.split('/')[2],
-    };
-  };
-
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar />
@@ -29,7 +18,6 @@ export const MainLayout = () => {
           </div>
         </footer>
       </div>
-      <ContextualNLP context={getCurrentPageContext()} />
     </div>
   );
 };

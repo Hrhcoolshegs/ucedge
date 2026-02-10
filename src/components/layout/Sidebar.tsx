@@ -1,11 +1,10 @@
 import { NavLink } from 'react-router-dom';
 import {
   Home, LayoutDashboard, TrendingUp, Target, Users,
-  MessageSquare, BookOpen, Phone, BarChart3, Circle,
+  MessageSquare, Phone, BarChart3, Circle,
   Settings, ChevronLeft, ChevronRight, Layers, ChevronDown, GitBranch,
   Shield, CheckCircle, FileCheck, ClipboardCheck, LogOut, Activity,
-  Rocket, Sparkles, Lightbulb, Award, GraduationCap,
-  MessageCircle, Bot, FileText, Brain
+  Award, MessageCircle, FileText, Brain
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useMemo } from 'react';
@@ -44,8 +43,6 @@ const menuGroups: Array<{
     label: 'Growth Automation',
     items: [
       { icon: Target, label: 'Product Targeting', path: '/campaigns', permission: 'can_create_campaigns' },
-      { icon: Sparkles, label: 'Personalization', path: '/personalization', permission: 'can_create_campaigns' },
-      { icon: Lightbulb, label: 'Product Education', path: '/product-education', permission: 'can_view_dashboard' },
       { icon: Award, label: 'Recommendations', path: '/recommendations', permission: 'can_view_dashboard' },
       { icon: TrendingUp, label: 'Premium Listings', path: '/premium-listings', permission: 'can_view_dashboard' },
     ]
@@ -59,13 +56,6 @@ const menuGroups: Array<{
       { icon: Brain, label: 'NLP Report Query', path: '/nlp-query', permission: 'can_view_analytics' },
       { icon: Shield, label: 'Audit Trail', path: '/audit', permission: 'can_view_audit' },
       { icon: FileCheck, label: 'Governance', path: '/governance', permission: 'can_view_governance' },
-    ]
-  },
-  {
-    label: 'Knowledge & Learning',
-    items: [
-      { icon: BookOpen, label: 'Knowledge Base', path: '/knowledge', permission: 'can_view_dashboard' },
-      { icon: GraduationCap, label: 'Learning Assistant', path: '/learning-assistant', permission: 'can_view_dashboard' },
     ]
   },
   {
@@ -96,7 +86,6 @@ export const Sidebar = () => {
     'Customer 360 Management': true,
     'Growth Automation': true,
     'Business Intelligence': true,
-    'Knowledge & Learning': true,
     'Support Automation': true,
     'Compliance & Approvals': true,
   });
