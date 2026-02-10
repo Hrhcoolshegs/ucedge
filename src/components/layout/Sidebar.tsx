@@ -43,7 +43,7 @@ const menuGroups: Array<{
     label: 'Growth Automation',
     items: [
       { icon: Target, label: 'Product Targeting', path: '/campaigns', permission: 'can_create_campaigns' },
-      { icon: Award, label: 'Recommendations', path: '/recommendations', permission: 'can_view_dashboard' },
+      { icon: Award, label: 'Recommendations & Insights', path: '/recommendations', permission: 'can_view_dashboard' },
       { icon: TrendingUp, label: 'Premium Listings', path: '/premium-listings', permission: 'can_view_dashboard' },
     ]
   },
