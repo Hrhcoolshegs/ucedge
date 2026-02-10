@@ -19,19 +19,34 @@
 
 ## Getting Started
 
-### Login Credentials
+### How to Login
 
-Use these demo accounts to explore different permission levels:
+UC-Edge uses an entity-based login system:
 
-- **Admin**: admin@ucplc.com / admin123
-- **Marketing**: marketing@ucplc.com / marketing123
-- **Campaign Manager**: campaigns@ucplc.com / campaigns123
-- **Analyst**: analyst@ucplc.com / analyst123
-- **Compliance**: compliance@ucplc.com / compliance123
+1. **Select Your Business Entity**:
+   - United Capital Investment Banking
+   - United Capital Microfinance Bank
+   - United Capital Asset Management
+   - United Capital Securities
+
+2. **Confirm Your User**:
+   - Each entity has a designated user
+   - Review your profile details
+
+3. **Enter OTP Code**: `123456`
+
+### Available Users
+
+| Entity | User | Email | Workspace |
+|--------|------|-------|-----------|
+| Investment Banking | Adewale Okonkwo | adewale.okonkwo@ucapital.com | Group Oversight |
+| Microfinance Bank | Funke Adeyemi | funke.adeyemi@ucapital.com | Customer Growth |
+| Asset Management | Chidi Nwosu | chidi.nwosu@ucapital.com | Analytics & Insights |
+| Securities | Zainab Bello | zainab.bello@ucapital.com | Relationship & Deals |
 
 ### First Steps
 
-1. Log in with your credentials
+1. Log in by selecting any entity and entering OTP: **123456**
 2. Navigate to **Dashboard** to see overall metrics
 3. Explore **Customers** to view your customer base
 4. Visit **Segments** to see predefined customer groups
@@ -450,20 +465,28 @@ Track regulatory compliance:
 
 ## User Roles & Permissions
 
-### Role Capabilities
+### Current Setup
 
-| Feature | Admin | Marketing | Campaign Manager | Analyst | Compliance |
-|---------|-------|-----------|------------------|---------|------------|
-| View Dashboard | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Create Segments | ✓ | ✓ | ✓ | ✗ | ✗ |
-| Create Campaigns | ✓ | ✓ | ✓ | ✗ | ✗ |
-| Build Journeys | ✓ | ✓ | ✓ | ✗ | ✗ |
-| View Analytics | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Export Data | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Approve Campaigns | ✓ | ✗ | ✗ | ✗ | ✓ |
-| Manage Users | ✓ | ✗ | ✗ | ✗ | ✗ |
-| Access Audit Logs | ✓ | ✗ | ✗ | ✗ | ✓ |
-| Governance Settings | ✓ | ✗ | ✗ | ✗ | ✓ |
+All users in the demo system have **Admin** access with full permissions across all features. Each user represents a different business entity and workspace focus:
+
+- **Adewale Okonkwo** (Investment Banking): Group Oversight focus
+- **Funke Adeyemi** (Microfinance Bank): Customer Growth focus
+- **Chidi Nwosu** (Asset Management): Analytics & Insights focus
+- **Zainab Bello** (Securities): Relationship & Deals focus
+
+### Admin Capabilities
+
+All users can:
+- View Dashboard across all tabs
+- Create and manage Segments
+- Create and manage Campaigns
+- Build and launch Journeys
+- View Analytics and Reports
+- Export Data
+- Approve Campaigns
+- Access Audit Logs
+- Review Governance Settings
+- Manage Consent and Compliance
 
 ---
 
