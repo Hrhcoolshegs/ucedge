@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import {
   Home, LayoutDashboard, TrendingUp, Target, Users,
-  MessageSquare, Phone, Circle,
+  Phone, Circle,
   Settings, ChevronLeft, ChevronRight, Layers, ChevronDown, GitBranch,
   Shield, CheckCircle, FileCheck, ClipboardCheck, LogOut, Activity,
   Award, FileText
@@ -44,7 +44,6 @@ const menuGroups: Array<{
     items: [
       { icon: Target, label: 'Product Targeting', path: '/campaigns', permission: 'can_create_campaigns' },
       { icon: Award, label: 'Recommendations & Insights', path: '/recommendations', permission: 'can_view_dashboard' },
-      { icon: TrendingUp, label: 'Premium Listings', path: '/premium-listings', permission: 'can_view_dashboard' },
     ]
   },
   {
@@ -60,7 +59,6 @@ const menuGroups: Array<{
     label: 'Support Automation',
     items: [
       { icon: Phone, label: 'Live Support', path: '/support', permission: 'can_view_customers' },
-      { icon: MessageSquare, label: 'Conversations', path: '/conversations', permission: 'can_view_customers' },
     ]
   },
   {
