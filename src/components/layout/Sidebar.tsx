@@ -35,7 +35,7 @@ const menuGroups: Array<{
     items: [
       { icon: Circle, label: 'Customer 360', path: '/customer-360', permission: 'can_view_customers' },
       { icon: GitBranch, label: 'Journey Automation', path: '/journeys', permission: 'can_create_journeys' },
-      { icon: Layers, label: 'Detailed Segmentation', path: '/segments', permission: 'can_manage_segments' },
+      { icon: Layers, label: 'Segmentation', path: '/segments', permission: 'can_manage_segments' },
       { icon: Activity, label: 'Churn Prevention', path: '/churn-config', permission: 'can_view_customers' },
       { icon: Wallet, label: 'Personal Finance', path: '/personal-finance', permission: 'can_view_customers' },
       { icon: Users, label: 'All Customers', path: '/customers', permission: 'can_view_customers' },

@@ -36,13 +36,13 @@ export const Customer360 = () => {
   const filteredCustomers = useMemo(() => {
     return customers.filter(customer => {
       const matchesSearch = !searchQuery ||
-        selectedCustomer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        selectedCustomer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        selectedCustomer.phone.includes(searchQuery);
+        customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        customer.phone.includes(searchQuery);
 
-      const matchesLifecycle = lifecycleFilter === 'all' || selectedCustomer.lifecycleStage === lifecycleFilter;
-      const matchesRisk = riskFilter === 'all' || selectedCustomer.churnRisk === riskFilter;
-      const matchesLocation = locationFilter === 'all' || selectedCustomer.location === locationFilter;
+      const matchesLifecycle = lifecycleFilter === 'all' || customer.lifecycleStage === lifecycleFilter;
+      const matchesRisk = riskFilter === 'all' || customer.churnRisk === riskFilter;
+      const matchesLocation = locationFilter === 'all' || customer.location === locationFilter;
 
       return matchesSearch && matchesLifecycle && matchesRisk && matchesLocation;
     });
@@ -154,7 +154,18 @@ export const Customer360 = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="p-6">
-          <h3 className="text-lg font-semibold text-foreground mb-4">Lifecycle Segments</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-foreground">Lifecycle Segments</h3>
+            {lifecycleFilter !== 'all' && (
+              <Button variant="ghost" size="sm" onClick={() => {
+                setLifecycleFilter('all');
+                setCurrentPage(1);
+              }}>
+                <X className="h-4 w-4 mr-1" />
+                Clear
+              </Button>
+            )}
+          </div>
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
               <Pie
@@ -166,18 +177,39 @@ export const Customer360 = () => {
                 outerRadius={80}
                 fill="#8884d8"
                 dataKey="value"
+                onClick={(data) => {
+                  setLifecycleFilter(data.name);
+                  setCurrentPage(1);
+                }}
+                cursor="pointer"
               >
                 {lifecycleSegments.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                    opacity={lifecycleFilter === 'all' || lifecycleFilter === entry.name ? 1 : 0.3}
+                  />
                 ))}
               </Pie>
               <Tooltip />
             </PieChart>
           </ResponsiveContainer>
+          <p className="text-xs text-muted-foreground mt-2 text-center">Click on a segment to filter customers</p>
         </Card>
 
         <Card className="p-6">
-          <h3 className="text-lg font-semibold text-foreground mb-4">Churn Risk Distribution</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-foreground">Churn Risk Distribution</h3>
+            {riskFilter !== 'all' && (
+              <Button variant="ghost" size="sm" onClick={() => {
+                setRiskFilter('all');
+                setCurrentPage(1);
+              }}>
+                <X className="h-4 w-4 mr-1" />
+                Clear
+              </Button>
+            )}
+          </div>
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
               <Pie
@@ -189,24 +221,50 @@ export const Customer360 = () => {
                 outerRadius={80}
                 fill="#8884d8"
                 dataKey="value"
+                onClick={(data) => {
+                  setRiskFilter(data.name);
+                  setCurrentPage(1);
+                }}
+                cursor="pointer"
               >
                 {riskSegments.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                    opacity={riskFilter === 'all' || riskFilter === entry.name ? 1 : 0.3}
+                  />
                 ))}
               </Pie>
               <Tooltip />
             </PieChart>
           </ResponsiveContainer>
+          <p className="text-xs text-muted-foreground mt-2 text-center">Click on a segment to filter customers</p>
         </Card>
       </div>
 
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-foreground">Customer Search & Filters</h3>
+          <div>
+            <h3 className="text-lg font-semibold text-foreground">Customer Search & Filters</h3>
+            {(lifecycleFilter !== 'all' || riskFilter !== 'all') && (
+              <div className="flex gap-2 mt-2">
+                {lifecycleFilter !== 'all' && (
+                  <Badge variant="default" className="capitalize">
+                    Lifecycle: {lifecycleFilter}
+                  </Badge>
+                )}
+                {riskFilter !== 'all' && (
+                  <Badge variant="default" className="capitalize">
+                    Risk: {riskFilter}
+                  </Badge>
+                )}
+              </div>
+            )}
+          </div>
           {activeFiltersCount > 0 && (
             <Button variant="outline" size="sm" onClick={clearFilters}>
               <X className="h-4 w-4 mr-1" />
-              Clear Filters ({activeFiltersCount})
+              Clear All Filters ({activeFiltersCount})
             </Button>
           )}
         </div>
