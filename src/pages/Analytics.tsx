@@ -55,6 +55,7 @@ export const Analytics = () => {
 
   useEffect(() => {
     const fetchGroup360Data = async () => {
+      if (!supabase) return;
       const [signalsResult, profilesResult, customersResult, campaignsResult] = await Promise.all([
         supabase
           .from('risk_signals')

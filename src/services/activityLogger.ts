@@ -72,6 +72,8 @@ class ActivityLogger {
         timestamp: new Date().toISOString(),
       };
 
+      if (!supabase) return;
+
       const { error } = await supabase
         .from('activity_logs')
         .insert(activityLog);

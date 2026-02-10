@@ -18,6 +18,7 @@ export const RiskTab = ({ customer }: RiskTabProps) => {
 
   useEffect(() => {
     const fetchRiskSignals = async () => {
+      if (!supabase) { setLoading(false); return; }
       const { data, error } = await supabase
         .from('risk_signals')
         .select(`

@@ -60,6 +60,7 @@ export const GroupTimelineTab = ({ customerId }: GroupTimelineTabProps) => {
 
   useEffect(() => {
     const fetchTimeline = async () => {
+      if (!supabase) { setLoading(false); return; }
       const { data, error } = await supabase
         .from('customer_timeline_events')
         .select(`

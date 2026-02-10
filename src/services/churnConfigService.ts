@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase';
 import type { ChurnStage, ChurnMetric, ChurnMetricWithStage } from '@/types/churn';
 
 export async function fetchChurnStages(): Promise<ChurnStage[]> {
+  if (!supabase) return [];
   const { data, error } = await supabase
     .from('churn_stages')
     .select('*')
@@ -12,6 +13,7 @@ export async function fetchChurnStages(): Promise<ChurnStage[]> {
 }
 
 export async function fetchChurnMetrics(): Promise<ChurnMetricWithStage[]> {
+  if (!supabase) return [];
   const { data, error } = await supabase
     .from('churn_metrics')
     .select('*, churn_stage:churn_stages(*)')
@@ -27,6 +29,7 @@ export async function fetchChurnMetrics(): Promise<ChurnMetricWithStage[]> {
 export async function createChurnMetric(
   metric: Omit<ChurnMetric, 'id' | 'created_at' | 'updated_at'>
 ): Promise<ChurnMetric> {
+  if (!supabase) throw new Error('Supabase not configured');
   const { data, error } = await supabase
     .from('churn_metrics')
     .insert(metric)
@@ -42,6 +45,7 @@ export async function updateChurnMetric(
   id: string,
   updates: Partial<ChurnMetric>
 ): Promise<ChurnMetric> {
+  if (!supabase) throw new Error('Supabase not configured');
   const { data, error } = await supabase
     .from('churn_metrics')
     .update({ ...updates, updated_at: new Date().toISOString() })
@@ -55,6 +59,7 @@ export async function updateChurnMetric(
 }
 
 export async function toggleChurnMetric(id: string, is_active: boolean): Promise<void> {
+  if (!supabase) return;
   const { error } = await supabase
     .from('churn_metrics')
     .update({ is_active, updated_at: new Date().toISOString() })
@@ -64,6 +69,7 @@ export async function toggleChurnMetric(id: string, is_active: boolean): Promise
 }
 
 export async function deleteChurnMetric(id: string): Promise<void> {
+  if (!supabase) return;
   const { error } = await supabase
     .from('churn_metrics')
     .delete()

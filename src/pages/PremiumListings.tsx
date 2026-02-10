@@ -61,6 +61,7 @@ export const PremiumListings = () => {
 
   const fetchListings = async () => {
     try {
+      if (!supabase) { setLoading(false); return; }
       setLoading(true);
       const { data, error } = await supabase
         .from('premium_listings')
@@ -102,6 +103,7 @@ export const PremiumListings = () => {
 
   const handleSubmit = async () => {
     try {
+      if (!supabase) return;
       if (editingListing) {
         const { error } = await supabase
           .from('premium_listings')
@@ -141,6 +143,7 @@ export const PremiumListings = () => {
 
   const updateListingStatus = async (id: string, status: string) => {
     try {
+      if (!supabase) return;
       const { error } = await supabase
         .from('premium_listings')
         .update({ status })

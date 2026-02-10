@@ -15,6 +15,7 @@ export const BusinessProfilesTab = ({ customerId }: BusinessProfilesTabProps) =>
 
   useEffect(() => {
     const fetchProfiles = async () => {
+      if (!supabase) { setLoading(false); return; }
       const { data, error } = await supabase
         .from('customer_business_profiles')
         .select(`

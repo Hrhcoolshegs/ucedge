@@ -26,6 +26,7 @@ export default function ConsentManagement() {
 
   useEffect(() => {
     const fetchGovernanceData = async () => {
+      if (!supabase) { setLoading(false); return; }
       const [approvalsResult, settingsResult] = await Promise.all([
         supabase
           .from('approvals')
