@@ -4,7 +4,7 @@ import {
   MessageSquare, BookOpen, Phone, BarChart3, Circle,
   Settings, ChevronLeft, ChevronRight, Layers, ChevronDown, GitBranch,
   Shield, CheckCircle, FileCheck, ClipboardCheck, LogOut, Activity,
-  Wallet, Rocket, Sparkles, Lightbulb, Award, GraduationCap,
+  Rocket, Sparkles, Lightbulb, Award, GraduationCap,
   MessageCircle, Bot, FileText, Brain
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -37,7 +37,6 @@ const menuGroups: Array<{
       { icon: GitBranch, label: 'Journey Automation', path: '/journeys', permission: 'can_create_journeys' },
       { icon: Layers, label: 'Segmentation', path: '/segments', permission: 'can_manage_segments' },
       { icon: Activity, label: 'Churn Prevention', path: '/churn-config', permission: 'can_view_customers' },
-      { icon: Wallet, label: 'Personal Finance', path: '/personal-finance', permission: 'can_view_customers' },
       { icon: Users, label: 'All Customers', path: '/customers', permission: 'can_view_customers' },
     ]
   },
