@@ -4,7 +4,7 @@ import {
   MessageSquare, Phone, BarChart3, Circle,
   Settings, ChevronLeft, ChevronRight, Layers, ChevronDown, GitBranch,
   Shield, CheckCircle, FileCheck, ClipboardCheck, LogOut, Activity,
-  Award, MessageCircle, FileText, Brain
+  Award, FileText, Brain
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useMemo } from 'react';
@@ -63,7 +63,6 @@ const menuGroups: Array<{
     items: [
       { icon: Phone, label: 'Live Support', path: '/support', permission: 'can_view_customers' },
       { icon: MessageSquare, label: 'Conversations', path: '/conversations', permission: 'can_view_customers' },
-      { icon: MessageCircle, label: 'Omni-channel', path: '/omni-channel', permission: 'can_view_customers' },
     ]
   },
   {
