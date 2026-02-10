@@ -31,8 +31,6 @@ const getSentimentBucketColor = (bucket: string): string => {
 export const SegmentDetailsModal = ({ open, onOpenChange, segment, customers }: SegmentDetailsModalProps) => {
   const [expandedBuckets, setExpandedBuckets] = useState<Set<string>>(new Set());
 
-  if (!segment) return null;
-
   const customersByBucket = customers.reduce((acc, customer) => {
     const bucket = customer.sentimentBucket || 'unknown';
     if (!acc[bucket]) {
@@ -68,6 +66,8 @@ export const SegmentDetailsModal = ({ open, onOpenChange, segment, customers }: 
 
   const totalLTV = customers.reduce((sum, c) => sum + c.lifetimeValue, 0);
   const avgLTV = customers.length > 0 ? totalLTV / customers.length : 0;
+
+  if (!segment) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
