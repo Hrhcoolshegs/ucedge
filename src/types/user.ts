@@ -8,6 +8,9 @@ export interface PlatformUser {
   avatarInitials: string;
   workspace: string;
   workspaceDescription: string;
+  entity: string;
+  entityShort: string;
+  entityDescription: string;
   lastActive: Date;
   status: 'active' | 'inactive';
 }
@@ -21,6 +24,9 @@ export const PLATFORM_USERS: PlatformUser[] = [
     avatarInitials: 'AO',
     workspace: 'Group Oversight',
     workspaceDescription: 'Cross-business monitoring, approvals & compliance',
+    entity: 'United Capital Investment Banking',
+    entityShort: 'Investment Banking',
+    entityDescription: 'Advisory, capital raising & structured finance',
     lastActive: new Date(),
     status: 'active',
   },
@@ -32,6 +38,9 @@ export const PLATFORM_USERS: PlatformUser[] = [
     avatarInitials: 'FA',
     workspace: 'Customer Growth',
     workspaceDescription: 'Campaigns, journeys & customer acquisition',
+    entity: 'United Capital Microfinance Bank',
+    entityShort: 'Microfinance Bank',
+    entityDescription: 'Retail banking, micro-lending & financial inclusion',
     lastActive: new Date(Date.now() - 2 * 60 * 60 * 1000),
     status: 'active',
   },
@@ -43,6 +52,9 @@ export const PLATFORM_USERS: PlatformUser[] = [
     avatarInitials: 'CN',
     workspace: 'Analytics & Insights',
     workspaceDescription: 'Reports, dashboards & data intelligence',
+    entity: 'United Capital Asset Management',
+    entityShort: 'Asset Management',
+    entityDescription: 'Fund management, portfolio advisory & wealth solutions',
     lastActive: new Date(Date.now() - 5 * 60 * 60 * 1000),
     status: 'active',
   },
@@ -54,6 +66,9 @@ export const PLATFORM_USERS: PlatformUser[] = [
     avatarInitials: 'ZB',
     workspace: 'Relationship & Deals',
     workspaceDescription: 'Portfolio management, deals & client relations',
+    entity: 'United Capital Securities',
+    entityShort: 'Securities',
+    entityDescription: 'Stockbroking, trading & securities dealing',
     lastActive: new Date(Date.now() - 3 * 60 * 60 * 1000),
     status: 'active',
   },

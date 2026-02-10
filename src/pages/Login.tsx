@@ -1,71 +1,96 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { PLATFORM_USERS } from '@/types/user';
+import { PLATFORM_USERS, PlatformUser } from '@/types/user';
 import {
-  Eye,
-  TrendingUp,
-  BarChart3,
-  Handshake,
   ArrowRight,
   ArrowLeft,
   ShieldCheck,
   Loader2,
-  Shield,
+  Building2,
+  Landmark,
+  PiggyBank,
+  BarChart3,
+  CandlestickChart,
+  User,
 } from 'lucide-react';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import bannerImage from '@/assets/ucap-corporate-brochure-1.jpg';
 
-const WORKSPACE_CONFIG: Record<string, { icon: typeof Shield; color: string; bgColor: string; borderColor: string }> = {
-  'Group Oversight': {
-    icon: Eye,
-    color: 'text-rose-600',
-    bgColor: 'bg-rose-500/10',
-    borderColor: 'border-rose-200 hover:border-rose-400',
+const ENTITY_CONFIG: Record<string, { icon: typeof Building2; gradient: string; iconBg: string; iconColor: string; accent: string }> = {
+  'United Capital Investment Banking': {
+    icon: Landmark,
+    gradient: 'from-slate-50 to-stone-50',
+    iconBg: 'bg-slate-100',
+    iconColor: 'text-slate-600',
+    accent: 'border-slate-200 hover:border-slate-400 hover:shadow-lg',
   },
-  'Customer Growth': {
-    icon: TrendingUp,
-    color: 'text-teal-600',
-    bgColor: 'bg-teal-500/10',
-    borderColor: 'border-teal-200 hover:border-teal-400',
+  'United Capital Microfinance Bank': {
+    icon: PiggyBank,
+    gradient: 'from-teal-50 to-emerald-50',
+    iconBg: 'bg-teal-100',
+    iconColor: 'text-teal-600',
+    accent: 'border-teal-200 hover:border-teal-400 hover:shadow-lg',
   },
-  'Analytics & Insights': {
+  'United Capital Asset Management': {
     icon: BarChart3,
-    color: 'text-sky-600',
-    bgColor: 'bg-sky-500/10',
-    borderColor: 'border-sky-200 hover:border-sky-400',
+    gradient: 'from-sky-50 to-blue-50',
+    iconBg: 'bg-sky-100',
+    iconColor: 'text-sky-600',
+    accent: 'border-sky-200 hover:border-sky-400 hover:shadow-lg',
   },
-  'Relationship & Deals': {
-    icon: Handshake,
-    color: 'text-amber-600',
-    bgColor: 'bg-amber-500/10',
-    borderColor: 'border-amber-200 hover:border-amber-400',
+  'United Capital Securities': {
+    icon: CandlestickChart,
+    gradient: 'from-amber-50 to-orange-50',
+    iconBg: 'bg-amber-100',
+    iconColor: 'text-amber-600',
+    accent: 'border-amber-200 hover:border-amber-400 hover:shadow-lg',
   },
 };
+
+type LoginStep = 'entity' | 'user' | 'otp';
 
 export const Login = () => {
   const { pendingUser, selectUser, verifyOtp, cancelOtp } = useAuth();
   const navigate = useNavigate();
+  const [step, setStep] = useState<LoginStep>('entity');
+  const [selectedEntity, setSelectedEntity] = useState<string | null>(null);
   const [otpValue, setOtpValue] = useState('');
   const [otpError, setOtpError] = useState(false);
   const [verifying, setVerifying] = useState(false);
 
-  const handleSelect = (userId: string) => {
+  const entityUser = selectedEntity
+    ? PLATFORM_USERS.find(u => u.entity === selectedEntity) || null
+    : null;
+
+  const handleEntitySelect = (entity: string) => {
+    setSelectedEntity(entity);
+    setStep('user');
+  };
+
+  const handleUserProceed = () => {
+    if (!entityUser) return;
+    selectUser(entityUser.id);
     setOtpValue('');
     setOtpError(false);
-    selectUser(userId);
+    setStep('otp');
   };
 
   const handleBack = () => {
-    setOtpValue('');
-    setOtpError(false);
-    cancelOtp();
+    if (step === 'otp') {
+      cancelOtp();
+      setOtpValue('');
+      setOtpError(false);
+      setStep('user');
+    } else if (step === 'user') {
+      setSelectedEntity(null);
+      setStep('entity');
+    }
   };
 
   const handleVerify = () => {
     setOtpError(false);
     setVerifying(true);
-
     setTimeout(() => {
       const success = verifyOtp(otpValue);
       setVerifying(false);
@@ -83,27 +108,34 @@ export const Login = () => {
     setOtpError(false);
   };
 
-  const showOtp = !!pendingUser;
-
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
       <div className="w-full lg:w-[52%] min-h-screen flex items-center justify-center p-6 sm:p-10 lg:p-16 bg-white relative">
-        <div className="w-full max-w-[480px] space-y-8">
-          <div className="space-y-3">
-            <div className="flex items-center gap-3.5">
-              <div className="h-12 w-12 bg-[#C8102E] rounded-xl flex items-center justify-center shadow-sm">
-                <span className="text-white font-bold text-lg tracking-tight">UC</span>
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 tracking-tight">UC-Edge</h1>
-                <p className="text-xs text-gray-500 font-medium">United Capital Plc</p>
-              </div>
+        <div className="w-full max-w-[520px] space-y-8">
+          <div className="flex items-center gap-3.5">
+            <div className="h-12 w-12 bg-[#C8102E] rounded-xl flex items-center justify-center shadow-sm">
+              <span className="text-white font-bold text-lg tracking-tight">UC</span>
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 tracking-tight">UC-Edge</h1>
+              <p className="text-xs text-gray-500 font-medium">United Capital Plc</p>
             </div>
           </div>
 
-          {!showOtp ? (
-            <ProfileSelector onSelect={handleSelect} />
-          ) : (
+          {step === 'entity' && (
+            <EntitySelector onSelect={handleEntitySelect} />
+          )}
+
+          {step === 'user' && entityUser && selectedEntity && (
+            <UserConfirmation
+              user={entityUser}
+              entity={selectedEntity}
+              onProceed={handleUserProceed}
+              onBack={handleBack}
+            />
+          )}
+
+          {step === 'otp' && pendingUser && (
             <OtpStep
               user={pendingUser}
               otpValue={otpValue}
@@ -145,42 +177,38 @@ export const Login = () => {
   );
 };
 
-function ProfileSelector({ onSelect }: { onSelect: (id: string) => void }) {
+function EntitySelector({ onSelect }: { onSelect: (entity: string) => void }) {
+  const entities = PLATFORM_USERS.map(u => ({
+    name: u.entity,
+    short: u.entityShort,
+    description: u.entityDescription,
+  }));
+
   return (
     <div className="space-y-6">
       <div className="space-y-1.5">
-        <h2 className="text-[28px] font-bold text-gray-900 tracking-tight">Welcome back</h2>
-        <p className="text-gray-500 text-sm">Select your workspace to continue</p>
+        <h2 className="text-[28px] font-bold text-gray-900 tracking-tight">Welcome</h2>
+        <p className="text-gray-500 text-sm">Select your business entity to continue</p>
       </div>
 
-      <div className="space-y-3">
-        {PLATFORM_USERS.map((u) => {
-          const config = WORKSPACE_CONFIG[u.workspace] ?? WORKSPACE_CONFIG['Group Oversight'];
+      <div className="grid grid-cols-2 gap-3">
+        {entities.map((entity) => {
+          const config = ENTITY_CONFIG[entity.name];
+          if (!config) return null;
           const Icon = config.icon;
 
           return (
             <button
-              key={u.id}
-              onClick={() => onSelect(u.id)}
-              className={`w-full group flex items-center gap-4 p-4 rounded-xl border ${config.borderColor} bg-white transition-all duration-200 hover:shadow-md cursor-pointer text-left`}
+              key={entity.name}
+              onClick={() => onSelect(entity.name)}
+              className={`group relative flex flex-col items-start p-5 rounded-2xl border bg-gradient-to-br ${config.gradient} ${config.accent} transition-all duration-300 cursor-pointer text-left`}
             >
-              <div className={`h-11 w-11 rounded-lg ${config.bgColor} flex items-center justify-center shrink-0`}>
-                <Icon className={`h-5 w-5 ${config.color}`} />
+              <div className={`h-11 w-11 rounded-xl ${config.iconBg} flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110`}>
+                <Icon className={`h-5.5 w-5.5 ${config.iconColor}`} />
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <p className="font-semibold text-gray-900 text-[15px]">{u.name}</p>
-                  <span className="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded font-medium uppercase tracking-wider">
-                    Admin
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className={`text-xs font-medium ${config.color}`}>{u.workspace}</span>
-                  <span className="text-gray-300 text-xs">--</span>
-                  <span className="text-xs text-gray-400 truncate">{u.workspaceDescription}</span>
-                </div>
-              </div>
-              <ArrowRight className="h-4 w-4 text-gray-300 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 shrink-0" />
+              <p className="font-semibold text-gray-900 text-[15px] leading-tight mb-1">{entity.short}</p>
+              <p className="text-xs text-gray-500 leading-relaxed">{entity.description}</p>
+              <ArrowRight className="absolute top-5 right-5 h-4 w-4 text-gray-300 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
             </button>
           );
         })}
@@ -189,8 +217,77 @@ function ProfileSelector({ onSelect }: { onSelect: (id: string) => void }) {
   );
 }
 
+function UserConfirmation({
+  user,
+  entity,
+  onProceed,
+  onBack,
+}: {
+  user: PlatformUser;
+  entity: string;
+  onProceed: () => void;
+  onBack: () => void;
+}) {
+  const config = ENTITY_CONFIG[entity];
+  const Icon = config?.icon || Building2;
+
+  return (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <button
+          onClick={onBack}
+          className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-700 transition-colors mb-1"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          All Entities
+        </button>
+        <h2 className="text-[28px] font-bold text-gray-900 tracking-tight">Sign in</h2>
+        <p className="text-gray-500 text-sm">Continue as the account holder below</p>
+      </div>
+
+      <div className={`flex items-center gap-3 p-3 rounded-xl border ${config?.accent.split(' ')[0] || 'border-gray-200'} bg-gradient-to-br ${config?.gradient || ''}`}>
+        <div className={`h-9 w-9 rounded-lg ${config?.iconBg || 'bg-gray-100'} flex items-center justify-center shrink-0`}>
+          <Icon className={`h-4.5 w-4.5 ${config?.iconColor || 'text-gray-600'}`} />
+        </div>
+        <div className="min-w-0">
+          <p className="font-semibold text-gray-800 text-sm">{user.entityShort}</p>
+          <p className="text-xs text-gray-500 truncate">{user.entityDescription}</p>
+        </div>
+      </div>
+
+      <div className="border border-gray-200 rounded-2xl p-6 bg-white space-y-5">
+        <div className="flex flex-col items-center text-center space-y-3">
+          <div className="h-16 w-16 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+            <User className="h-7 w-7 text-gray-500" />
+          </div>
+          <div>
+            <p className="text-lg font-bold text-gray-900">{user.name}</p>
+            <p className="text-sm text-gray-500">{user.email}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] bg-[#C8102E]/10 text-[#C8102E] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
+              {user.role}
+            </span>
+            <span className="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-medium">
+              {user.workspace}
+            </span>
+          </div>
+        </div>
+
+        <button
+          onClick={onProceed}
+          className="w-full h-11 rounded-xl bg-[#C8102E] text-white font-semibold text-sm hover:bg-[#A00D24] transition-all duration-200 flex items-center justify-center gap-2 group"
+        >
+          Continue as {user.name.split(' ')[0]}
+          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 interface OtpStepProps {
-  user: { name: string; email: string; avatarInitials: string; role: string; workspace: string };
+  user: PlatformUser;
   otpValue: string;
   otpError: boolean;
   verifying: boolean;
@@ -200,7 +297,7 @@ interface OtpStepProps {
 }
 
 function OtpStep({ user, otpValue, otpError, verifying, onOtpChange, onVerify, onBack }: OtpStepProps) {
-  const config = WORKSPACE_CONFIG[user.workspace] ?? WORKSPACE_CONFIG['Group Oversight'];
+  const config = ENTITY_CONFIG[user.entity];
 
   return (
     <div className="space-y-6">
@@ -218,13 +315,13 @@ function OtpStep({ user, otpValue, otpError, verifying, onOtpChange, onVerify, o
         </p>
       </div>
 
-      <div className={`flex items-center gap-3.5 p-3.5 rounded-xl border ${config.borderColor.split(' ')[0]} bg-gray-50/50`}>
-        <div className={`h-10 w-10 rounded-lg ${config.bgColor} flex items-center justify-center shrink-0`}>
-          <span className={`text-sm font-bold ${config.color}`}>{user.avatarInitials}</span>
+      <div className={`flex items-center gap-3.5 p-3.5 rounded-xl border ${config?.accent.split(' ')[0] || 'border-gray-200'} bg-gray-50/50`}>
+        <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center shrink-0">
+          <span className="text-sm font-bold text-gray-600">{user.avatarInitials}</span>
         </div>
         <div className="min-w-0">
           <p className="font-semibold text-gray-900 text-sm">{user.name}</p>
-          <p className="text-xs text-gray-400 truncate">{user.workspace} -- {user.email}</p>
+          <p className="text-xs text-gray-400 truncate">{user.entityShort} -- {user.email}</p>
         </div>
       </div>
 
