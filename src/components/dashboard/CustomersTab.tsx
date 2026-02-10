@@ -57,7 +57,8 @@ export const CustomersTab = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Lifecycle Segmentation Chart */}
         <div className="lg:col-span-1">
-          <ChartCard title="Customer Lifecycle Segmentation">
+          <ChartCard title="Customer Lifecycle Segmentation" explanation="Distribution of customers across lifecycle stages. Shows how many customers are New, Active, Loyal, At-Risk, Churned, or Reactivated. Use this to understand customer health and identify stages needing attention."
+>
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
@@ -82,7 +83,8 @@ export const CustomersTab = () => {
 
         {/* Customer Lifecycle Funnel */}
         <div className="lg:col-span-2">
-          <ChartCard title="Customer Lifecycle Funnel">
+          <ChartCard title="Customer Lifecycle Funnel" explanation="Shows customer progression through onboarding stages. Identifies drop-off points between registration, KYC completion, first deposit, and repeat purchases. Low conversion at any stage signals where to improve user experience."
+>
             <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <div className="flex-1 bg-gradient-to-r from-blue-500 to-blue-400 h-12 rounded flex items-center px-4 text-white font-medium">

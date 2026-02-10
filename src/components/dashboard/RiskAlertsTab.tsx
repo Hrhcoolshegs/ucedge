@@ -48,6 +48,7 @@ export const RiskAlertsTab = () => {
           icon={AlertCircle}
           iconColor="text-destructive"
           borderColor="border-t-destructive"
+          explanation="Customers with an 80%+ probability of churning within the next 30 days. Requires immediate intervention with personalized retention campaigns, special offers, or direct contact from relationship managers."
         />
         <MetricCard
           title="Medium Risk"
@@ -55,6 +56,7 @@ export const RiskAlertsTab = () => {
           icon={AlertTriangle}
           iconColor="text-warning"
           borderColor="border-t-warning"
+          explanation="Customers showing early warning signs of disengagement (50-79% churn probability). Proactive engagement through automated campaigns can prevent escalation to high risk."
         />
         <MetricCard
           title="At-Risk (Lifecycle)"
@@ -62,12 +64,14 @@ export const RiskAlertsTab = () => {
           icon={TrendingDown}
           iconColor="text-warning"
           borderColor="border-t-warning"
+          explanation="Customers in the 'At-Risk' lifecycle stage based on behavioral patterns like reduced login frequency or declining transaction activity. Monitor closely and trigger win-back campaigns."
         />
         <MetricCard
           title="Churned This Month"
           value={churned.toString()}
           icon={UserMinus}
           iconColor="text-muted-foreground"
+          explanation="Customers who became inactive this month (no transactions or logins for 60+ days). Analyze common patterns among churned customers to improve retention strategies."
         />
         <MetricCard
           title="Recovered"
@@ -75,6 +79,7 @@ export const RiskAlertsTab = () => {
           icon={UserCheck}
           iconColor="text-success"
           borderColor="border-t-success"
+          explanation="Previously churned customers who have been successfully reactivated through win-back campaigns. This metric validates the effectiveness of retention efforts and win-back strategies."
         />
         <MetricCard
           title="Pending Churn"
@@ -82,11 +87,13 @@ export const RiskAlertsTab = () => {
           icon={AlertOctagon}
           iconColor="text-destructive"
           borderColor="border-t-destructive"
+          explanation="Customers identified as likely to churn very soon based on recent behavioral changes or critical events (e.g., service complaints, failed transactions). Requires urgent attention within 48 hours."
         />
       </div>
 
       {/* Lifecycle Flow Visualization */}
-      <ChartCard title="Customer Lifecycle Flow" subtitle="Movement between stages this month">
+      <ChartCard title="Customer Lifecycle Flow" subtitle="Movement between stages this month" explanation="Visualizes how customers move through different lifecycle stages. Understand the flow from New to Active to Loyal, and identify drop-off points where customers become At-Risk or Churned."
+>
         <div className="bg-muted/30 rounded-lg p-8 text-center">
           <div className="space-y-4">
             <div className="flex items-center justify-center gap-4 flex-wrap">

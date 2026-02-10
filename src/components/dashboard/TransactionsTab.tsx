@@ -112,6 +112,7 @@ export const TransactionsTab = () => {
           icon={DollarSign}
           iconColor="text-primary"
           borderColor="border-t-primary"
+          explanation="Total number of all transaction attempts made today, including successful, failed, and pending transactions. Helps monitor daily platform activity and identify unusual spikes or drops."
         />
         <MetricCard
           title="Total Value Today"
@@ -120,6 +121,7 @@ export const TransactionsTab = () => {
           icon={TrendingUp}
           iconColor="text-secondary"
           borderColor="border-t-secondary"
+          explanation="Total monetary value of all successfully completed transactions today. This reflects actual money flow through the platform and directly impacts revenue generation."
         />
         <MetricCard
           title="Success Rate"
@@ -128,6 +130,7 @@ export const TransactionsTab = () => {
           icon={CheckCircle}
           iconColor="text-success"
           borderColor="border-t-success"
+          explanation="Percentage of transactions that completed successfully today. A high success rate (above 95%) indicates good system reliability. Lower rates may signal technical issues or payment gateway problems."
         />
         <MetricCard
           title="Failed Transactions"
@@ -136,11 +139,13 @@ export const TransactionsTab = () => {
           icon={XCircle}
           iconColor="text-warning"
           borderColor="border-t-warning"
+          explanation="Number of transactions that failed today due to technical errors, insufficient funds, or payment gateway issues. Monitor this to identify and resolve recurring problems."
         />
       </div>
 
       {/* Transaction Volume Chart */}
-      <ChartCard title="Transaction Volume & Value Trend" subtitle="Last 30 days">
+      <ChartCard title="Transaction Volume & Value Trend" subtitle="Last 30 days" explanation="Shows both transaction count and monetary value over the past 30 days. Use this to identify patterns, peak transaction periods, and correlate volume with value to understand customer behavior."
+>
         <ResponsiveContainer width="100%" height={300}>
           <ComposedChart data={last30DaysData}>
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -164,7 +169,8 @@ export const TransactionsTab = () => {
       {/* Two Charts Side by Side */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Type Breakdown */}
-        <ChartCard title="Transaction Type Breakdown">
+        <ChartCard title="Transaction Type Breakdown" explanation="Distribution of transaction types across deposits, withdrawals, transfers, and investments. Helps identify which services are most used and informs product development priorities."
+>
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
               <Pie
@@ -187,7 +193,8 @@ export const TransactionsTab = () => {
         </ChartCard>
 
         {/* Channel Performance */}
-        <ChartCard title="Channel Performance">
+        <ChartCard title="Channel Performance" explanation="Compares transaction volume and success rates across different channels (mobile, web, branch, ATM). Use this to identify which channels need optimization and where to focus infrastructure investments."
+>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={channelPerformance} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />

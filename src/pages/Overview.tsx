@@ -79,6 +79,7 @@ export const Overview = () => {
           change={3.2}
           icon={Users}
           iconColor="text-primary"
+          explanation="The total number of unique customers registered on the platform. This includes all customers regardless of their current status or activity level. A growing customer base indicates successful acquisition efforts and market expansion."
         />
         <MetricCard
           title="Active Users"
@@ -87,6 +88,7 @@ export const Overview = () => {
           icon={UserCheck}
           iconColor="text-success"
           borderColor="border-t-success"
+          explanation="Customers who have logged in and performed at least one transaction in the last 30 days. This metric reflects platform engagement and is crucial for understanding customer retention and product stickiness."
         />
         <MetricCard
           title="Transaction Volume"
@@ -95,6 +97,7 @@ export const Overview = () => {
           icon={TrendingUp}
           iconColor="text-secondary"
           borderColor="border-t-secondary"
+          explanation="The total monetary value of all completed transactions on the platform. This is a key indicator of business health and customer activity. Growth in transaction volume suggests increased customer engagement and trust."
         />
         <MetricCard
           title="Revenue"
@@ -103,6 +106,7 @@ export const Overview = () => {
           icon={DollarSign}
           iconColor="text-secondary"
           borderColor="border-t-secondary"
+          explanation="Total revenue generated from platform fees and services. Calculated as 2% of transaction volume plus other service fees. This metric directly reflects the financial performance and profitability of the business."
         />
       </div>
 
@@ -113,6 +117,7 @@ export const Overview = () => {
           change={-15.3}
           icon={MessageSquare}
           iconColor="text-primary"
+          explanation="Total number of customer support requests received across all channels. A decreasing trend indicates improved product quality, better user experience, or more effective self-service options. Monitor this to ensure customer satisfaction."
         />
         <MetricCard
           title="Campaign ROI"
@@ -120,6 +125,7 @@ export const Overview = () => {
           icon={Target}
           iconColor="text-secondary"
           borderColor="border-t-secondary"
+          explanation="Return on Investment for marketing campaigns. A 3.8x ROI means for every ₦1 spent on campaigns, you generate ₦3.80 in revenue. This measures campaign effectiveness and helps optimize marketing budget allocation."
         />
         <MetricCard
           title="Avg Customer LTV"
@@ -128,6 +134,7 @@ export const Overview = () => {
           icon={Wallet}
           iconColor="text-secondary"
           borderColor="border-t-secondary"
+          explanation="Lifetime Value (LTV) represents the average total revenue expected from a customer over their entire relationship with the platform. Higher LTV indicates strong customer loyalty and repeat business. Use this to guide customer acquisition cost decisions."
         />
         <MetricCard
           title="Churn Rate"
@@ -136,6 +143,7 @@ export const Overview = () => {
           icon={AlertTriangle}
           iconColor="text-warning"
           borderColor="border-t-warning"
+          explanation="Percentage of customers who stopped using the platform or became inactive. A lower churn rate is better and indicates good customer retention. Monitor this closely and implement retention strategies to keep customers engaged."
         />
       </div>
 
@@ -145,6 +153,7 @@ export const Overview = () => {
           <ChartCard
             title="Revenue Trend (Last 12 Months)"
             subtitle="Monthly revenue performance"
+            explanation="Visualizes the platform's monthly revenue over the past year. Use this to identify seasonal patterns, growth trends, and the impact of major initiatives. Consistent upward trends indicate healthy business growth, while dips may signal areas requiring attention."
           >
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={revenueData}>
@@ -184,6 +193,7 @@ export const Overview = () => {
           <ChartCard
             title="Customer Growth"
             subtitle="New customers per month"
+            explanation="Tracks the growth of the customer base over the last 6 months. A steady increase shows successful marketing and acquisition efforts. Use this to evaluate the effectiveness of onboarding campaigns and adjust acquisition strategies accordingly."
           >
             <ResponsiveContainer width="100%" height={300}>
               <AreaChart data={customerGrowthData}>

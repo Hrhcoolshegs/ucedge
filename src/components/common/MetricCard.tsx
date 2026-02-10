@@ -1,5 +1,6 @@
 import { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { ExplainButton } from './ExplainButton';
 
 interface MetricCardProps {
   title: string;
@@ -8,6 +9,7 @@ interface MetricCardProps {
   icon: LucideIcon;
   iconColor?: string;
   borderColor?: string;
+  explanation?: string;
 }
 
 export const MetricCard = ({
@@ -16,12 +18,16 @@ export const MetricCard = ({
   change,
   icon: Icon,
   iconColor = 'text-primary',
-  borderColor = 'border-t-primary'
+  borderColor = 'border-t-primary',
+  explanation
 }: MetricCardProps) => {
   return (
     <div className={cn("bg-card rounded-lg shadow-sm border-t-4 p-6", borderColor)}>
       <div className="flex items-center justify-between mb-2">
-        <p className="text-sm text-muted-foreground">{title}</p>
+        <div className="flex items-center gap-2">
+          <p className="text-sm text-muted-foreground">{title}</p>
+          {explanation && <ExplainButton explanation={explanation} />}
+        </div>
         <Icon className={cn('h-5 w-5', iconColor)} />
       </div>
       <h3 className="text-2xl font-bold text-foreground">{value}</h3>

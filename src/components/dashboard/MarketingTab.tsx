@@ -34,6 +34,7 @@ export const MarketingTab = () => {
           icon={Play}
           iconColor="text-primary"
           borderColor="border-t-primary"
+          explanation="Number of campaigns currently running and actively sending messages to customers. Monitor this to ensure balanced campaign frequency and avoid message fatigue."
         />
         <MetricCard
           title="Total Sent This Month"
@@ -42,6 +43,7 @@ export const MarketingTab = () => {
           icon={Send}
           iconColor="text-secondary"
           borderColor="border-t-secondary"
+          explanation="Total number of messages sent across all campaigns this month. Includes emails, SMS, push notifications, and other channels. Track sending volume to optimize messaging frequency."
         />
         <MetricCard
           title="Avg Open Rate"
@@ -49,6 +51,7 @@ export const MarketingTab = () => {
           icon={MailOpen}
           iconColor="text-accent"
           borderColor="border-t-accent"
+          explanation="Average percentage of recipients who opened campaign messages. Industry benchmark is 20-30% for emails. Higher rates indicate compelling subject lines and relevant targeting."
         />
         <MetricCard
           title="Avg Click Rate"
@@ -57,6 +60,7 @@ export const MarketingTab = () => {
           icon={MousePointer}
           iconColor="text-primary"
           borderColor="border-t-primary"
+          explanation="Average percentage of recipients who clicked links in campaign messages. Typical rate is 2-5% for emails. Higher rates show engaging content and strong calls-to-action."
         />
         <MetricCard
           title="Total Conversions"
@@ -64,6 +68,7 @@ export const MarketingTab = () => {
           icon={CheckCircle}
           iconColor="text-success"
           borderColor="border-t-success"
+          explanation="Number of customers who completed the desired action (purchase, sign-up, deposit) after receiving a campaign message. This is the ultimate measure of campaign effectiveness."
         />
         <MetricCard
           title="Total Revenue"
@@ -72,6 +77,7 @@ export const MarketingTab = () => {
           icon={DollarSign}
           iconColor="text-secondary"
           borderColor="border-t-secondary"
+          explanation="Total revenue directly attributed to marketing campaigns this month. Calculated by tracking transactions from campaign recipients. Use this to calculate ROI and justify marketing spend."
         />
         <MetricCard
           title="Avg ROI"
@@ -79,6 +85,7 @@ export const MarketingTab = () => {
           icon={TrendingUp}
           iconColor="text-secondary"
           borderColor="border-t-secondary"
+          explanation="Average Return on Investment across all campaigns. A 3x ROI means every ₦1 spent generates ₦3 in revenue. Benchmark is 3-5x for successful campaigns. Optimize low-performing campaigns."
         />
         <MetricCard
           title="Win-Back Success Rate"
@@ -86,6 +93,7 @@ export const MarketingTab = () => {
           icon={RefreshCw}
           iconColor="text-purple-600"
           borderColor="border-t-purple-600"
+          explanation="Percentage of inactive customers who were successfully reactivated through win-back campaigns. Industry average is 10-15%. Track this to measure retention campaign effectiveness."
         />
       </div>
 
