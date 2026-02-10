@@ -75,14 +75,14 @@ const standaloneItems = [
 ];
 
 export const Sidebar = () => {
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
-    'Dashboard': true,
-    'Customer 360 Management': true,
-    'Growth Automation': true,
-    'Business Intelligence': true,
-    'Support Automation': true,
-    'Compliance & Approvals': true,
+    'Dashboard': false,
+    'Customer 360 Management': false,
+    'Growth Automation': false,
+    'Business Intelligence': false,
+    'Support Automation': false,
+    'Compliance & Approvals': false,
   });
   const { user, logout } = useAuth();
 
