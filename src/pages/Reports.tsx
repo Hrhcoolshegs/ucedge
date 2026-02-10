@@ -25,6 +25,8 @@ import { DateRangeFilter, DateRange } from '@/components/common/DateRangeFilter'
 import { BusinessUnitFilter } from '@/components/common/BusinessUnitFilter';
 import { supabase } from '@/lib/supabase';
 import { RiskSignal } from '@/types/governance';
+import { parseNLPQuery, GeneratedReport } from '@/utils/nlpReportGenerator';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const COLORS = ['#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#06b6d4', '#8b5cf6'];
 
@@ -62,6 +64,7 @@ export default function Reports() {
     { role: 'assistant', content: 'Hello! I can help you create custom reports using natural language. Try asking me something like "Show me revenue trends for the last 6 months" or "Compare customer segments by revenue".' }
   ]);
   const [nlpInput, setNlpInput] = useState('');
+  const [generatedReports, setGeneratedReports] = useState<GeneratedReport[]>([]);
 
   const journey = journeys.find(j => j.id === selectedJourney);
 
@@ -281,14 +284,43 @@ export default function Reports() {
     setNlpMessages([...nlpMessages, userMessage]);
 
     setTimeout(() => {
-      const assistantResponse: NLPMessage = {
-        role: 'assistant',
-        content: `I understand you want to: "${nlpInput}". Based on your request, I would create a report showing relevant metrics. This is a demo response - in a full implementation, I would analyze your natural language query and generate the appropriate charts and data visualizations automatically.`
-      };
-      setNlpMessages(prev => [...prev, assistantResponse]);
-    }, 1000);
+      const generatedReport = parseNLPQuery(nlpInput, customers, transactions, journeys);
+
+      if (generatedReport) {
+        setGeneratedReports(prev => [generatedReport, ...prev]);
+        const assistantResponse: NLPMessage = {
+          role: 'assistant',
+          content: `I've generated a report: "${generatedReport.title}". ${generatedReport.summary} The report is displayed below with both a chart and detailed table data. You can download it using the download button.`
+        };
+        setNlpMessages(prev => [...prev, assistantResponse]);
+      } else {
+        const assistantResponse: NLPMessage = {
+          role: 'assistant',
+          content: `I couldn't generate a specific report for that query. Try asking about: revenue trends, customer segments, lifecycle stages, churn analysis, top customers, journey performance, transaction volume, business units, retention, or customer lifetime value.`
+        };
+        setNlpMessages(prev => [...prev, assistantResponse]);
+      }
+    }, 800);
 
     setNlpInput('');
+  };
+
+  const downloadReport = (report: GeneratedReport) => {
+    let csvContent = `${report.title}\nGenerated: ${report.timestamp.toLocaleString()}\nQuery: ${report.query}\n\n`;
+    csvContent += `Summary:\n${report.summary}\n\n`;
+    csvContent += `Data Table:\n`;
+    csvContent += report.tableData.columns.join(',') + '\n';
+    csvContent += report.tableData.rows.map(row => row.join(',')).join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${report.title.replace(/\s+/g, '_')}_${Date.now()}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
   };
 
   const getExportData = (section: string): { columns: string[]; rows: string[][] } => {
@@ -867,10 +899,13 @@ export default function Reports() {
                 <p className="text-sm font-medium mb-2">Example queries:</p>
                 <div className="flex flex-wrap gap-2">
                   {[
-                    "Show revenue trends for last 6 months",
-                    "Compare customer segments by LTV",
-                    "Analyze churn rate by business unit",
-                    "Top performing campaigns this quarter"
+                    "Show me revenue trends",
+                    "Analyze customer lifecycle stages",
+                    "Show top 10 customers by revenue",
+                    "Generate churn analysis report",
+                    "Show customer lifetime value distribution",
+                    "Analyze journey performance",
+                    "Show transaction volume trends"
                   ].map((example, idx) => (
                     <Button
                       key={idx}
@@ -885,6 +920,109 @@ export default function Reports() {
               </div>
             </div>
           </Card>
+
+          {generatedReports.length > 0 && (
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold text-foreground">Generated Reports</h3>
+              {generatedReports.map((report) => (
+                <Card key={report.id} className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h4 className="text-lg font-semibold text-foreground">{report.title}</h4>
+                      <p className="text-sm text-muted-foreground mt-1">{report.summary}</p>
+                      <p className="text-xs text-muted-foreground mt-1">Generated: {report.timestamp.toLocaleString()}</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" onClick={() => downloadReport(report)}>
+                        <Download className="h-4 w-4 mr-1" />
+                        Download CSV
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setGeneratedReports(generatedReports.filter(r => r.id !== report.id))}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                      <h5 className="text-sm font-semibold mb-3">Visualization</h5>
+                      <ResponsiveContainer width="100%" height={300}>
+                        {report.chartType === 'bar' && (
+                          <BarChart data={report.chartData}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey={Object.keys(report.chartData[0] || {})[0]} tick={{ fontSize: 11 }} />
+                            <YAxis tick={{ fontSize: 11 }} />
+                            <Tooltip />
+                            <Bar dataKey={Object.keys(report.chartData[0] || {})[1]} fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                          </BarChart>
+                        )}
+                        {report.chartType === 'line' && (
+                          <LineChart data={report.chartData}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey={Object.keys(report.chartData[0] || {})[0]} tick={{ fontSize: 11 }} />
+                            <YAxis tick={{ fontSize: 11 }} />
+                            <Tooltip />
+                            <Legend wrapperStyle={{ fontSize: 11 }} />
+                            <Line type="monotone" dataKey={Object.keys(report.chartData[0] || {})[1]} stroke="hsl(var(--primary))" strokeWidth={2} />
+                          </LineChart>
+                        )}
+                        {report.chartType === 'pie' && (
+                          <PieChart>
+                            <Pie
+                              data={report.chartData}
+                              cx="50%"
+                              cy="50%"
+                              outerRadius={100}
+                              dataKey={Object.keys(report.chartData[0] || {})[1]}
+                              label={({ name, value }) => `${name || Object.values(report.chartData[0] || {})[0]}: ${value}`}
+                            >
+                              {report.chartData.map((_, index) => (
+                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                              ))}
+                            </Pie>
+                            <Tooltip />
+                          </PieChart>
+                        )}
+                        {report.chartType === 'table' && (
+                          <div className="text-center text-muted-foreground py-20">
+                            Table view - see data on the right
+                          </div>
+                        )}
+                      </ResponsiveContainer>
+                    </div>
+
+                    <div>
+                      <h5 className="text-sm font-semibold mb-3">Data Table</h5>
+                      <div className="border rounded-lg max-h-[300px] overflow-auto">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              {report.tableData.columns.map((col, idx) => (
+                                <TableHead key={idx} className="font-semibold">{col}</TableHead>
+                              ))}
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {report.tableData.rows.map((row, rowIdx) => (
+                              <TableRow key={rowIdx}>
+                                {row.map((cell, cellIdx) => (
+                                  <TableCell key={cellIdx}>{cell}</TableCell>
+                                ))}
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="custom" className="space-y-6 mt-6">
