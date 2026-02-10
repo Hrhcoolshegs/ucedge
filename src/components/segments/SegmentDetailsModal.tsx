@@ -6,7 +6,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { formatCurrency } from '@/utils/formatters';
 import { Users, TrendingUp, Mail, Phone, ChevronDown, ChevronRight } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
 interface SegmentDetailsModalProps {
@@ -16,36 +16,20 @@ interface SegmentDetailsModalProps {
   customers: Customer[];
 }
 
-const sentimentBucketColors: Record<string, string> = {
-  'champions': 'bg-green-500/10 text-green-700 border-green-500/30',
-  'loyal': 'bg-blue-500/10 text-blue-700 border-blue-500/30',
-  'potential': 'bg-cyan-500/10 text-cyan-700 border-cyan-500/30',
-  'new': 'bg-purple-500/10 text-purple-700 border-purple-500/30',
-  'promising': 'bg-indigo-500/10 text-indigo-700 border-indigo-500/30',
-  'need-attention': 'bg-yellow-500/10 text-yellow-700 border-yellow-500/30',
-  'about-to-sleep': 'bg-orange-500/10 text-orange-700 border-orange-500/30',
-  'at-risk': 'bg-red-500/10 text-red-700 border-red-500/30',
-  'cant-lose': 'bg-rose-500/10 text-rose-700 border-rose-500/30',
-  'hibernating': 'bg-gray-500/10 text-gray-700 border-gray-500/30',
-  'lost': 'bg-slate-500/10 text-slate-700 border-slate-500/30',
-};
-
-const sentimentBucketLabels: Record<string, string> = {
-  'champions': 'Champions',
-  'loyal': 'Loyal Customers',
-  'potential': 'Potential Loyalists',
-  'new': 'New Customers',
-  'promising': 'Promising',
-  'need-attention': 'Need Attention',
-  'about-to-sleep': 'About to Sleep',
-  'at-risk': 'At Risk',
-  'cant-lose': "Can't Lose Them",
-  'hibernating': 'Hibernating',
-  'lost': 'Lost',
+const getSentimentBucketColor = (bucket: string): string => {
+  const lowerBucket = bucket.toLowerCase();
+  if (lowerBucket.includes('high') && lowerBucket.includes('good')) return 'bg-green-500/10 text-green-700 border-green-500/30';
+  if (lowerBucket.includes('high') && lowerBucket.includes('excellent')) return 'bg-emerald-500/10 text-emerald-700 border-emerald-500/30';
+  if (lowerBucket.includes('very high')) return 'bg-green-600/10 text-green-800 border-green-600/30';
+  if (lowerBucket.includes('high')) return 'bg-blue-500/10 text-blue-700 border-blue-500/30';
+  if (lowerBucket.includes('medium') || lowerBucket.includes('average')) return 'bg-cyan-500/10 text-cyan-700 border-cyan-500/30';
+  if (lowerBucket.includes('below average')) return 'bg-yellow-500/10 text-yellow-700 border-yellow-500/30';
+  if (lowerBucket.includes('low') || lowerBucket.includes('poor')) return 'bg-orange-500/10 text-orange-700 border-orange-500/30';
+  return 'bg-gray-500/10 text-gray-700 border-gray-500/30';
 };
 
 export const SegmentDetailsModal = ({ open, onOpenChange, segment, customers }: SegmentDetailsModalProps) => {
-  const [expandedBuckets, setExpandedBuckets] = useState<Set<string>>(new Set(['champions', 'loyal', 'at-risk']));
+  const [expandedBuckets, setExpandedBuckets] = useState<Set<string>>(new Set());
 
   if (!segment) return null;
 
@@ -61,6 +45,12 @@ export const SegmentDetailsModal = ({ open, onOpenChange, segment, customers }: 
   const buckets = Object.keys(customersByBucket).sort((a, b) => {
     return customersByBucket[b].length - customersByBucket[a].length;
   });
+
+  useEffect(() => {
+    if (open && buckets.length > 0) {
+      setExpandedBuckets(new Set(buckets.slice(0, 3)));
+    }
+  }, [open, segment?.id]);
 
   const toggleBucket = (bucket: string) => {
     setExpandedBuckets(prev => {
@@ -126,8 +116,8 @@ export const SegmentDetailsModal = ({ open, onOpenChange, segment, customers }: 
                 {buckets.map(bucket => {
                   const bucketCustomers = customersByBucket[bucket];
                   const isExpanded = expandedBuckets.has(bucket);
-                  const bucketLabel = sentimentBucketLabels[bucket] || bucket;
-                  const bucketColor = sentimentBucketColors[bucket] || 'bg-gray-500/10 text-gray-700 border-gray-500/30';
+                  const bucketLabel = bucket;
+                  const bucketColor = getSentimentBucketColor(bucket);
 
                   return (
                     <Card key={bucket} className="overflow-hidden">
@@ -211,8 +201,8 @@ export const SegmentDetailsModal = ({ open, onOpenChange, segment, customers }: 
                           <Badge variant="outline" className="text-xs">
                             {customer.lifecycleStage}
                           </Badge>
-                          <Badge className={cn('text-xs border', sentimentBucketColors[customer.sentimentBucket] || 'bg-gray-500/10 text-gray-700')}>
-                            {sentimentBucketLabels[customer.sentimentBucket] || customer.sentimentBucket}
+                          <Badge className={cn('text-xs border', getSentimentBucketColor(customer.sentimentBucket))}>
+                            {customer.sentimentBucket}
                           </Badge>
                         </div>
                         <div className="space-y-1">
