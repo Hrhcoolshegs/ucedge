@@ -75,7 +75,7 @@ const standaloneItems = [
 ];
 
 export const Sidebar = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
     'Dashboard': true,
     'Customer 360 Management': true,
