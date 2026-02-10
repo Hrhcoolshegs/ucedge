@@ -140,7 +140,7 @@ export const SegmentsProvider = ({ children }: { children: ReactNode }) => {
       type: 'sentiment',
       customerCount: 0,
       criteria: {
-        customFilters: { engagementLevel: 'high' }
+        customFilters: { engagementLevels: ['high'] }
       },
       metrics: {
         totalLTV: 0,
@@ -195,54 +195,38 @@ export const SegmentsProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    const reevaluateSegments = () => {
-      const updatedSegments = segments.map(segment => {
-        const evaluation = SegmentEvaluator.evaluateSegment(segment, customers);
-        return {
-          ...segment,
-          customerCount: evaluation.metrics.customerCount,
-          metrics: {
-            ...segment.metrics,
-            ...evaluation.metrics,
-          },
-          lastUpdated: new Date().toISOString(),
-        };
-      });
+    if (customers.length === 0) return;
 
-      setSegments(updatedSegments);
+    const reevaluateSegments = () => {
+      setSegments(prevSegments =>
+        prevSegments.map(segment => {
+          const evaluation = SegmentEvaluator.evaluateSegment(segment, customers);
+          return {
+            ...segment,
+            customerCount: evaluation.metrics.customerCount,
+            metrics: {
+              ...segment.metrics,
+              ...evaluation.metrics,
+            },
+            lastUpdated: new Date().toISOString(),
+          };
+        })
+      );
     };
+
+    reevaluateSegments();
 
     const intervalId = setInterval(reevaluateSegments, 60000);
 
     return () => clearInterval(intervalId);
-  }, [customers, segments]);
+  }, [customers]);
 
   const getSegmentCustomers = useCallback((segmentId: string) => {
     const segment = segments.find(s => s.id === segmentId);
     if (!segment) return [];
 
-    return customers
-      .filter(customer => {
-        if (segment.criteria.lifecycleStages?.length) {
-          if (!segment.criteria.lifecycleStages.includes(customer.lifecycleStage)) {
-            return false;
-          }
-        }
-
-        if (segment.criteria.customFilters) {
-          const filters = segment.criteria.customFilters;
-
-          if (filters.minLTV && customer.lifetimeValue < filters.minLTV) return false;
-          if (filters.maxLTV && customer.lifetimeValue > filters.maxLTV) return false;
-          if (filters.maxDaysSinceChurn !== undefined && customer.daysSinceChurn !== null) {
-            if (customer.daysSinceChurn > filters.maxDaysSinceChurn) return false;
-          }
-          if (filters.engagementLevel && customer.engagementLevel !== filters.engagementLevel) return false;
-        }
-
-        return true;
-      })
-      .map(c => c.id);
+    const evaluation = SegmentEvaluator.evaluateSegment(segment, customers);
+    return evaluation.matchingCustomers.map(c => c.id);
   }, [segments, customers]);
 
   return (

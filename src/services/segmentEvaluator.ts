@@ -37,11 +37,8 @@ export class SegmentEvaluator {
         return false;
       }
 
-      if (filters.maxDaysSinceChurn && customer.churnDate) {
-        const daysSinceChurn = Math.floor(
-          (new Date().getTime() - customer.churnDate.getTime()) / (1000 * 60 * 60 * 24)
-        );
-        if (daysSinceChurn > filters.maxDaysSinceChurn) {
+      if (filters.maxDaysSinceChurn !== undefined && customer.daysSinceChurn !== null) {
+        if (customer.daysSinceChurn > filters.maxDaysSinceChurn) {
           return false;
         }
       }

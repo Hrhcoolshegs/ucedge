@@ -49,8 +49,10 @@ export const SegmentDetailsModal = ({ open, onOpenChange, segment, customers }: 
   useEffect(() => {
     if (open && buckets.length > 0) {
       setExpandedBuckets(new Set(buckets.slice(0, 3)));
+    } else if (!open) {
+      setExpandedBuckets(new Set());
     }
-  }, [open, segment?.id]);
+  }, [open, segment?.id, buckets.length]);
 
   const toggleBucket = (bucket: string) => {
     setExpandedBuckets(prev => {
@@ -111,9 +113,18 @@ export const SegmentDetailsModal = ({ open, onOpenChange, segment, customers }: 
           </TabsList>
 
           <TabsContent value="buckets" className="flex-1 min-h-0">
-            <ScrollArea className="h-[500px] pr-4">
-              <div className="space-y-3">
-                {buckets.map(bucket => {
+            {customers.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-[500px] text-center">
+                <Users className="h-12 w-12 text-muted-foreground mb-4" />
+                <h3 className="text-lg font-semibold text-foreground mb-2">No Customers Found</h3>
+                <p className="text-muted-foreground">
+                  This segment doesn't have any matching customers yet.
+                </p>
+              </div>
+            ) : (
+              <ScrollArea className="h-[500px] pr-4">
+                <div className="space-y-3">
+                  {buckets.map(bucket => {
                   const bucketCustomers = customersByBucket[bucket];
                   const isExpanded = expandedBuckets.has(bucket);
                   const bucketLabel = bucket;
@@ -184,15 +195,25 @@ export const SegmentDetailsModal = ({ open, onOpenChange, segment, customers }: 
                       )}
                     </Card>
                   );
-                })}
-              </div>
-            </ScrollArea>
+                  })}
+                </div>
+              </ScrollArea>
+            )}
           </TabsContent>
 
           <TabsContent value="all" className="flex-1 min-h-0">
-            <ScrollArea className="h-[500px] pr-4">
-              <div className="space-y-2">
-                {customers.map(customer => (
+            {customers.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-[500px] text-center">
+                <Users className="h-12 w-12 text-muted-foreground mb-4" />
+                <h3 className="text-lg font-semibold text-foreground mb-2">No Customers Found</h3>
+                <p className="text-muted-foreground">
+                  This segment doesn't have any matching customers yet.
+                </p>
+              </div>
+            ) : (
+              <ScrollArea className="h-[500px] pr-4">
+                <div className="space-y-2">
+                  {customers.map(customer => (
                   <Card key={customer.id} className="p-3 hover:bg-muted/50 transition-colors">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
@@ -227,9 +248,10 @@ export const SegmentDetailsModal = ({ open, onOpenChange, segment, customers }: 
                       </div>
                     </div>
                   </Card>
-                ))}
-              </div>
-            </ScrollArea>
+                  ))}
+                </div>
+              </ScrollArea>
+            )}
           </TabsContent>
         </Tabs>
       </DialogContent>
